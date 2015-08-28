@@ -1,0 +1,498 @@
+package homework.schedule;
+import homework.schedule.data.singleMachineSetupData;
+/**
+ * <p>Title: </p>
+ * <p>Description: Single Machine scheduling problem in common due date with early/tardy objective and setup time.
+ * We prove some dominance properties for this problem. The instance is obtained from Rabadi et al. (2004).</p>
+ * <p>Copyright: Copyright (c) 2006</p>
+ * <p>Company: </p>
+ * @author not attributable
+ * @version 1.0
+ */
+
+public class singleMachineSetupDP extends singleMachineSetup {
+  public singleMachineSetupDP() {
+  }
+  int preSequence[];
+  int numberOfIterations = 1;
+  //r is the middle job.
+   int r = 4;
+
+  public void setData(int numberOfJobs, double processingTime[][], int sequence[]){
+    this.numberOfJobs = numberOfJobs;
+    this.processingTime = processingTime;
+    this.sequence = sequence;
+    finishTime = new double[numberOfJobs];
+    preSequence = new int[numberOfJobs];
+  }
+  
+  public void setIterations(int numberOfIterations){
+    this.numberOfIterations = numberOfIterations;
+  }
+  
+  public void generateInitialSolution(int choice){
+    //generateHeuristicSolution();
+    //choice = 90;
+    if(choice < 5){
+      generateInitialSolution1();
+    }
+    else if(choice >= 5 && choice < 10){
+      generateInitialSolution2();
+    }
+    else if(choice >= 10 && choice < 25){
+      generateRandomSolution();
+    }
+    else{
+      generateHeuristicSolution();
+    }
+  }
+
+  public void generateInitialSolution1(){//Pj in ascending order
+    double array[] = new double[numberOfJobs];
+    for(int i = 0 ; i < numberOfJobs ; i ++ ){
+      int index = (int)(Math.random()*numberOfJobs);
+      array[i] = processingTime[i][index];
+    }
+    sortSequence(array);
+  }
+
+  public void generateInitialSolution2(){//Pj in ascending order
+    double array[] = new double[numberOfJobs];
+    for(int i = 0 ; i < numberOfJobs ; i ++ ){
+      int index = (int)(Math.random()*numberOfJobs);
+      array[i] = -processingTime[i][index];
+    }
+    sortSequence(array);
+  }
+
+  public void generateRandomSolution(){
+    for(int i = 0 ; i < numberOfJobs ; i ++ ){
+      int cutPoint = getCutPoint();
+      swapJobs(i, cutPoint);
+    }
+  }
+
+  public void generateHeuristicSolution(){
+    SAPT_SingleMachineSetup singleMachine1 = new SAPT_SingleMachineSetup();
+    singleMachine1.setData(numberOfJobs, processingTime);
+    singleMachine1.backupAP();
+    singleMachine1.SAPT();
+    int _seq[] = singleMachine1.getSequence();
+    for(int i = 0 ; i < numberOfJobs ; i ++ ){
+      sequence[i] = _seq[i];
+    }
+  }
+
+  public double calcCommonDueDate(int _seq[]){
+    //the k is the summation processing time of the first r jobs.
+    double k = 0;
+    findMiddlePosition(_seq);
+
+    for(int i = 0 ; i < r ; i ++ ){
+      //System.out.println(_seq);
+      k +=  processingTime[_seq[i]][_seq[i+1]];
+      //System.out.println(_seq[i]+"\t"+_seq[i+1]+" = "+processingTime[_seq[i]][_seq[i+1]]);
+    }
+    //System.out.println("r= "+r+"\t k= "+k);
+    return k;
+  }
+
+
+  public void startAlgorithm(){
+    calcObj(sequence);
+    //System.out.println("initial obj "+obj);
+    numberOfIterations = (int)(numberOfJobs*Math.log(numberOfJobs));
+    //numberOfIterations = (int)(numberOfJobs*numberOfJobs);
+    //sequence = new int[]{0, 5, 1, 6, 4, 2, 7, 3};
+    setPreviousSolution(sequence);   //to set the initial solution as the previous soln.
+    findMiddlePosition(sequence);
+    int counter = 0;
+    int restart = 0;
+
+    do{
+      counter ++;
+      //System.out.println(counter);
+      //GPI
+      for(int increment = 1 ; increment < 4 ; increment ++ ){
+        for(int pos1 = 0 ; pos1 < numberOfJobs - increment ; pos1 ++ ){
+          //printSequence(sequence);
+          searchMain(sequence, pos1, pos1+increment, r);
+          //System.out.println();
+        }
+      }
+
+      /*
+      //adjacent neigborhood search
+      for(int pos1 = 0 ; pos1 < 2 ; pos1 ++ ){
+        for(int i = pos1 ; i < numberOfJobs - 1 ; i ++ ){
+          searchMain(sequence, i, i+1, r);
+          i += 1;
+        }
+      }
+      */
+
+     /*
+     for(int pos1 = 0 ; pos1 < numberOfJobs - 1 ; pos1 ++ ){
+       for(int i = pos1 + 1 ; i < numberOfJobs ; i ++ ){
+         boolean check = searchMain(sequence, pos1, i, r);
+         //System.out.println(check);
+       }
+     }
+     */
+      //if the solution is still the same, it means the algorithm won't change the sequence anymore.
+      if(isTheSame(sequence, preSequence)){
+        if(restart < 2){
+          for(int pos1 = 0 ; pos1 < numberOfJobs - 1 ; pos1 ++ ){
+            for(int i = pos1 + 1 ; i < numberOfJobs ; i ++ ){
+              boolean check = searchMain(sequence, pos1, i, r);
+              //System.out.println(check);
+            }
+          }
+          restart ++;
+        }
+        else{
+          break;
+        }
+
+      }
+      else{
+        setPreviousSolution(sequence);
+      }
+    }
+    while(counter < numberOfIterations);//the other stopping criterion is the number of iterations.Math.log(numberOfJobs)
+    calcObj(sequence);
+  }
+
+  public boolean searchMain(int _seq[], int pos1, int pos2, double _r){
+    boolean isChanged = false;
+    //System.out.println(pos1+" "+pos2);
+    if(pos2 == pos1 + 1){//for adjacent
+      isChanged = neighborhoodSearch(sequence, pos1, pos2, _r);
+    }
+    else{//for non-adjacent
+      isChanged = nonAdjacentSearch(sequence, pos1, pos2, _r);
+    }
+
+    return isChanged;
+  }
+
+  public boolean nonAdjacentSearch(int _seq[], int pos1, int pos2, double _r){
+    double difference = 0;
+    boolean isChanged = false;
+
+    int jobBeforei, jobBeforek, jobAfterk;
+
+    if(pos1 == 0){
+      jobBeforei = 0;
+    }
+    else{
+      jobBeforei = sequence[pos1-1];
+    }
+
+    if(pos2 == numberOfJobs - 1){
+      jobAfterk = 0;
+    }
+    else{
+      jobAfterk = sequence[pos2+1];
+    }
+    jobBeforek = sequence[pos2-1];
+
+    if(pos1 < _r && pos2 < _r){//for early early condition
+      difference = forEarlyEarly2(pos1+1, pos2+1, jobBeforei, jobBeforek, sequence[pos1], sequence[pos1+1], sequence[pos2], jobAfterk);
+    }
+    else if(pos1 < _r && pos2 == _r){//for early on-time condition
+      difference = forEarlyOnTime2(pos1+1, pos2+1, jobBeforei, jobBeforek, sequence[pos1], sequence[pos1+1], sequence[pos2], jobAfterk);
+    }
+    else if(pos1 == _r && pos2 > _r){//for on-time tardy condition
+      difference = forOnTimeTardy2(pos1+1, pos2+1, jobBeforei, jobBeforek, sequence[pos1], sequence[pos1+1], sequence[pos2], jobAfterk);
+    }
+    else{//for tardy tardy condition
+      difference = forTardyTardy2(pos1+1, pos2+1, jobBeforei, jobBeforek, sequence[pos1], sequence[pos1+1], sequence[pos2], jobAfterk);
+    }
+
+    //to test whether we should swap the two jobs
+    if(difference < 0){
+      swapJobs(pos1, pos2);
+      isChanged = true;
+    }
+    //System.out.println("nonAdjacentSearch search: jobBeforei, jobBeforek, sequence[pos1],  sequence[pos1+1], sequence[pos2], jobAfterk, difference "+jobBeforei+" "+jobBeforek+" "+sequence[pos1]+" "+sequence[pos1+1]+" "+sequence[pos2]+" "+jobAfterk+" "+difference);
+    return isChanged;
+  }
+
+  public boolean neighborhoodSearch(int _seq[], int pos1, int pos2, double _r){
+    double difference = 0;
+    boolean isChanged = false;
+
+    int jobBeforei, jobAfterj;
+
+    if(pos1 == 0){
+      jobBeforei = 0;
+    }
+    else{
+      jobBeforei = sequence[pos1-1];
+    }
+
+    if(pos2 == numberOfJobs - 1){
+      jobAfterj = 0;
+    }
+    else{
+      jobAfterj = sequence[pos2+1];
+    }
+
+    if(pos1 < _r && pos2 < _r ){//for early early condition
+      difference = forEarlyEarly(pos1+1, pos2+1, jobBeforei, sequence[pos1], sequence[pos2], jobAfterj);
+    }
+    else if(pos1 < _r && pos2 == _r){//for early on-time condition
+      difference = forEarlyOnTime(pos1+1, pos2+1, jobBeforei, sequence[pos1], sequence[pos2], jobAfterj);
+    }
+    else if(pos1 == _r && pos2 > _r){//for on-time tardy condition
+      difference = forOnTimeTardy(pos1+1, pos2+1, jobBeforei, sequence[pos1], sequence[pos2], jobAfterj);
+    }
+    else{//for tardy tardy condition
+      difference = forTardyTardy(pos1+1, pos2+1, jobBeforei, sequence[pos1], sequence[pos2], jobAfterj);
+    }
+
+    //to test whether we should swap the two jobs
+    if(difference < 0){
+      swapJobs(pos1);
+      isChanged = true;
+    }
+    //System.out.println("neighborhood search: jobBeforei, sequence[pos1], sequence[pos2], jobAfterj, difference "+jobBeforei+" "+sequence[pos1]+" "+sequence[pos2]+" "+jobAfterj+" "+difference);
+    return isChanged;
+  }
+
+  //For adjacent job i and j
+  private double forEarlyEarly(int pos1, int pos2, int jobBeforei, int jobi, int jobj, int jobAfterj){
+    double value = (pos1 - 1)*(processingTime[jobBeforei][jobj] - processingTime[jobBeforei][jobi]);//for pos1
+    value += (pos2 - 1)*(processingTime[jobj][jobi] - processingTime[jobi][jobj]);//for pos2
+    value += (pos2)*(processingTime[jobi][jobAfterj] - processingTime[jobj][jobAfterj]);//for pos3
+    return value;
+  }
+
+  //For non-adjacent job i and j
+  private double forEarlyEarly2(int pos1, int pos2, int jobBeforei, int jobBeforek, int jobi, int jobj, int jobk, int jobAfterk){
+    double value = (pos1 - 1)*(processingTime[jobBeforei][jobk] - processingTime[jobBeforei][jobi]);//for pos1
+    value += (pos1)*(processingTime[jobk][jobj] - processingTime[jobi][jobj]);//for pos2
+    value += (pos2 - 1)*(processingTime[jobBeforek][jobi] - processingTime[jobBeforek][jobk]);//for pos3
+    value += (pos2)*(processingTime[jobi][jobAfterk] - processingTime[jobk][jobAfterk]);//for pos4
+    return value;
+  }
+
+  //For adjacent job i and j
+  private double forEarlyOnTime(int pos1, int pos2, int jobBeforei, int jobi, int jobj, int jobAfterj){
+    double value = (pos1 - 1)*(processingTime[jobBeforei][jobj] - processingTime[jobBeforei][jobi]);//for pos1
+    value += (pos2 - 1)*(processingTime[jobj][jobi] - processingTime[jobi][jobj]);//for pos2
+    value += (numberOfJobs-r)*(processingTime[jobi][jobAfterj] - processingTime[jobj][jobAfterj]);//for pos3
+    return value;
+  }
+
+  //For non-adjacent job i and j
+  private double forEarlyOnTime2(int pos1, int pos2, int jobBeforei, int jobBeforek, int jobi, int jobj, int jobk, int jobAfterk){
+    double value = (pos1 - 1)*(processingTime[jobBeforei][jobk] - processingTime[jobBeforei][jobi]);//for pos1
+    value += (pos1)*(processingTime[jobk][jobj] - processingTime[jobi][jobj]);//for pos2
+    value += (pos2 - 1)*(processingTime[jobBeforek][jobi] - processingTime[jobBeforek][jobk]);//for pos3
+    value += (numberOfJobs - pos2)*(processingTime[jobi][jobAfterk] - processingTime[jobk][jobAfterk]);//for pos4
+    return value;
+  }
+
+  //For non-adjacent job i and j
+  private double forEarlyTardy(int pos1, int pos2, int jobBeforei, int jobBeforek, int jobi, int jobj, int jobk, int jobAfterk){
+    double value = (pos1 - 1)*(processingTime[jobBeforei][jobk] - processingTime[jobBeforei][jobi]);//for pos1
+    value += (pos1)*(processingTime[jobk][jobj] - processingTime[jobi][jobj]);//for pos2
+    value += (numberOfJobs - pos2 + 1)*(processingTime[jobBeforek][jobi] - processingTime[jobBeforek][jobk]);//for pos3
+    value += (numberOfJobs - pos2)*(processingTime[jobi][jobAfterk] - processingTime[jobk][jobAfterk]);//for pos4
+    return value;
+  }
+
+  //For adjacent job i and j
+  private double forOnTimeTardy(int pos1, int pos2, int jobBeforei, int jobi, int jobj, int jobAfterj){
+    double value = (r - 1)*(processingTime[jobBeforei][jobj] - processingTime[jobBeforei][jobi]);//for pos1
+    value += (numberOfJobs-r)*(processingTime[jobj][jobi] - processingTime[jobi][jobj]);//for pos2
+    value += (numberOfJobs-r-1)*(processingTime[jobi][jobAfterj] - processingTime[jobj][jobAfterj]);//for pos3
+    return value;
+  }
+
+  //For non-adjacent job i and j
+  private double forOnTimeTardy2(int pos1, int pos2, int jobBeforei, int jobBeforek, int jobi, int jobj, int jobk, int jobAfterk){
+    double value = (pos1 - 1)*(processingTime[jobBeforei][jobk] - processingTime[jobBeforei][jobi]);//for pos1
+    value += (numberOfJobs - pos1)*(processingTime[jobk][jobj] - processingTime[jobi][jobj]);//for pos2
+    value += (numberOfJobs - pos2 + 1)*(processingTime[jobBeforek][jobi] - processingTime[jobBeforek][jobk]);//for pos3
+    value += (numberOfJobs - pos2)*(processingTime[jobi][jobAfterk] - processingTime[jobk][jobAfterk]);//for pos4
+    return value;
+  }
+
+  //For adjacent job i and j
+  private double forTardyTardy(int pos1, int pos2, int jobBeforei, int jobi, int jobj, int jobAfterj){
+    double value = (numberOfJobs - pos1 + 1)*(processingTime[jobBeforei][jobj] - processingTime[jobBeforei][jobi]);//for pos1
+    value += (numberOfJobs - pos2 + 1)*(processingTime[jobj][jobi] - processingTime[jobi][jobj]);//for pos2
+    if(pos2 != numberOfJobs){
+      value += (numberOfJobs - pos2)*(processingTime[jobi][jobAfterj] - processingTime[jobj][jobAfterj]);//for pos3
+    }
+    return value;
+  }
+
+  //For non-adjacent job i and j
+  private double forTardyTardy2(int pos1, int pos2, int jobBeforei, int jobBeforek, int jobi, int jobj, int jobk, int jobAfterk){
+    double value = (numberOfJobs - pos1 + 1)*(processingTime[jobBeforei][jobk] - processingTime[jobBeforei][jobi]);//for pos1
+    value += (numberOfJobs - pos1)*(processingTime[jobk][jobj] - processingTime[jobi][jobj]);//for pos2
+    value += (numberOfJobs - pos2 + 1)*(processingTime[jobBeforek][jobi] - processingTime[jobBeforek][jobk]);//for pos3
+    if(pos2 != numberOfJobs){
+      value += (numberOfJobs - pos2)*(processingTime[jobi][jobAfterk] - processingTime[jobk][jobAfterk]);//for pos4
+    }
+    return value;
+  }
+
+  public final void sortSequence(double deviation[]){
+    homework.util.sort.selectionSort selectionSort1 = new homework.util.sort.selectionSort();
+    selectionSort1.setData(deviation);
+    selectionSort1.setNomialData(sequence);
+    //selectionSort1.selectionSort_int_withNomial();
+    selectionSort1.selectionSort_withNomial();
+  }
+
+  public void swapJobs(int pos1){
+    int pos2 = pos1 + 1;
+    swapJobs(pos1, pos2);
+  }
+
+  public void setPreviousSolution(int _seq[]){
+    for(int i = 0 ; i < _seq.length ; i ++ ){
+      preSequence[i] = _seq[i];
+    }
+  }
+
+  /**
+   * If the soln1 and soln2 are the same, it returns true.
+   * @param soln1
+   * @param soln2
+   * @return
+   */
+  public boolean isTheSame(int soln1[], int soln2[]){
+    boolean isTheSameSolution = true;
+    for(int i = 0 ; i < numberOfJobs ; i ++ ){
+      if(soln1[i] != soln2[i]){
+        return false;
+      }
+    }
+    return isTheSameSolution;
+  }
+
+  public void swapJobs(int pos1, int pos2){
+    int temp = sequence[pos1];
+    sequence[pos1] = sequence[pos2];
+    sequence[pos2] = temp;
+  }
+
+  private int getCutPoint(){
+    int cutPoint = (int)(Math.random()*sequence.length);
+    int counter = 0;
+    if(cutPoint == 0){
+      cutPoint = 1;
+    }
+    else if(cutPoint == sequence.length - 1){
+      cutPoint =  sequence.length - 2;
+    }
+    return cutPoint;
+  }
+
+  public void calcObj(int sequence[]){
+    double currentTime = 0;
+    obj = 0;
+    double commonDueDate = calcCommonDueDate(sequence);
+
+    //to calculate the Total earliness
+    for(int i = 0 ; i < r ; i ++ ){
+      obj += (i+1)*processingTime[sequence[i]][sequence[i+1]];
+      //System.out.println((sequence[i]+1)+"\t"+(sequence[i+1]+1)+" = "+(i+1)*processingTime[sequence[i]][sequence[i+1]]);
+    }
+
+    //to calculate the Total tardiness
+    for(int i = r ; i < numberOfJobs - 1 ; i ++ ){
+      obj += (numberOfJobs - i - 1)*processingTime[sequence[i]][sequence[i+1]];
+      //System.out.println((sequence[i]+1)+"\t"+(sequence[i+1]+1)+" = "+(numberOfJobs - i - 1)*processingTime[sequence[i]][sequence[i+1]]);
+    }
+  }
+
+  /**
+   * Write the data into text file.
+   */
+  public void writeFile(String fileName, String _result){
+    homework.util.fileWrite1 writeLotteryResult = new homework.util.fileWrite1();
+    writeLotteryResult.writeToFile(_result,fileName+".txt");
+    Thread thread1 = new Thread(writeLotteryResult);
+    thread1.run();
+  }
+
+  public int[] getSolution(){
+    return sequence;
+  }
+
+  public void printSequence(int _B[]){
+    for(int k = 0 ; k < _B.length ; k ++ ){//15
+      System.out.print(_B[k]+" ");
+    }
+    System.out.print("\n");
+  }
+
+  public static void main(String[] args) {
+    int numberOfJobs;
+    double processingTime[][];
+    int jobSets[] = new int[]{10, 15, 20, 25};//10, 15, 20, 25, 50, 100, 150, 200
+    String type[] = new String[]{"low", "med", "high"};//"low", "med", "high"
+
+    for(int replications = 0 ; replications < 30 ; replications ++ ){
+      for(int m = 0 ; m < jobSets.length ; m ++ ){//jobSets.length
+        for(int n = 0 ; n < type.length ; n ++ ){
+          for(int k = 1 ; k <= 15 ; k ++ ){//15
+            singleMachineSetupData singleMachineData1 = new singleMachineSetupData();
+            singleMachineSetupDP singleMachine1 = new singleMachineSetupDP();
+            String fileName = "instances\\SingleMachineSetup\\"+type[n]+"\\"+jobSets[m]+"_"+k+".etp";
+            //fileName = "Data\\8jobsSMS_setup2.txt";//for test
+            //System.out.println(fileName);
+            singleMachineData1.setData(fileName);
+            singleMachineData1.getDataFromFile();
+            numberOfJobs = singleMachineData1.getSize();
+            processingTime = singleMachineData1.getProcessingTime();
+
+            double obj = Double.MAX_VALUE;
+            int currentSoluion[] = new int[numberOfJobs];
+            homework.util.timeClock timeClock1 = new homework.util.timeClock();
+            timeClock1.start();
+
+            for(int i = 0 ; i < 100 ; i ++ ){//i initial solutions
+              int sequence[] = new int[numberOfJobs];//5, 3, 2, 1, 4//2 1 4 6 3 5 8 7
+              for(int j = 0 ; j < numberOfJobs ; j ++ ){
+                sequence[j] = j;
+              }
+              singleMachine1.setData(numberOfJobs, processingTime, sequence);
+              singleMachine1.generateInitialSolution(i);
+              singleMachine1.startAlgorithm();
+              //to compare the objective value.
+              if(obj > singleMachine1.getObjValue()){
+                obj = singleMachine1.getObjValue();
+                int tempSoln[] = new int[numberOfJobs];
+                //System.arraycopy(singleMachine1.getSolution(), 0, currentSoluion, numberOfJobs);
+                currentSoluion = singleMachine1.getSolution();
+              }
+            }
+            timeClock1.end();
+            String result = type[n]+"\t"+jobSets[m]+"\t"+k+"\t"+obj+"\t"+timeClock1.getExecutionTime()/1000.0+"\n";
+            System.out.print(result);
+            singleMachine1.writeFile("oneMachineSetup0530", result);
+            //singleMachine1.printSequence(currentSoluion);
+
+            /*
+            System.out.print(replications+" "+obj+" [");
+            for(int j = 0 ; j < numberOfJobs ; j ++ ){
+              System.out.print((currentSoluion[j]+1)+ " ");
+            }
+            System.out.print("]\n");
+            */
+          }
+        }
+      }
+    }
+  }//end main
+
+  
+}

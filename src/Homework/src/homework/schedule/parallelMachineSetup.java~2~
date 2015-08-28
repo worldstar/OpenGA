@@ -1,0 +1,584 @@
+package homework.schedule;
+import homework.schedule.data.readParallelMachineSetupData;
+import homework.util.algorithm.*;
+/**
+ * <p>Title: </p>
+ * <p>Description: The dominance properties for Parallel Machine setup.</p>
+ * <p>Copyright: Copyright (c) 2007</p>
+ * <p>Company: </p>
+ * @author not attributable
+ * @version 1.0
+ */
+
+public class parallelMachineSetup extends singleMachine{
+  public parallelMachineSetup() {
+  }
+
+  int numberOfJobs = 5;
+  int numberOfMachine = 2;
+  int processingTime[][][];
+  int finishTime[][];
+  int sequence[];
+  int actualSequence[][];//sequence on each machine
+  int numberOfJobOnMachines[];
+  boolean blockIsChanged = false;
+  int obj;
+  int numberOfIterations = 1;
+
+  public void setData(int numberOfJobs, int numberOfMachine, int processingTime[][][], int sequence[]){
+    this.numberOfJobs = numberOfJobs;
+    this.numberOfMachine = numberOfMachine;
+    this.processingTime = processingTime;
+    this.sequence = sequence;
+    preSequence = new int[numberOfJobs];
+  }
+
+  public void setIterations(int numberOfIterations){
+    this.numberOfIterations = numberOfIterations;
+  }
+
+  public void generateInitialSolution(int choice){
+    generateRandomSolution();
+  }
+
+  public void startAlgorithm(){
+    if(numberOfIterations == 1){
+      numberOfIterations = numberOfJobs*numberOfJobs;
+    }
+    else{
+      numberOfIterations = (int)(numberOfJobs*Math.log(numberOfJobs));
+    }
+    numberOfIterations = 2;
+    assignJobOntoMachines();
+    //setPreviousSolution(sequence);   //to set the initial solution as the previous soln.
+    calcFinishedTime();      //the finish time of the schedule
+    int counter = 0;
+
+    do{
+      counter ++;
+      for(int i = 0 ; i < numberOfMachine ; i ++ ){
+        for(int k = 0 ; k < numberOfJobOnMachines[i] - 1 ; k ++ ){
+          for(int m = k+1 ; m < numberOfJobOnMachines[i] ; m ++ ){
+            searchMain1(i, k, m);//exchamge within the same machine.
+          }
+        }
+      }
+
+      for(int i = 0 ; i < numberOfMachine ; i ++ ){
+        for(int j = i+1 ; j < numberOfMachine ; j ++ ){
+          for(int k = 0 ; k < numberOfJobOnMachines[i] ; k ++ ){
+            for(int m = 0 ; m < numberOfJobOnMachines[j] ; m ++ ){
+              searchMain2(i, j, k, m);//inter-machine
+            }
+          }
+        }
+      }
+
+      for(int i = 0 ; i < numberOfMachine ; i ++ ){
+        for(int j = i+1 ; j < numberOfMachine ; j ++ ){
+          for(int k = 0 ; k < numberOfJobOnMachines[i] ; k ++ ){
+            for(int m = 0 ; m < numberOfJobOnMachines[j] ; m ++ ){
+              searchMain3(i, j, k, m);//insert-machine
+            }
+          }
+        }
+      }
+
+    }
+    while(counter < numberOfIterations);//the other stopping criterion is the number of iterations.Math.log(numberOfJobs)
+    /*
+    calcFinishedTime();
+    calcObjectives();
+    System.out.println("Obj = "+obj);
+
+    for(int i = 0 ; i < numberOfMachine ; i ++ ){
+      for(int k = 0 ; k < numberOfJobOnMachines[i] ; k ++ ){
+        System.out.print(actualSequence[i][k]+ "  ");
+      }
+      System.out.print("\n");
+    }
+        */
+    assignJobOntoSequence();
+    //System.exit(0);
+  }
+
+  public void assignJobOntoMachines(){
+    //initialization
+    int arrayLength = numberOfJobs - numberOfMachine + 1;
+    if(numberOfJobs % numberOfMachine != 0){
+      arrayLength += 1;
+    }
+    actualSequence = new int[numberOfMachine][arrayLength];
+
+    int length = numberOfJobs;
+    //to use getMin to find out the machine which has least processing time
+    getMin getMin1 = new getMin();
+    int machineTime[] = new int[numberOfMachine];
+    numberOfJobOnMachines = new int[numberOfMachine];
+
+    for(int i = 0 ; i < numberOfMachine ; i ++ ){
+      machineTime[i] = 0;
+    }
+
+    //start to assign others job.
+    for(int i = 0 ; i < length ; i ++ ){
+      //Johnson's rule, find the machine whose current total processing time is minimum.
+      //assign the job i to the machine minProcessingTimeMachine
+      int index = sequence[i];
+      int minProcessingTimeMachine;
+      if(i < numberOfMachine){//the first job of each machine
+        minProcessingTimeMachine = i;
+        machineTime[i] += processingTime[minProcessingTimeMachine][index][index];
+        actualSequence[minProcessingTimeMachine][0] = index;
+        numberOfJobOnMachines[minProcessingTimeMachine] += 1;
+      }
+      else{
+        minProcessingTimeMachine = getMin1.getDataIndex(machineTime);
+        int pos = numberOfJobOnMachines[minProcessingTimeMachine];
+        numberOfJobOnMachines[minProcessingTimeMachine] += 1;
+        int prevJob = actualSequence[minProcessingTimeMachine][pos-1];
+        machineTime[minProcessingTimeMachine] += processingTime[minProcessingTimeMachine][prevJob][index];
+        actualSequence[minProcessingTimeMachine][pos] = index;
+      }
+    }
+  }
+
+  public void assignJobOntoSequence(){
+    int length = numberOfJobs;
+    //to use getMin to find out the machine which has least processing time
+    getMin getMin1 = new getMin();
+    int machineTime[] = new int[numberOfMachine];
+    numberOfJobOnMachines = new int[numberOfMachine];
+
+    for(int i = 0 ; i < numberOfMachine ; i ++ ){
+      machineTime[i] = 0;
+    }
+
+    //start to assign others job.
+    for(int i = 0 ; i < length ; i ++ ){
+      //Johnson's rule, find the machine whose current total processing time is minimum.
+      //assign the job i to the machine minProcessingTimeMachine
+      int minProcessingTimeMachine;
+      if(i < numberOfMachine){//the first job of each machine
+        int index = actualSequence[i][0];
+        minProcessingTimeMachine = i;
+        machineTime[i] += processingTime[minProcessingTimeMachine][index][index];
+        numberOfJobOnMachines[minProcessingTimeMachine] += 1;
+        sequence[i] = actualSequence[minProcessingTimeMachine][0];
+      }
+      else{
+        minProcessingTimeMachine = getMin1.getDataIndex(machineTime);
+        int pos = numberOfJobOnMachines[minProcessingTimeMachine];
+        int index = actualSequence[minProcessingTimeMachine][pos];
+        numberOfJobOnMachines[minProcessingTimeMachine] += 1;
+        int prevJob = actualSequence[minProcessingTimeMachine][pos-1];
+        machineTime[minProcessingTimeMachine] += processingTime[minProcessingTimeMachine][prevJob][index];
+        sequence[i] = actualSequence[minProcessingTimeMachine][pos];
+      }
+      System.out.print(sequence[i]+" ");
+    }
+    System.out.println();
+    System.exit(0);
+  }
+
+  public void calcFinishedTime(){
+     //initialization
+     int arrayLength = numberOfJobs - numberOfMachine + 1;
+     if(numberOfJobs % numberOfMachine != 0){
+       arrayLength += 1;
+     }
+     finishTime = new int[numberOfMachine][arrayLength];
+     int machineTime[] = new int[numberOfMachine];
+
+     for(int i = 0 ; i < numberOfMachine ; i ++ ){
+       for(int j = 0 ; j < numberOfJobOnMachines[i] ; j ++ ){
+         int index = actualSequence[i][j];
+         if(j == 0){//the first job of each machine
+           machineTime[i] = processingTime[i][index][index];
+           finishTime[i][j] = machineTime[i];
+         }
+         else{
+           int prevJobIndex = actualSequence[i][j-1];
+           machineTime[i] += processingTime[i][prevJobIndex][index];
+           finishTime[i][j] = machineTime[i];
+         }
+       }
+     }
+  }
+
+  public void calcFinishedTime(int machineIndex, int start){
+    int i = machineIndex;
+    for(int j = start ; j < numberOfJobOnMachines[i] ; j ++ ){
+      int index = actualSequence[i][j];
+      if(j == 0){//the first job of each machine
+        finishTime[i][j] = processingTime[i][index][index];
+      }
+      else{
+        int prevJobIndex = actualSequence[i][j-1];
+        finishTime[i][j] += processingTime[i][prevJobIndex][index];
+      }
+    }
+  }
+
+  public boolean searchMain1(int machineID, int pos1, int pos2){//within the same machine
+    boolean isChanged = false;
+    if(pos2 == pos1 + 1){//for adjacent
+      isChanged = neighborhoodSearch(machineID, pos1, pos2);
+    }
+    else{//for non-adjacent
+      isChanged = nonNeighborhoodSearch(machineID, pos1, pos2);
+    }
+    return isChanged;
+  }
+
+  public boolean searchMain2(int machineID, int machineID2, int pos1, int pos2){//inter-machine
+    boolean isChanged = false;
+    isChanged = interMachineSearch(machineID, machineID2, pos1, pos2);
+    if(isChanged){
+      calcFinishedTime(machineID, pos1);//update the finished time of machine 1
+      calcFinishedTime(machineID2, pos2);//update the finished time of machine 2
+    }
+    return isChanged;
+  }
+
+  public boolean searchMain3(int machineID, int machineID2, int pos1, int pos2){//inter-machine
+    boolean isChanged = false;
+    isChanged = insertMachineSearch(machineID, machineID2, pos1, pos2);
+    if(isChanged){
+      calcFinishedTime(machineID, pos1);//update the finished time of machine 1
+      calcFinishedTime(machineID2, pos2);//update the finished time of machine 2
+    }
+    return isChanged;
+  }
+
+
+
+  public boolean neighborhoodSearch(int machineID, int pos1, int pos2){
+    double difference = 0;
+    boolean isChanged = false;
+
+    int APi_1ik, APi_1jk, APijk, APjik, APijplusk, APjjplusk;
+    int beforei, beforej;
+    int jobi = actualSequence[machineID][pos1];
+    int jobj = actualSequence[machineID][pos2];
+
+    if(pos1 == 0){//pos1 is the first job and j is not the last job
+      APi_1ik = processingTime[machineID][jobi][jobi];
+      APi_1jk = processingTime[machineID][jobj][jobj];
+      APijk = processingTime[machineID][jobj][jobj];
+      APjik = processingTime[machineID][jobi][jobi];
+    }
+    else{
+      beforei = actualSequence[machineID][pos1-1];
+      APi_1ik = processingTime[machineID][beforei][jobi];
+      APi_1jk = processingTime[machineID][beforei][jobj];
+      APijk = processingTime[machineID][jobi][jobj];
+      APjik = processingTime[machineID][jobj][jobi];
+    }
+
+    if(pos2 != numberOfJobOnMachines[machineID] - 1){//whether pos2 is at the last job
+      int afterj = actualSequence[machineID][pos2+1];
+      APijplusk = processingTime[machineID][jobi][afterj];
+      APjjplusk = processingTime[machineID][jobj][afterj];
+    }
+    else{
+      APijplusk = 0;
+      APjjplusk = 0;
+    }
+
+    difference = (APi_1jk - APi_1ik) + (APjik - APijk) + (APijplusk - APjjplusk);
+
+    //to test whether we should swap the two jobs
+    if(difference < 0){
+      swapJobs(machineID, pos1, pos2);
+      isChanged = true;
+    }
+    //System.out.println("neighborhood search: jobBeforei, sequence[pos1], sequence[pos2], jobAfterj, difference "+jobBeforei+" "+sequence[pos1]+" "+sequence[pos2]+" "+jobAfterj+" "+difference);
+    return isChanged;
+  }
+
+  public boolean nonNeighborhoodSearch(int machineID, int pos1, int pos2){
+    double difference = 0;
+    boolean isChanged = false;
+
+    int APi_1ik, APi_1jk, APijk, APjik, APijplusk, APjjplusk, APjiplusk, APiiplusk, APj_1ik, APj_1jk;
+    int beforei, beforej;
+    int jobi = actualSequence[machineID][pos1];
+    int jobj = actualSequence[machineID][pos2];
+
+    if(pos1 == 0){//pos1 is the first job and j is not the last job
+      APi_1ik = processingTime[machineID][jobi][jobi];
+      APi_1jk = processingTime[machineID][jobj][jobj];
+      APijk = processingTime[machineID][jobj][jobj];
+      APjik = processingTime[machineID][jobi][jobi];
+    }
+    else{
+      beforei = actualSequence[machineID][pos1-1];
+      APi_1ik = processingTime[machineID][beforei][jobi];
+      APi_1jk = processingTime[machineID][beforei][jobj];
+      APijk = processingTime[machineID][jobi][jobj];
+      APjik = processingTime[machineID][jobj][jobi];
+    }
+
+    if(pos2 != numberOfJobOnMachines[machineID] - 1){//whether pos2 is at the last job
+      int afterj = actualSequence[machineID][pos2+1];
+      APijplusk = processingTime[machineID][jobi][afterj];
+      APjjplusk = processingTime[machineID][jobj][afterj];
+    }
+    else{//the last job
+      APijplusk = 0;
+      APjjplusk = 0;
+    }
+    int afteri = actualSequence[machineID][pos1+1];
+    APiiplusk = processingTime[machineID][jobi][afteri];
+    APjiplusk = processingTime[machineID][jobj][afteri];
+
+    beforej = actualSequence[machineID][pos2-1];
+    APj_1ik = processingTime[machineID][beforej][jobi];
+    APj_1jk = processingTime[machineID][beforej][jobj];
+
+    difference = (APi_1jk - APi_1ik) + (APjiplusk - APiiplusk)
+        + (APj_1ik - APj_1jk) + (APijplusk - APjjplusk);
+
+    //to test whether we should swap the two jobs
+    if(difference < 0){
+      swapJobs(machineID, pos1, pos2);
+      isChanged = true;
+    }
+    //System.out.println("neighborhood search: jobBeforei, sequence[pos1], sequence[pos2], jobAfterj, difference "+jobBeforei+" "+sequence[pos1]+" "+sequence[pos2]+" "+jobAfterj+" "+difference);
+    return isChanged;
+  }
+
+  public boolean interMachineSearch(int machineID, int machineID2, int pos1, int pos2){//pos1 is at machineID and pos2 is at machineID2
+    boolean isChanged = false;
+
+    int APi_1ik1, APi_1jk1, APjiplusk1, APiiplusk1, APj_1ik2, APj_1jk2, APijplusk2, APjjplusk2;
+    int beforei, beforej;
+    int jobi = actualSequence[machineID][pos1];
+    int jobj = actualSequence[machineID2][pos2];
+
+    if(pos1 == 0){//pos1 is the first job and j is not the last job
+      APi_1ik1 = processingTime[machineID][jobi][jobi];
+      APi_1jk1 = processingTime[machineID][jobj][jobj];
+    }
+    else{
+      beforei = actualSequence[machineID][pos1-1];
+      APi_1ik1 = processingTime[machineID][beforei][jobi];
+      APi_1jk1 = processingTime[machineID][beforei][jobj];
+    }
+
+    if(pos1 != numberOfJobOnMachines[machineID] - 1){
+      int afteri = actualSequence[machineID][pos1+1];
+      APiiplusk1 = processingTime[machineID][jobi][afteri];
+      APjiplusk1 = processingTime[machineID][jobj][afteri];
+    }
+    else{
+      APiiplusk1 = 0;
+      APjiplusk1 = 0;
+    }
+
+    if(pos2 != 0){
+      beforej = actualSequence[machineID2][pos2-1];
+      APj_1ik2 = processingTime[machineID2][beforej][jobi];
+      APj_1jk2 = processingTime[machineID2][beforej][jobj];
+    }
+    else{//the last job
+      APj_1ik2 = processingTime[machineID2][jobi][jobi];
+      APj_1jk2 = processingTime[machineID2][jobj][jobj];
+    }
+
+    if(pos2 != numberOfJobOnMachines[machineID2] - 1){//whether pos2 is at the last job
+      int afterj = actualSequence[machineID2][pos2+1];
+      APijplusk2 = processingTime[machineID2][jobi][afterj];
+      APjjplusk2 = processingTime[machineID2][jobj][afterj];
+    }
+    else{//the last job
+      APijplusk2 = 0;
+      APjjplusk2 = 0;
+    }
+
+    int deltaK1 = (APi_1jk1 - APi_1ik1) + (APjiplusk1 - APiiplusk1);
+    int deltaK2 = (APj_1ik2 - APj_1jk2) + (APijplusk2 - APjjplusk2);
+    int Cmax = Math.max(finishTime[machineID][numberOfJobOnMachines[machineID]-1], finishTime[machineID2][numberOfJobOnMachines[machineID2]-1]);
+    int CmaxNew = Math.max(finishTime[machineID][numberOfJobOnMachines[machineID]-1] + deltaK1, finishTime[machineID2][numberOfJobOnMachines[machineID2]-1] +deltaK2);
+
+    //to test whether we should swap the two jobs
+    if(CmaxNew < Cmax){
+      swapJobs(machineID, machineID2, pos1, pos2);
+      isChanged = true;
+    }
+    //System.out.println("neighborhood search: jobBeforei, sequence[pos1], sequence[pos2], jobAfterj, difference "+jobBeforei+" "+sequence[pos1]+" "+sequence[pos2]+" "+jobAfterj+" "+difference);
+    return isChanged;
+  }
+
+  public boolean insertMachineSearch(int machineID, int machineID2, int pos1, int pos2){//pos1 is at machineID and pos2 is at machineID2
+    boolean isChanged = false;
+
+    int APi_1ik1, APi_1jk1, APjiplusk1, APiiplusk1, APj_1ik2, APj_1jk2, APijplusk2, APjjplusk2, APi_1iplusk1, APijk2;
+    int beforei, beforej;
+    int jobi = actualSequence[machineID][pos1];
+    int jobj = actualSequence[machineID2][pos2];
+
+    if(pos1 == 0){//pos1 is the first job and j is not the last job
+      APi_1ik1 = processingTime[machineID][jobi][jobi];
+      APi_1jk1 = processingTime[machineID][jobj][jobj];
+      APi_1iplusk1 = processingTime[machineID][jobi][jobi];
+    }
+    else{
+      beforei = actualSequence[machineID][pos1-1];
+      APi_1ik1 = processingTime[machineID][beforei][jobi];
+      APi_1jk1 = processingTime[machineID][beforei][jobj];
+      APi_1iplusk1 = processingTime[machineID][beforei][jobi];
+    }
+
+    if(pos1 != numberOfJobOnMachines[machineID] - 1){
+      int afteri = actualSequence[machineID][pos1+1];
+      APiiplusk1 = processingTime[machineID][jobi][afteri];
+      APjiplusk1 = processingTime[machineID][jobj][afteri];
+    }
+    else{
+      APiiplusk1 = 0;
+      APjiplusk1 = 0;
+    }
+
+    if(pos2 != 0){
+      beforej = actualSequence[machineID2][pos2-1];
+      APj_1ik2 = processingTime[machineID2][beforej][jobi];
+      APj_1jk2 = processingTime[machineID2][beforej][jobj];
+      APijk2 = processingTime[machineID2][jobi][jobj];
+    }
+    else{//the last job
+      APj_1ik2 = processingTime[machineID2][jobi][jobi];
+      APj_1jk2 = processingTime[machineID2][jobj][jobj];
+      APijk2 = processingTime[machineID2][jobi][jobi];
+    }
+
+    if(pos2 != numberOfJobOnMachines[machineID2] - 1){//whether pos2 is at the last job
+      int afterj = actualSequence[machineID2][pos2+1];
+      APijplusk2 = processingTime[machineID2][jobi][afterj];
+      APjjplusk2 = processingTime[machineID2][jobj][afterj];
+    }
+    else{//the last job
+      APijplusk2 = 0;
+      APjjplusk2 = 0;
+    }
+
+    int deltaK1 = (APi_1iplusk1 - APi_1ik1 - APiiplusk1);
+    int deltaK2 = (APj_1ik2 - APj_1jk2) + (APijk2);
+    int Cmax = Math.max(finishTime[machineID][numberOfJobOnMachines[machineID]-1], finishTime[machineID2][numberOfJobOnMachines[machineID2]-1]);
+    int CmaxNew = Math.max(finishTime[machineID][numberOfJobOnMachines[machineID]-1] + deltaK1, finishTime[machineID2][numberOfJobOnMachines[machineID2]-1] +deltaK2);
+
+    //to test whether we should swap the two jobs
+    if(CmaxNew < Cmax){
+      swapJobs(pos1);
+      isChanged = true;
+      insertJobs(machineID, machineID2, pos1, pos2);
+    }
+    //System.out.println("neighborhood search: jobBeforei, sequence[pos1], sequence[pos2], jobAfterj, difference "+jobBeforei+" "+sequence[pos1]+" "+sequence[pos2]+" "+jobAfterj+" "+difference);
+    return isChanged;
+  }
+
+  public void swapJobs(int machineID, int pos1, int pos2){
+    int temp = actualSequence[machineID][pos1];
+    actualSequence[machineID][pos1] = actualSequence[machineID][pos2];
+    actualSequence[machineID][pos2] = temp;
+  }
+
+  public void swapJobs(int machineID, int machineID2, int pos1, int pos2){
+    int temp = actualSequence[machineID][pos1];
+    actualSequence[machineID][pos1] = actualSequence[machineID2][pos2];
+    actualSequence[machineID2][pos2] = temp;
+  }
+
+  public void insertJobs(int machineID, int machineID2, int pos1, int pos2){
+    int temp = actualSequence[machineID][pos1];
+
+    for(int i = pos1 ; i < numberOfJobOnMachines[machineID] ; i ++ ){
+      actualSequence[machineID][pos1] = actualSequence[machineID][pos1+1];
+    }
+    numberOfJobOnMachines[machineID] -= 1;
+
+    for(int i = numberOfJobOnMachines[machineID2] + 1 ; i > pos2 ; i -- ){
+      actualSequence[machineID2][i] = actualSequence[machineID2][i-1];
+    }
+    actualSequence[machineID][pos2] = temp;
+    numberOfJobOnMachines[machineID2] += 1;
+  }
+
+
+  public int calcObjectives() {
+    int obj = 0;
+    System.out.println("numberOfMachine "+numberOfMachine);
+    for(int i = 0 ; i < numberOfMachine ; i ++ ){
+      if(obj <= finishTime[i][numberOfJobOnMachines[i]]){
+        obj = finishTime[i][numberOfJobOnMachines[i]];
+        System.out.println("M"+i+"="+finishTime[i][numberOfJobOnMachines[i]]+" "+numberOfJobOnMachines[i]);
+      }
+    }
+    return obj ;
+  }
+
+  public void swapJobs(int pos1, int pos2){
+    int temp = sequence[pos1];
+    sequence[pos1] = sequence[pos2];
+    sequence[pos2] = temp;
+  }
+
+  public void generateRandomSolution(){
+    for(int i = 0 ; i < numberOfJobs ; i ++ ){
+      int cutPoint = getCutPoint();
+      swapJobs(i, cutPoint);
+    }
+  }
+
+  private int getCutPoint(){
+    int cutPoint = (int)(Math.random()*sequence.length);
+    int counter = 0;
+    if(cutPoint == 0){
+      cutPoint = 1;
+    }
+    else if(cutPoint == sequence.length - 1){
+      cutPoint =  sequence.length - 2;
+    }
+    return cutPoint;
+  }
+
+  public static void main(String[] args) {
+    String type[] = new String[]{"Balanced", "DominantProcessing", "DominantSetupTime"};//"Balanced", "DominantProcessing", "DominantSetupTime"
+    int numberOfMachines[] = new int[]{2, 6, 12};//2, 6, 12
+    int numberOfJobs[] = new int[]{20};//20, 40, 60, 80, 100, 120
+    int processingTime[][];
+    int counter = 0;
+    int instanceReplications = 1;//15
+    int totalReplications = 1;
+
+    for(int m = 0 ; m < numberOfJobs.length ; m ++ ){
+      for(int n = 0 ; n < numberOfMachines.length ; n ++ ){
+        for(int p = 0 ; p < type.length ; p ++ ){
+          for(int k = 1 ; k <= instanceReplications ; k ++ ){//instance replications
+            readParallelMachineSetupData readParallelMachineSetupData1 = new readParallelMachineSetupData();
+            String fileName = "instances\\ParallelMachineSetup\\"+type[p]+"\\"+numberOfMachines[n]+"machines\\"+numberOfJobs[m]+"on"+numberOfMachines[n]+"Rp50Rs50_"+k+".dat";
+            readParallelMachineSetupData1.setData(type[p], fileName);
+            readParallelMachineSetupData1.getDataFromFile();
+            int processingSetupTime[][][] = readParallelMachineSetupData1.getProcessingSetupTime();
+
+            for(int replications = 0 ; replications < totalReplications ; replications ++ ){
+              parallelMachineSetup parallelMachineSetup1 = new parallelMachineSetup();
+              int sequence[] = new int[numberOfJobs[m]];
+              for(int r = 0 ; r < numberOfJobs[m] ; r ++ ){
+                sequence[r] = r;
+              }
+              System.out.println(fileName);
+              parallelMachineSetup1.setData(numberOfJobs[m], numberOfMachines[n], processingSetupTime, sequence);
+              parallelMachineSetup1.generateInitialSolution(1);//random
+              parallelMachineSetup1.startAlgorithm();
+
+            }//end replications.
+          }
+        }
+      }
+    }
+
+
+  }
+}

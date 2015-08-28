@@ -1,0 +1,13 @@
+instances\TSP\berlin52.txt	1.0	0.5	0.2	9063.118465839858	0.86
+instances\TSP\berlin52.txt	1.0	0.5	0.2	9815.627214842856	0.64
+instances\TSP\berlin52.txt	1.0	0.5	0.2	8809.005526372706	0.625
+instances\TSP\berlin52.txt	1.0	0.5	0.2	11062.418302816319	0.641
+instances\TSP\berlin52.txt	1.0	0.5	0.2	7821.924649100991	0.641
+instances\TSP\berlin52.txt	1.0	0.5	0.2	10773.611162154686	0.625
+instances\TSP\berlin52.txt	1.0	0.5	0.2	10985.68886427007	0.64
+instances\TSP\berlin52.txt	1.0	0.5	0.2	9378.84332112055	0.641
+instances\TSP\berlin52.txt	1.0	0.5	0.2	8676.960088156175	0.641
+instances\TSP\berlin52.txt	1.0	0.5	0.2	9337.735152841382	0.625
+instances\TSP\berlin52.txt	1.0	0.5	0.2	7194.4909390789535	0.64
+instances\TSP\berlin52.txt	1.0	0.5	0.2	9932.02800304092	0.625
+instances\TSP\berlin52.txt	1.0	0.5	0.2	9425.649977981217	0.641

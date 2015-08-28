@@ -1,0 +1,88 @@
+package homework.schedule;
+
+/**
+ * <p>Title: </p>
+ * <p>Description: The SAPT heuristic is to construct initial solutions for
+ * single machine schedule problem with setup considerations.</p>
+ * <p>Copyright: Copyright (c) 2006</p>
+ * <p>Company: </p>
+ * @author not attributable
+ * @version 1.0
+ */
+
+public class SAPT_SingleMachineSetup {
+  public SAPT_SingleMachineSetup() {
+  }
+
+  int numberOfJobs = 8;
+  double processingTime[][];
+  int B[];
+  int sequence[];
+  double obj;//earliness + taridness
+  //r is the middle job.
+  int r = 4;
+
+  public void setData(int numberOfJobs, double processingTime[][]){
+    this.numberOfJobs = numberOfJobs;
+    this.processingTime = processingTime;
+    sequence = new int[numberOfJobs];
+    B = new int[numberOfJobs];
+
+    for(int i = 0 ; i < numberOfJobs ; i ++ ){
+      sequence[i] = i;
+    }
+  }
+
+  public int[] getSmallestIndex(double matrix[][]){
+    int index[] = new int[2];
+    double minVal = Double.MAX_VALUE;
+    for(int i = 0 ; i < matrix.length ; i ++ ){
+      for(int j = 0 ; j < matrix[0].length ; j ++ ){
+        if(i != j && matrix[i][j] != -1 && matrix[i][j] < minVal){
+          minVal = matrix[i][j];
+          index[0] = i;
+          index[1] = j;
+        }
+      }
+    }
+
+    return index;
+  }
+
+  public void SAPT(){
+
+  }
+
+  public double findMiddlePosition(int _seq[]){
+    if(_seq.length % 2 == 0){
+      r = _seq.length / 2;
+    }
+    else{
+      r = (_seq.length+1) / 2;
+    }
+
+    if(r > 0){
+      r -= 1;
+    }
+    return r;
+  }
+
+
+  public double[][] dropColumn(int index, double matrix[][]){
+    for(int i = 0 ; i < matrix.length ; i ++ ){
+      matrix[i][index] = -1;
+    }
+    return matrix;
+  }
+
+  public double[][] dropRow(int index, double matrix[][]){
+    for(int i = 0 ; i < matrix.length ; i ++ ){
+      matrix[index][i] = -1;
+    }
+    return matrix;
+  }
+
+
+
+
+}

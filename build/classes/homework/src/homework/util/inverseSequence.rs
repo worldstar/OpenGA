@@ -1,0 +1,1 @@
+homework.util.inverseSequence

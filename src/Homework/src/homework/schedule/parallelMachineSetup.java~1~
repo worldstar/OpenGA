@@ -1,0 +1,171 @@
+package homework.schedule;
+import homework.schedule.data.readParallelMachineSetupData;
+import homework.util.algorithm.*;
+/**
+ * <p>Title: </p>
+ * <p>Description: The dominance properties for Parallel Machine setup.</p>
+ * <p>Copyright: Copyright (c) 2007</p>
+ * <p>Company: </p>
+ * @author not attributable
+ * @version 1.0
+ */
+
+public class parallelMachineSetup extends singleMachine{
+  public parallelMachineSetup() {
+  }
+
+  int numberOfJobs = 5;
+  int numberOfMachine = 2;
+  int dueDate[];
+  int processingTime[][][];
+  int finishTime[];
+  int sequence[];
+  int preSequence[];
+  int actualSequence[][];
+  int numberOfJobOnMachines[];
+  boolean blockIsChanged = false;
+  boolean situation8Occured = false;
+  int obj;
+  int numberOfIterations = 1;
+
+  public void setData(int numberOfJobs, int dueDate[], int processingTime[][][], int sequence[]){
+    this.numberOfJobs = numberOfJobs;
+    this.dueDate = dueDate;
+    this.processingTime = processingTime;
+    this.sequence = sequence;
+    finishTime = new int[numberOfJobs];
+    preSequence = new int[numberOfJobs];
+  }
+
+  public void setIterations(int numberOfIterations){
+    this.numberOfIterations = numberOfIterations;
+  }
+
+  public void generateInitialSolution(int choice){
+    generateRandomSolution();
+  }
+
+  public void startAlgorithm(){
+    if(numberOfIterations == 1){
+      numberOfIterations = numberOfJobs*numberOfJobs;
+    }
+    else{
+      numberOfIterations = (int)(numberOfJobs*Math.log(numberOfJobs));
+    }
+
+    setPreviousSolution(sequence);   //to set the initial solution as the previous soln.
+    int counter = 0;
+
+    do{
+      counter ++;
+      calcFinishTime(sequence);      //the finish time of the schedule
+      for(int pos1 = 0 ; pos1 < 2 ; pos1 ++ ){
+        for(int i = pos1 ; i < numberOfJobs - 1 ; i ++ ){
+          getTwoJobs(sequence[i], sequence[i+1], i);
+          i += 1;
+        }
+      }
+
+      //if the solution is still the same, it means the algorithm won't change the sequence anymore.
+      if(isTheSame(sequence, preSequence)){
+        break;
+      }
+      else{
+        setPreviousSolution(sequence);
+      }
+    }
+    while(counter < numberOfIterations);//the other stopping criterion is the number of iterations.Math.log(numberOfJobs)
+    calcObj();
+  }
+
+  public void assignJobOntoMachines(){
+    //initialization
+    int arrayLength = numberOfJobs/numberOfMachine;
+    if(numberOfJobs % numberOfMachine != 0){
+      arrayLength += 1;
+    }
+    actualSequence = new int[numberOfMachine][arrayLength];
+
+    int length = numberOfJobs;
+    //to use getMin to find out the machine which has least processing time
+    getMin getMin1 = new getMin();
+    getMax getMax1 = new getMax();
+    int machineTime[] = new int[numberOfMachine];
+    numberOfJobOnMachines = new int[numberOfMachine];
+
+    //start to assign others job.
+    for(int i = 0 ; i < length ; i ++ ){
+      //Johnson's rule, find the machine whose current total processing time is minimum.
+      int minProcessingTimeMachine = getMin1.getDataIndex(machineTime);
+      //assign the job i to the machine minProcessingTimeMachine
+      int index = sequence[i];
+      if(i < numberOfMachine){//the first job of each machine
+        machineTime[minProcessingTimeMachine] += processingTime[minProcessingTimeMachine][index][index];
+        actualSequence[minProcessingTimeMachine][0] = index;
+      }
+      else{
+        int pos = numberOfJobOnMachines[minProcessingTimeMachine] + 1;
+        //System.out.println(index+" "+minProcessingTimeMachine+" "+processingTime[minProcessingTimeMachine][prevJobIndex][index]);
+      }
+    }
+
+  }
+
+  public void calcObjectives() {
+    int length = numberOfJobs;
+    //to use getMin to find out the machine which has least processing time
+    getMin getMin1 = new getMin();
+    getMax getMax1 = new getMax();
+    int machineTime[] = new int[numberOfMachine];
+    int prevJobIndexArray[] = new int[numberOfMachine];
+
+    //start to assign others job.
+    for(int i = 0 ; i < length ; i ++ ){
+      //Johnson's rule, find the machine whose current total processing time is minimum.
+      int minProcessingTimeMachine = getMin1.getDataIndex(machineTime);
+      //assign the job i to the machine minProcessingTimeMachine
+      int index = sequence[i];
+      if(i < numberOfMachine){//the first job of each machine
+        machineTime[minProcessingTimeMachine] += processingTime[minProcessingTimeMachine][index][index];
+        prevJobIndexArray[minProcessingTimeMachine] = index;
+        //System.out.println(index+" "+minProcessingTimeMachine+" "+processingTime[minProcessingTimeMachine][index][index]);
+      }
+      else{
+        int prevJobIndex = prevJobIndexArray[minProcessingTimeMachine];
+        machineTime[minProcessingTimeMachine] += processingTime[minProcessingTimeMachine][prevJobIndex][index];
+        prevJobIndexArray[minProcessingTimeMachine] = index;
+        //System.out.println(index+" "+minProcessingTimeMachine+" "+processingTime[minProcessingTimeMachine][prevJobIndex][index]);
+      }
+    }
+
+    //the maximum process time is the makespan.
+    obj = getMax1.setData(machineTime);
+  }
+
+
+
+  public static void main(String[] args) {
+    String type[] = new String[]{"Balanced", "DominantProcessing", "DominantSetupTime"};
+    int numberOfMachines[] = new int[]{2, 6, 12};
+    int numberOfJobs[] = new int[]{10};
+    int processingTime[][];
+
+    for(int replications = 0 ; replications < 30 ; replications ++ ){
+      for(int m = 0 ; m < numberOfJobs.length ; m ++ ){
+        for(int n = 0 ; n < numberOfMachines.length ; n ++ ){
+          for(int p = 0 ; p < type.length ; p ++ ){
+            for(int k = 1 ; k < 2 ; k ++ ){//instance replications
+              parallelMachineSetup parallelMachineSetup1 = new parallelMachineSetup();
+              readParallelMachineSetupData readParallelMachineSetupData1 = new readParallelMachineSetupData();
+              String fileName = numberOfJobs[m]+"on"+numberOfMachines[n]+"Rp50Rs50_"+k+".dat";
+              readParallelMachineSetupData1.setData(type[p], fileName);
+              readParallelMachineSetupData1.getDataFromFile();
+              int processingSetupTime[][][] = readParallelMachineSetupData1.getProcessingSetupTime();
+
+            }
+          }
+        }
+      }
+    }//end replications.
+  }
+}
