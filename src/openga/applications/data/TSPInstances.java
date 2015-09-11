@@ -19,7 +19,7 @@ public class TSPInstances {
    * @return
    */
   String fileName, message = "";
-  String Instances[] = new String[]{"instances\\TSP\\berlin10.txt","instances\\TSP\\berlin52.txt", "instances\\TSP\\eli76.txt", 
+  String Instances[] = new String[]{"instances/TSP/berlin10.txt","instances\\TSP\\berlin52.txt", "instances/TSP/eli76.txt", 
   "instances\\TSP\\ch130.txt", "instances\\TSP\\kroa150.txt", "instances\\TSP\\kroa200.txt", "instances\\TSP\\rd400.txt"};
   double coordinates[][];
   double originalPoint[];
