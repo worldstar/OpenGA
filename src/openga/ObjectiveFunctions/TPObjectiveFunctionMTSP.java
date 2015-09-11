@@ -14,12 +14,7 @@ public class TPObjectiveFunctionMTSP extends ObjectiveFunctionMTSP{
     
     int numberOfSalesmen;
     
-  public void setTSPData(double originalPoint[], double coordinates[][], int numberOfSalesmen) {
-    this.numberOfSalesmen = numberOfSalesmen;
-    this.length = population.getLengthOfChromosome();
-    this.originalPoint = originalPoint;
-    this.coordinates = coordinates;
-  }
+
   
   public void calcObjective() {
     double obj;
@@ -41,4 +36,21 @@ public class TPObjectiveFunctionMTSP extends ObjectiveFunctionMTSP{
     return TPforDistanceCalculation1.getObjectiveValue();
   }
   
+  @Override
+  public void setTSPData(double originalPoint[], double coordinates[][], int numberOfSalesmen) {
+    this.numberOfSalesmen = numberOfSalesmen;
+    this.originalPoint = originalPoint;
+    this.coordinates = coordinates;
+    openga.ObjectiveFunctions.util.generateMatrix_EuclideanDist generateMatrix_EuclideanDist1
+        = new openga.ObjectiveFunctions.util.generateMatrix_EuclideanDist();
+    generateMatrix_EuclideanDist1.setData(coordinates);
+    generateMatrix_EuclideanDist1.setDistanceMatrixData();
+    distanceMatrix = generateMatrix_EuclideanDist1.getMatrix();
+
+    openga.ObjectiveFunctions.util.generateMatrix_EuclideanDist2 generateMatrix_EuclideanDist21
+        = new openga.ObjectiveFunctions.util.generateMatrix_EuclideanDist2();
+    generateMatrix_EuclideanDist21.setData(originalPoint, coordinates);
+    generateMatrix_EuclideanDist21.setDistanceMatrixData();
+    distanceToOriginal = generateMatrix_EuclideanDist21.getMatrix2();
+  }
 }

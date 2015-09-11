@@ -11,7 +11,7 @@ package openga.operator.mutation;
  */
 public class swapMutationTwoPart extends swapMutation implements MutationMTSPI{
     
-    public int numberOfSalesmen;
+    private int numberOfSalesmen;
     
     public void startMutation(){
         for(int i = 0 ; i < popSize ; i ++ ){
@@ -49,7 +49,7 @@ public class swapMutationTwoPart extends swapMutation implements MutationMTSPI{
     }
 
     @Override
-    public void setNumberOfSalesmen(int numberOfSalesmen) {
+    public void setNumberofSalesmen(int numberOfSalesmen) {
         this.numberOfSalesmen = numberOfSalesmen;
     }
 }

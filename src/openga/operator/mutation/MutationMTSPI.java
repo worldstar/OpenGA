@@ -9,6 +9,6 @@ package openga.operator.mutation;
  *
  * @author user
  */
-interface MutationMTSPI {
-    public void setNumberOfSalesmen(int numberOfSalesmen);
+public interface MutationMTSPI extends MutationI{
+    public void setNumberofSalesmen(int numberOfSalesmen);
 }

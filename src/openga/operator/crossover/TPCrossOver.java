@@ -18,7 +18,7 @@ import java.util.Random;
 public class TPCrossOver extends twoPointCrossover2 implements CrossoverMTSPI{
     private int[] Mom = {9,7,5,6,2,8,4,3,1,5,2,2};    
     private int[] Dad = {8,2,3,7,5,1,9,4,6,3,4,2};
-    private int numberofSalesmen = 3;
+    private int numberofSalesmen;
 
   //start to crossover
   public void startCrossover(){
