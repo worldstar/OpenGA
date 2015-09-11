@@ -75,7 +75,7 @@ double distanceMatrix[][];
     Population = new population();
     Selection  = new binaryTournament();
     Crossover  = new TPCrossOver();
-    Mutation   = new swapMutation();//MTSPMutation
+    Mutation   = new swapMutationTwoPart();//TwoPartMTSPMutation
     ObjectiveFunction = new ObjectiveFunctionTSPI[numberOfObjs];
     ObjectiveFunction[0] = new TPObjectiveFunctionMTSP();//the first objective
     Fitness    = new singleObjectiveFitness();//singleObjectiveFitness singleObjectiveFitnessByNormalize

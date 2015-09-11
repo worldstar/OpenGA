@@ -14,12 +14,11 @@ public class TPObjectiveFunctionMTSP extends ObjectiveFunctionMTSP{
     
     int numberOfSalesmen;
     
-  public void setData(populationI population, int numberOfSalesmen, int indexOfObjective) {
-    this.population = population;
+  public void setTSPData(double originalPoint[], double coordinates[][], int numberOfSalesmen) {
     this.numberOfSalesmen = numberOfSalesmen;
-    //this.PartIIChromosomes = PartIIChromosomes;
     this.length = population.getLengthOfChromosome();
-    this.indexOfObjective = indexOfObjective;
+    this.originalPoint = originalPoint;
+    this.coordinates = coordinates;
   }
   
   public void calcObjective() {
