@@ -48,10 +48,10 @@ public class TSPInstances {
         String message = "", eachLine = "";
 
         while ((eachLine = br.readLine()) != null)   {
-          message += eachLine;
+          message += eachLine + " ";
         }
 
-        //System.out.println(message);
+        System.out.println(message);
         StringTokenizer tokens = new StringTokenizer(message);
         //set the coordinates of depot.
         //int length = 0;
@@ -62,12 +62,12 @@ public class TSPInstances {
         coordinates = new double[size][2];
 
         //to assign the original point
-        int cityNum = Integer.parseInt(tokens.nextToken());
-        originalPoint[0] = Double.parseDouble(tokens.nextToken());
-        originalPoint[1] = Double.parseDouble(tokens.nextToken());
+//        int cityNum = Integer.parseInt(tokens.nextToken());
+//        originalPoint[0] = Double.parseDouble(tokens.nextToken());
+//        originalPoint[1] = Double.parseDouble(tokens.nextToken());
 
         for(int i = 0 ; i < size ; i ++ ){
-          cityNum = Integer.parseInt(tokens.nextToken());
+          int cityNum = Integer.parseInt(tokens.nextToken());
           coordinates[i][0] = Double.parseDouble(tokens.nextToken());
           coordinates[i][1] = Double.parseDouble(tokens.nextToken());
         }
