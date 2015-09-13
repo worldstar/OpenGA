@@ -72,7 +72,7 @@ double distanceMatrix[][];
  }
 
   public void initiateVars(){   
-    GaMain     = new singleThreadGA();//singleThreadGAwithMultipleCrossover singleThreadGA adaptiveGA
+    GaMain     = new singleThreadGAwithInitialPop();//singleThreadGAwithMultipleCrossover singleThreadGA adaptiveGA
     Population = new population();
     Selection  = new binaryTournament();
     Crossover  = new TPCrossOver();
