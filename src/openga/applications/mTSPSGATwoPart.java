@@ -90,6 +90,13 @@ double distanceMatrix[][];
       System.exit(0);
     }
     
+    Population.setGenotypeSizeAndLength(encodeType, DEFAULT_PopSize, length, numberOfObjs);
+    Population.createNewPop();
+    
+    for(int i = 0 ; i < DEFAULT_PopSize ; i ++){
+      Population.getSingleChromosome(i).generateTwoPartPop(length, numberOfSalesmen);
+    }
+    
     Crossover.setNumberofSalesmen(numberOfSalesmen);
     Mutation.setNumberofSalesmen(numberOfSalesmen);
     
