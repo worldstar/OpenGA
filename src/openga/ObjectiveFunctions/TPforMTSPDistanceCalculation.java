@@ -13,12 +13,13 @@ public class TPforMTSPDistanceCalculation extends forMTSPDistanceCalculation{
     
       int numberOfSalesmen;
   
-    public void setData(double distanceToOriginal[], double distanceMatrix[][], chromosome chromosome1, int numberOfSalesmen){
+    public void setData(double distanceToOriginal[], double distanceMatrix[][], 
+            chromosome chromosome1, int numberOfSalesmen){
       this.distanceToOriginal = distanceToOriginal;
       this.distanceMatrix = distanceMatrix;
       this.chromosome1 = chromosome1;
       this.numberOfSalesmen = numberOfSalesmen;
-      length = distanceMatrix.length;
+      length = chromosome1.getLength();
     }
    
     
@@ -26,14 +27,22 @@ public class TPforMTSPDistanceCalculation extends forMTSPDistanceCalculation{
       //to get the distance of each salesmen
       int currentPosition = 0;//To record the position of the Part I chromosome
       
+      openga.util.printClass p1 = new openga.util.printClass();
+      p1.printMatrix("C1", chromosome1.genes);
+      
+      
       for(int k = 0 ; k < numberOfSalesmen ; k ++){
         //from the original point to the first position.
         objVal += distanceToOriginal[chromosome1.genes[currentPosition]];
         
         int numberOfCities = length - numberOfSalesmen;
-        int stopPosition = numberOfCities + currentPosition - 1;
+        int stopPosition = numberOfCities + currentPosition - 1;     
 
-        for(int i = currentPosition ; i <= stopPosition ; i ++ ){
+        System.out.println("\nlength "+length+" numberOfSalesmen "+numberOfSalesmen
+                +" numberOfCities "+numberOfCities+" stopPosition "+stopPosition
+                +" currentPosition "+currentPosition);        
+
+        for(int i = currentPosition ; i < stopPosition ; i ++ ){
           if(i < stopPosition){
             int index1 = chromosome1.genes[i];
             int index2 = chromosome1.genes[i+1];

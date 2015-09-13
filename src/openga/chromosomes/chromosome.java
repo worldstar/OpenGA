@@ -110,6 +110,7 @@ public class chromosome {
     /**
    * The sequencial coded.
    * @param numberofGenes
+   * @param numberOfSalesmen
    * @version 1.1
    */
   public final void generateTwoPartPop(int numberofGenes, int numberOfSalesmen){
@@ -128,19 +129,22 @@ public class chromosome {
       int temp2 = genes[indexTemp];
       genes[indexTemp] = temp1;
       genes[i] = temp2;
-    }
+    }        
     
     //secend part
-    int leftCities = numberofCities - numberOfSalesmen;
-    for(int i = 0; i < numberOfSalesmen-1; i++){
-        genes[i+numberofCities]++;
-        if(leftCities != 0){
-            int assignCities = (int)(leftCities*Math.random());
-            genes[i+numberofCities] += assignCities;
-            leftCities -= assignCities;
-        }
+    int leftCities = numberofCities;
+    for(int i = numberofCities; i < length ; i++){
+        genes[i] = 1;
+        leftCities --;
+    }         
+    
+    for(int i = numberofCities; i < length - 1 ; i++){        
+        int assignCities = (int)(leftCities*Math.random());
+        genes[i] += assignCities;
+        leftCities -= assignCities;
     }
-    genes[numberOfSalesmen-1] = leftCities;    
+    
+    genes[length - 1] += leftCities;          
   }  
 
   /**

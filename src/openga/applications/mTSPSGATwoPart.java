@@ -88,13 +88,13 @@ double distanceMatrix[][];
       System.out.println("The number of salesmen is "+numberOfSalesmen+", which should be greater than the number of visiting locations.");
       System.out.println("The program will exit.");
       System.exit(0);
-    }
+    }    
     
-    Population.setGenotypeSizeAndLength(encodeType, DEFAULT_PopSize, length, numberOfObjs);
+    Population.setGenotypeSizeAndLength(encodeType, DEFAULT_PopSize, length + numberOfSalesmen, numberOfObjs);
     Population.createNewPop();
     
     for(int i = 0 ; i < DEFAULT_PopSize ; i ++){
-      Population.getSingleChromosome(i).generateTwoPartPop(length, numberOfSalesmen);
+      Population.getSingleChromosome(i).generateTwoPartPop(length + numberOfSalesmen, numberOfSalesmen);
     }
     
     Crossover.setNumberofSalesmen(numberOfSalesmen);
@@ -135,7 +135,7 @@ double distanceMatrix[][];
 
     String implementResult = instanceName+"\t"+DEFAULT_crossoverRate+"\t"+DEFAULT_mutationRate+"\t"+numberOfSalesmen+"\t"+GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
         +"\t"+timeClock1.getExecutionTime()/1000.0+"\n";
-    writeFile("mTSPSGA20150727Full", implementResult);
+    writeFile("mTSPSGA20150914Full", implementResult);
     System.out.print(implementResult);
     //System.out.print("\n");
     //System.out.print(GaMain.getArchieve().getSingleChromosome(0).toString1());
@@ -143,7 +143,7 @@ double distanceMatrix[][];
   }
 
   public static void main(String[] args) {
-    System.out.println("mTSPSGA20150727Full");
+    System.out.println("mTSPSGA20150914Full");
     double crossoverRate[], mutationRate[];
     crossoverRate = new double[]{1, 0.5};//1, 0.5 [0.5]
     mutationRate  = new double[]{0.1, 0.5};//0.1, 0.5 [0.1]
@@ -155,7 +155,7 @@ double distanceMatrix[][];
     int repeat = 1;
 
     //to test different kinds of combinations.
-      for(int i = 0 ; i <= numInstances ; i ++ ){//numInstances
+      for(int i = 1 ; i <= numInstances ; i ++ ){//numInstances
         //initiate scheduling data, we get the data from a program.
         openga.applications.data.TSPInstances TSPInstances1 = new openga.applications.data.TSPInstances();
         TSPInstances1.setData(TSPInstances1.getFileName(i));

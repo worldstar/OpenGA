@@ -51,7 +51,7 @@ public class TSPInstances {
           message += eachLine + " ";
         }
 
-        System.out.println(message);
+        //System.out.println(message);
         StringTokenizer tokens = new StringTokenizer(message);
         //set the coordinates of depot.
         //int length = 0;
