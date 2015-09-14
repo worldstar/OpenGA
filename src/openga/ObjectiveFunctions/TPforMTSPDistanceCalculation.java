@@ -30,17 +30,19 @@ public class TPforMTSPDistanceCalculation extends forMTSPDistanceCalculation{
       openga.util.printClass p1 = new openga.util.printClass();
       p1.printMatrix("C1", chromosome1.genes);
       
+      int numberOfCities = length - numberOfSalesmen;
+      int stopPosition = chromosome1.genes[numberOfCities];//numberOfCities + currentPosition - 1; 
       
       for(int k = 0 ; k < numberOfSalesmen ; k ++){
         //from the original point to the first position.
         objVal += distanceToOriginal[chromosome1.genes[currentPosition]];
-        
-        int numberOfCities = length - numberOfSalesmen;
-        int stopPosition = numberOfCities + currentPosition - 1;     
 
-        System.out.println("\nlength "+length+" numberOfSalesmen "+numberOfSalesmen
-                +" numberOfCities "+numberOfCities+" stopPosition "+stopPosition
-                +" currentPosition "+currentPosition);        
+//        System.out.println("\n"
+//                +"length "+length
+//                +" numberOfSalesmen "+numberOfSalesmen
+//                +" numberOfCities "+numberOfCities
+//                +" stopPosition "+stopPosition
+//                +" currentPosition "+currentPosition);        
 
         for(int i = currentPosition ; i < stopPosition ; i ++ ){
           if(i < stopPosition){
@@ -53,7 +55,10 @@ public class TPforMTSPDistanceCalculation extends forMTSPDistanceCalculation{
             objVal += distanceToOriginal[chromosome1.genes[currentPosition]];
           }
           currentPosition ++;
+//          System.out.println(i);
         }
+        numberOfCities++;
+        stopPosition += chromosome1.genes[numberOfCities];
       }
     }
 }
