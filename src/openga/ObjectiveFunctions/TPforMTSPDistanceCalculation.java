@@ -37,12 +37,12 @@ public class TPforMTSPDistanceCalculation extends forMTSPDistanceCalculation{
         //from the original point to the first position.
         objVal += distanceToOriginal[chromosome1.genes[currentPosition]];
 
-//        System.out.println("\n"
+        System.out.println("\n"
 //                +"length "+length
 //                +" numberOfSalesmen "+numberOfSalesmen
-//                +" numberOfCities "+numberOfCities
-//                +" stopPosition "+stopPosition
-//                +" currentPosition "+currentPosition);        
+                +" numberOfCities "+numberOfCities
+                +" stopPosition "+stopPosition
+                +" currentPosition "+currentPosition);        
 
         for(int i = currentPosition ; i < stopPosition ; i ++ ){
           if(i < stopPosition){
@@ -57,8 +57,8 @@ public class TPforMTSPDistanceCalculation extends forMTSPDistanceCalculation{
           currentPosition ++;
 //          System.out.println(i);
         }
-        numberOfCities++;
-        stopPosition += chromosome1.genes[numberOfCities];
+        stopPosition += (numberOfCities - currentPosition);
       }
+      
     }
 }
