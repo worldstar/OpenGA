@@ -16,13 +16,10 @@ import java.util.Random;
  * @author UlyssesZhang
  */
 public class TPCrossOver extends twoPointCrossover2 implements CrossoverMTSPI{
-    private int[] Mom = {9,7,5,6,2,8,4,3,1,5,2,2};    
-    private int[] Dad = {8,2,3,7,5,1,9,4,6,3,4,2};
     private int numberofSalesmen;
 
   //start to crossover
   public void startCrossover(){
-      
     for(int i = 0 ; i < popSize ; i ++ ){
        //test the probability is larger than crossoverRate.
        if(Math.random() <= crossoverRate){
@@ -30,134 +27,100 @@ public class TPCrossOver extends twoPointCrossover2 implements CrossoverMTSPI{
          int index2 = getCrossoverChromosome(i);
          int[] Mom = originalPop.getSingleChromosome(i).genes;
          int[] Dad = originalPop.getSingleChromosome(index2).genes;
-         int[] Result = CrossOver(Mom, Dad, numberofSalesmen);        
+         int[] Result = CrossOver(Mom, Dad);        
          newPop.getSingleChromosome(i).genes = Result;
        }
     }
   }
+  
+  public int[] CrossOver(int[]mom, int[]dad) {
+    List<Integer> child = new ArrayList<>();
+    int numberofCities = mom.length - numberofSalesmen;
     
-    public int[] CrossOver(int[]Mom, int[]Dad, int NumofSalesman) {
-        //Initialization
-        int[] Child = new int[Mom.length];
-        int[] Cities = new int[Mom.length-NumofSalesman];
-        List<Integer> MomGenePool = new ArrayList<>();
-        List<Integer> DadGenePool = new ArrayList<>();
-        List<Integer> TmpGenePool = new ArrayList<>();
-        List<Integer> GeneSegment = new ArrayList<>();
-        int[] MomAssignedCities = new int[NumofSalesman];
-        int[] DadAssignedCities = new int[NumofSalesman];
-        int[] MomSalesGene = new int[NumofSalesman];
-        int[] DadSalesGene = new int[NumofSalesman];
-        int[] CP = new int[NumofSalesman*2];
-        
-        for(int i = 0; i < Cities.length; i++) {
-            Cities[i] = Mom[i];
+    int cutPoint1,cutPoint2;
+    List<Integer> momGenepool = new ArrayList<>();
+    List<Integer> tmpGenepool = new ArrayList<>();
+    List<Integer> dadGenepool = new ArrayList<>();
+    int[] momGenepoolofSalesmen = new int[numberofSalesmen];
+    int[] dadGenepoolofSalesmen = new int[numberofSalesmen];
+    
+    int stopPosition = mom[numberofCities];
+    int currentPosition = 0;
+    
+    for(int i = 0; i < numberofSalesmen; i++){ 
+      System.out.println(" stopPosition"+stopPosition+" currentPosition"+currentPosition);
+      //set cutpoint
+      if((stopPosition - currentPosition) == 1){
+        cutPoint1 = 0;
+        cutPoint2 = 1;
+      } else{
+        do{
+          cutPoint1 = new Random().nextInt(stopPosition-currentPosition)+currentPosition;
+          cutPoint2 = new Random().nextInt(stopPosition-currentPosition)+currentPosition;
+        } while(cutPoint1 == cutPoint2); 
+      }
+      if(cutPoint1 > cutPoint2){
+          int tmp = cutPoint1;
+          cutPoint1 = cutPoint2;
+          cutPoint2 = tmp;
+      }     
+//      System.out.println(""+" cutPoint1 "+cutPoint1 +" cutPoint2 "+cutPoint2);
+      //choose gene.
+      for(int j = currentPosition; j < stopPosition; j++){
+        if(cutPoint1 <= j && j < cutPoint2) {
+          momGenepool.add(mom[j]);
+          momGenepoolofSalesmen[i]++;
+//          System.out.println(" momGenepool "+mom[j]);
+        } else{
+          tmpGenepool.add(mom[j]);
+//          System.out.println(" tmpGenepool "+mom[j]);
         }
-        for(int i = 0; i < MomAssignedCities.length; i++) {
-            MomAssignedCities[i] = Mom[i+Cities.length];
-        }
-        for(int i = 0; i < DadAssignedCities.length; i++) {
-            DadAssignedCities[i] = Dad[i+Cities.length];
-        }
-        
-        //set Cut Point
-            do{
-                CP[0] = new Random().nextInt(MomAssignedCities[0]+1);
-                CP[1] = new Random().nextInt(MomAssignedCities[0]+1);
-            } while(CP[0] == CP[1]);
-            if(CP[0] > CP[1]){
-                int tmp = CP[0];
-                CP[0] = CP[1];
-                CP[1] = tmp;
-            }
-
-            do{
-                CP[2] = new Random().nextInt(MomAssignedCities[1]+1)+MomAssignedCities[0];
-                CP[3] = new Random().nextInt(MomAssignedCities[1]+1)+MomAssignedCities[0];
-            } while(CP[2] == CP[3]);
-            if(CP[2] > CP[3]){
-                int tmp = CP[2];
-                CP[2] = CP[3];
-                CP[3] = tmp;
-            }
-
-            do{
-                CP[4] = new Random().nextInt(MomAssignedCities[2]+1)+MomAssignedCities[0]+MomAssignedCities[1];
-                CP[5] = new Random().nextInt(MomAssignedCities[2]+1)+MomAssignedCities[0]+MomAssignedCities[1];
-            } while(CP[4] == CP[5]);
-            if(CP[4] > CP[5]){
-                int tmp = CP[4];
-                CP[4] = CP[5];
-                CP[5] = tmp;
-            } 
-
-//        int[] Cut1 = {1,5,8};
-//        int[] Cut2 = {3,7,9};
-        int[] Cut1 = {CP[0], CP[2], CP[4]};
-        int[] Cut2 = {CP[1], CP[3], CP[5]};
-        
-        //MomGenePool
-        int p = 0;
-        for(int i = 0; i < MomAssignedCities.length; i++) {
-            for(int j = 0; j < MomAssignedCities[i]; j++) {
-                if(Cut1[i] <= p && p < Cut2[i]) {
-                    MomGenePool.add(Mom[p]);
-                    MomSalesGene[i]++;
-                    //System.out.print(Mom[k]+" ");
-                    p++;
-                } else {
-                    TmpGenePool.add(Mom[p]);
-                    //System.out.println(Mom[k]+" ");
-                    p++;
-                }
-            }
-        }
-        
-        //DadGenePool
-        p = 0;
-        for(int i = 0; i < DadAssignedCities.length; i++) {
-            for(int j = 0; j < DadAssignedCities[i]; j++) {
-                for(int k = 0; k < TmpGenePool.size(); k++) {
-                    if(TmpGenePool.get(k) == Dad[p]) {
-                        DadGenePool.add(TmpGenePool.get(k));
-                        DadSalesGene[i]++;
-                    }
-                }
-                p++;
-            }
-        }
-        
-        //GeneSegment
-        for(int i = 0; i < MomAssignedCities.length; i++) {
-            GeneSegment.add(MomSalesGene[i]);
-            GeneSegment.add(DadSalesGene[i]);
-        }
-
-        //Child Cities
-        p = 0;
-        int q = 0;
-        int r = 0;
-        for(int i = 0; i < GeneSegment.size(); i++) {
-            for(int j = 0; j < GeneSegment.get(i); j++) {
-                if(i % 2 == 0) {
-                    Child[p] = MomGenePool.get(q);
-                    p++;
-                    q++;
-                } else {
-                    Child[p] = DadGenePool.get(r);
-                    p++;
-                    r++;
-                }
-            }
-        }
-        
-        //Child Sales
-        for(int i = 0; i < MomSalesGene.length; i++) {
-            Child[i+Cities.length] = (MomSalesGene[i] + DadSalesGene[i]);
-        }
-        return Child;
+//        currentPosition++;
+      }
+      currentPosition = stopPosition;
+      stopPosition += (numberofCities - currentPosition);
     }
-
+    //sort dad gene segment.
+    stopPosition = dad[numberofCities];
+    currentPosition = 0;
+    for(int i = 0; i < numberofSalesmen; i++){
+      for(int j = currentPosition; j < stopPosition; j++){
+        for(int k = 0; k < tmpGenepool.size(); k++){
+          if(dad[j] == tmpGenepool.get(k)) {
+            dadGenepool.add(tmpGenepool.get(k));
+            dadGenepoolofSalesmen[i]++;
+//            System.out.println(" dadGenepool "+dad[j]);
+          }
+        }
+      }
+      currentPosition = stopPosition;
+      stopPosition += (numberofCities - currentPosition);
+    }
+    //marge gene to child.
+    int p1 = 0;
+    int p2 = 0;
+    for(int i = 0; i < numberofSalesmen; i++){
+      for(int j = 0; j < momGenepoolofSalesmen[i]; j++) {
+        child.add(momGenepool.get(p1));
+        p1++;
+      }
+      for(int j = 0; j < dadGenepoolofSalesmen[i]; j++) {
+        child.add(dadGenepool.get(p2));
+        p2++;
+      }
+    }
+    for(int i = 0; i < numberofSalesmen; i++){
+      child.add(momGenepoolofSalesmen[i]+dadGenepoolofSalesmen[i]);
+    }
+    //assign child to result then return.
+    int[] result = new int[child.size()];
+    for(int i = 0; i < child.size(); i++){
+      result[i] = child.get(i);
+    }
+//    System.out.println(" fin ");
+    return result;
+  }
+  
     @Override
     public void setNumberofSalesmen(int numberofSalesmen) {
         this.numberofSalesmen = numberofSalesmen;

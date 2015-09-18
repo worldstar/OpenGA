@@ -22,7 +22,6 @@ public class TPforMTSPDistanceCalculation extends forMTSPDistanceCalculation{
       length = chromosome1.getLength();
     }
    
-    
     public void calcObjective(){
       //to get the distance of each salesmen
       int currentPosition = 0;//To record the position of the Part I chromosome
@@ -35,14 +34,7 @@ public class TPforMTSPDistanceCalculation extends forMTSPDistanceCalculation{
       
       for(int k = 0 ; k < numberOfSalesmen ; k ++){
         //from the original point to the first position.
-        objVal += distanceToOriginal[chromosome1.genes[currentPosition]];
-
-        System.out.println("\n"
-//                +"length "+length
-//                +" numberOfSalesmen "+numberOfSalesmen
-                +" numberOfCities "+numberOfCities
-                +" stopPosition "+stopPosition
-                +" currentPosition "+currentPosition);        
+        objVal += distanceToOriginal[chromosome1.genes[currentPosition]];       
 
         for(int i = currentPosition ; i < stopPosition ; i ++ ){
           if(i < stopPosition){
