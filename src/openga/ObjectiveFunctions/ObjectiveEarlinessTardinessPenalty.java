@@ -10,7 +10,7 @@ import openga.util.algorithm.*;
  * @version 1.0
  */
 
-public class ObjectiveEarlinessTardinessPenalty implements ObjectiveFunctionScheduleI, alphaBetaI{
+public class ObjectiveEarlinessTardinessPenalty implements ObjectiveFunctionMatrixPTimeScheduleI, alphaBetaI{
   public ObjectiveEarlinessTardinessPenalty() {
   }
   populationI originalPop;
@@ -110,6 +110,16 @@ public class ObjectiveEarlinessTardinessPenalty implements ObjectiveFunctionSche
 
   public double[] getObjectiveValues(int index){
     return originalPop.getObjectiveValues(index);
+  }
+
+  @Override
+  public void setScheduleData(int[][] processingTime, int numberOfMachine) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void setScheduleData(int[] dueDay, int[][] processingTime, int numberOfMachine) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
 }
