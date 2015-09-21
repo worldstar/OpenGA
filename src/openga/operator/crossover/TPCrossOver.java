@@ -47,6 +47,7 @@ public class TPCrossOver extends twoPointCrossover2 implements CrossoverMTSPI{
     int stopPosition = 0;
     int currentPosition = 0;
     
+    
     for(int i = 0; i < numberofSalesmen; i++){
       //set stopPosition
 //      System.out.println(" stopPosition"+stopPosition+" currentPosition"+currentPosition);
