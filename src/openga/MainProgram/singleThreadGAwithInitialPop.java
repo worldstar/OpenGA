@@ -35,7 +35,7 @@ public class singleThreadGAwithInitialPop extends singleThreadGA{
     //printResults();
 
     for(int i = 0 ; i < generations ; i ++ ){
-      System.out.println("generations "+i);
+//      System.out.println("generations "+i);
 /*
       if(i % 10 == 0){
         System.out.print(i+"\t"+getBest()+"\n");

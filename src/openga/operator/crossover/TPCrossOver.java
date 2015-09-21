@@ -44,19 +44,22 @@ public class TPCrossOver extends twoPointCrossover2 implements CrossoverMTSPI{
     int[] momGenepoolofSalesmen = new int[numberofSalesmen];
     int[] dadGenepoolofSalesmen = new int[numberofSalesmen];
     
-    int stopPosition = mom[numberofCities];
+    int stopPosition = 0;
     int currentPosition = 0;
     
-    for(int i = 0; i < numberofSalesmen; i++){ 
-      System.out.println(" stopPosition"+stopPosition+" currentPosition"+currentPosition);
-      //set cutpoint
+    for(int i = 0; i < numberofSalesmen; i++){
+      //set stopPosition
+//      System.out.println(" stopPosition"+stopPosition+" currentPosition"+currentPosition);
+      stopPosition += mom[numberofCities+i];
+      //set cutpoints
       if((stopPosition - currentPosition) == 1){
-        cutPoint1 = 0;
-        cutPoint2 = 1;
+        cutPoint1 = 0 + currentPosition;
+        cutPoint2 = 1 + currentPosition;
       } else{
         do{
           cutPoint1 = new Random().nextInt(stopPosition-currentPosition)+currentPosition;
           cutPoint2 = new Random().nextInt(stopPosition-currentPosition)+currentPosition;
+//          System.out.println(""+" cutPoint1 "+cutPoint1 +" cutPoint2 "+cutPoint2);
         } while(cutPoint1 == cutPoint2); 
       }
       if(cutPoint1 > cutPoint2){
@@ -65,7 +68,7 @@ public class TPCrossOver extends twoPointCrossover2 implements CrossoverMTSPI{
           cutPoint2 = tmp;
       }     
 //      System.out.println(""+" cutPoint1 "+cutPoint1 +" cutPoint2 "+cutPoint2);
-      //choose gene.
+      //copy gene to child.
       for(int j = currentPosition; j < stopPosition; j++){
         if(cutPoint1 <= j && j < cutPoint2) {
           momGenepool.add(mom[j]);
@@ -75,11 +78,10 @@ public class TPCrossOver extends twoPointCrossover2 implements CrossoverMTSPI{
           tmpGenepool.add(mom[j]);
 //          System.out.println(" tmpGenepool "+mom[j]);
         }
-//        currentPosition++;
       }
       currentPosition = stopPosition;
-      stopPosition += (numberofCities - currentPosition);
     }
+
     //sort dad gene segment.
     stopPosition = dad[numberofCities];
     currentPosition = 0;

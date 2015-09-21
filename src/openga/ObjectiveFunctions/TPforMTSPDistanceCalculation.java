@@ -27,7 +27,7 @@ public class TPforMTSPDistanceCalculation extends forMTSPDistanceCalculation{
       int currentPosition = 0;//To record the position of the Part I chromosome
       
       openga.util.printClass p1 = new openga.util.printClass();
-      p1.printMatrix("C1", chromosome1.genes);
+//      p1.printMatrix("C1", chromosome1.genes);
       
       int numberOfCities = length - numberOfSalesmen;
       int stopPosition = chromosome1.genes[numberOfCities];//numberOfCities + currentPosition - 1; 

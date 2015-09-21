@@ -168,7 +168,7 @@ public class singleThreadGA implements MainI{
 
     for(int i = 0 ; i < generations ; i ++ ){
       /*
-      //System.out.println("generations "+i);
+//      System.out.println("generations "+i);
       String generationResults = "";
       if(i % 10 == 0){
         generationResults = i+"\t"+getBest()+"\t"+getPopulationMeanObjValue()+"\n";

@@ -30,14 +30,14 @@ public class swapMutationTwoPart extends swapMutation implements MutationMTSPI{
         cutPoint2 = (int)(Math.random() * numberofCities);        
         
         if(cutPoint1 == cutPoint2){
-          cutPoint1 -=  (int)(Math.random()*cutPoint1);
+          cutPoint1 -= (int)(Math.random() * cutPoint1);
           //increase the position of cutPoint2
-          cutPoint2 += (int)((numberofCities - cutPoint2)*Math.random());
+          cutPoint2 += (int)(Math.random() * (numberofCities - cutPoint2));
 
           //double check it.
-          if(cutPoint1 == cutPoint2){
-            //setCutpoint();
-          }
+//          if(cutPoint1 == cutPoint2){
+//            setCutpoint();
+//          }
         }
 
         //swap
