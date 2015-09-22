@@ -1,6 +1,0 @@
-instances/SingleMachineSetupDynamicArrival/low/10_1.etp	0.1	0.9	4	2	10	455.0	0.938
-instances/SingleMachineSetupDynamicArrival/low/10_1.etp	0.1	0.9	4	2	10	455.0	0.578
-instances/SingleMachineSetupDynamicArrival/low/10_1.etp	0.1	0.9	4	2	10	455.0	0.59
-instances/SingleMachineSetupDynamicArrival/low/10_1.etp	0.1	0.9	4	2	10	455.0	0.569
-instances/SingleMachineSetupDynamicArrival/low/10_1.etp	0.1	0.9	4	2	10	455.0	0.666
-instances/SingleMachineSetupDynamicArrival/low/10_1.etp	0.1	0.9	4	2	10	455.0	0.592

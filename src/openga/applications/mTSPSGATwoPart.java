@@ -135,7 +135,7 @@ double distanceMatrix[][];
 
     String implementResult = instanceName+"\t"+DEFAULT_crossoverRate+"\t"+DEFAULT_mutationRate+"\t"+numberOfSalesmen+"\t"+GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
         +"\t"+timeClock1.getExecutionTime()/1000.0+"\n";
-    writeFile("mTSPSGA20150914Full", implementResult);
+    writeFile("mTSPSGA-newCrossover20150922Full", implementResult);
     System.out.print(implementResult);
     //System.out.print("\n");
     //System.out.print(GaMain.getArchieve().getSingleChromosome(0).toString1());
@@ -143,14 +143,14 @@ double distanceMatrix[][];
   }
 
   public static void main(String[] args) {
-    System.out.println("mTSPSGA20150914Full");
+    System.out.println("mTSPSGA-newCrossover20150922Full");
     double crossoverRate[], mutationRate[];
     crossoverRate = new double[]{1, 0.5};//1, 0.5 [0.5]
     mutationRate  = new double[]{0.1, 0.5};//0.1, 0.5 [0.1]
     int counter = 0;
     double elitism[] = new double[]{0.1};
     int generations[] = new int[]{1000};//1000
-    int numInstances = 1;//33
+    int numInstances = 33;//33
     int numberOfSalesmen[] = new int[]{2, 3, 5, 10, 20};//2, 3, 5, 10, 20, 30
     int repeat = 1;
 
