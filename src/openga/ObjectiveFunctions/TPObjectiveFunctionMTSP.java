@@ -18,15 +18,15 @@ public class TPObjectiveFunctionMTSP extends ObjectiveFunctionMTSP{
     double obj;
     double objectives[];
 
-    for(int i = 0 ; i < numberOfSalesmen ; i ++ ){
+    for(int i = 0 ; i < population.getPopulationSize() ; i ++ ){
       objectives = population.getObjectiveValues(i);
       obj = evaluateAll(population.getSingleChromosome(i), numberOfSalesmen);
 //      System.out.println(obj);
       objectives[indexOfObjective] = obj;
       population.setObjectiveValue(i, objectives);
-      for(int j=0; j<population.getObjectiveValues(i).length; j++){
-        System.out.println(population.getObjectiveValues(i)[j]);
-      }
+//      for(int j=0; j<population.getObjectiveValues(i).length; j++){
+//        System.out.println(population.getObjectiveValues(i)[j]);
+//      }
     }
   }
 
