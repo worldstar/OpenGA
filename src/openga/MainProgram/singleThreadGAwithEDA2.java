@@ -169,7 +169,7 @@ public class singleThreadGAwithEDA2 extends singleThreadGA implements EDAMainI {
 
     public populationI mutationStage(populationI Population, double container[][], double inter[][]) {
         Mutation.setData(mutationRate, Population);
-        Mutation.setEDAinfo(container, inter, numberOfMutationTournament);
+        Mutation.setEDAinfo(container, inter, numberOfMutationTournament);        
         Mutation.startMutation();
         Population = Mutation.getMutationResult();
 

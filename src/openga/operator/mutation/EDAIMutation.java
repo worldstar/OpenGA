@@ -11,6 +11,5 @@ package openga.operator.mutation;
 
 public interface EDAIMutation extends MutationI{
   public void setEDAinfo(double container[][], int numberOfTournament);
-
   public void setEDAinfo(double[][] container, double[][] inter, int numberOfMutationTournament);
 }

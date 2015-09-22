@@ -58,16 +58,10 @@ public class inverseMutation implements MutationI{
     cutPoint2 = (int)(Math.random() * chromosomeLength);
     //cutPoint1 = 3; //default for test
     //cutPoint2 = 6; //default for test
-
-    if(cutPoint1 == cutPoint2){
-      cutPoint1 -=  (int)(Math.random()*cutPoint1);
-      //increase the position of cutPoint2
-      cutPoint2 += (int)((chromosomeLength - cutPoint2)*Math.random());
-
-      //double check it.
-      if(cutPoint1 == cutPoint2){
-        //setCutpoint();
-      }
+    
+    while(cutPoint1 == cutPoint2){
+      cutPoint1 = (int)(Math.random() * chromosomeLength);
+      cutPoint2 = (int)(Math.random() * chromosomeLength);      
     }
 
     //swap

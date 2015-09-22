@@ -75,32 +75,6 @@ public class swapMutationEDA2 extends swapMutationEDA implements EDAIMutation {
             if (numberOfTournament == 1) {//it needs not to collect the gene information
                 selectedIndex = i;
             } else {
-/*
-                System.out.println("cutpoint: " + cutPoint1 + "," + cutPoint2);
-                System.out.println("mutate chromsome :");
-                for (int g = 0; g < _chromosome.getLength(); g++) {
-                    System.out.print(_chromosome.getSolution()[g] + ",");
-                }
-                System.out.println();
-                
-                System.out.println("crossoverContainer");
-                for (int k = 0; k < _chromosome.getLength(); k++) {
-                for (int m = 0; m < _chromosome.getLength(); m++) {
-                System.out.print(container[k][m] + ",");
-                }
-                System.out.println();
-                }
-                System.out.println();
-
-                System.out.println("inter");
-                for (int f = 0; f < _chromosome.getLength(); f++) {
-                for (int d = 0; d < _chromosome.getLength(); d++) {
-                System.out.print(inter[f][d] + ",");
-                }
-                System.out.println();
-                }
-                System.out.println();
-                 */
                 if (cutPoint1 == 0) {
                     int rr = (int) (_chromosome.getLength() * Math.random());
                     probabilitySum = sumGeneInfo(cutPoint1, cutPoint2, _chromosome.genes[cutPoint2], _chromosome.genes[cutPoint1], _chromosome.genes[rr], _chromosome.genes[cutPoint2 - 1]);
