@@ -13,9 +13,7 @@ import openga.chromosomes.*;
 public class TPObjectiveFunctionMTSP extends ObjectiveFunctionMTSP{
     
     int numberOfSalesmen;
-    
 
-  
   public void calcObjective() {
     double obj;
     double objectives[];
@@ -23,9 +21,12 @@ public class TPObjectiveFunctionMTSP extends ObjectiveFunctionMTSP{
     for(int i = 0 ; i < numberOfSalesmen ; i ++ ){
       objectives = population.getObjectiveValues(i);
       obj = evaluateAll(population.getSingleChromosome(i), numberOfSalesmen);
+//      System.out.println(obj);
       objectives[indexOfObjective] = obj;
       population.setObjectiveValue(i, objectives);
-//      PartIIChromosomes.setObjectiveValue(i, objectives);
+      for(int j=0; j<population.getObjectiveValues(i).length; j++){
+        System.out.println(population.getObjectiveValues(i)[j]);
+      }
     }
   }
 
@@ -33,6 +34,7 @@ public class TPObjectiveFunctionMTSP extends ObjectiveFunctionMTSP{
     TPforMTSPDistanceCalculation TPforDistanceCalculation1 = new TPforMTSPDistanceCalculation();
     TPforDistanceCalculation1.setData(distanceToOriginal, distanceMatrix, _chromosome1, numberOfSalesmen);
     TPforDistanceCalculation1.calcObjective();
+//    System.out.println(TPforDistanceCalculation1.getObjectiveValue());
     return TPforDistanceCalculation1.getObjectiveValue();
   }
   
