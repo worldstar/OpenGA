@@ -106,6 +106,7 @@ public class singleMachineSetupDynamicArrivalEDA2 extends singleMachineEDA2 {
         //openga.applications.data.singleMachine singleMachineData = new openga.applications.data.singleMachine();
         int jobSets[] = new int[]{10, 15, 20, 25, 50, 100, 150, 200};//10, 15, 20, 25, 50, 100, 150, 200//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80
         int instanceReplication = 15;
+        String types[] = new String[]{"low", "med", "high"};
         int counter = 0;
         int repeatExperiments = 30;
 
@@ -122,10 +123,11 @@ public class singleMachineSetupDynamicArrivalEDA2 extends singleMachineEDA2 {
         int startingGenDividen[] = new int[]{10};//{2, 4}  //2
 
         for (int j = 0; j < jobSets.length; j++) {//jobSets.length
-            for (int k = 0; k < instanceReplication; k++) {        
+            for (int k = 0; k < instanceReplication; k++) { 
+              for(int a = 0 ; a < types.length ; a ++){
                 openga.applications.data.singleMachineSetupDynamicData readSingleMachineData1 = new openga.applications.data.singleMachineSetupDynamicData();
                 int numberOfJobs = jobSets[j];
-                String fileName = jobSets[j]+"_"+k+".etp";
+                String fileName = "instances/SingleMachineSetup/high/"+jobSets[j]+"_"+k+".etp";
                 System.out.print(fileName + "\t");
                 readSingleMachineData1.setData(fileName, jobSets[j]);
                 readSingleMachineData1.getDataFromFile();                                        
@@ -150,7 +152,8 @@ public class singleMachineSetupDynamicArrivalEDA2 extends singleMachineEDA2 {
                             }
                         }
                     }
-                }
+                }                
+              }
             }
         }
     }
