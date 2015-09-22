@@ -35,6 +35,7 @@ public class TSPInstances {
     "instances/TSP/eil101.txt", "instances/TSP/st70.txt",
     "instances/TSP/bier127.txt"
     };
+  
   double coordinates[][];
   double originalPoint[];
   double distanceMatrix[][];
