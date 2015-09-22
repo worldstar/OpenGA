@@ -126,4 +126,9 @@ public class twoPointCrossover2EDA extends twoPointCrossover2 implements EDAICro
     return hasConflict;
   }
 
+  @Override
+  public void setEDAinfo(double[][] container, double[][] inter, int tempNumberOfCrossoverTournament) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
 }

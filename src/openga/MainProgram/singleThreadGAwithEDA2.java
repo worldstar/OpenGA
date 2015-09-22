@@ -23,7 +23,7 @@ public class singleThreadGAwithEDA2 extends singleThreadGA implements EDAMainI {
     }
     PBILInteractive PBIL1;   //PBIL
     double container[][];
-    double inter[][];
+    double inter[][];  //training results
     double temporaryContainer[][];
     openga.operator.miningGene.probabilityMatrixInteractiveL probMatrix1 = new openga.operator.miningGene.probabilityMatrixInteractiveL();
     double lamda = 0.9; //container learning rate   0.1 0.5 0.9

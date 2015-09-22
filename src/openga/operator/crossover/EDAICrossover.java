@@ -11,4 +11,5 @@ package openga.operator.crossover;
 
 public interface EDAICrossover extends CrossoverI{
   public void setEDAinfo(double container[][], int numberOfTournament);
+  public void setEDAinfo(double[][] container, double[][] inter, int tempNumberOfCrossoverTournament);
 }

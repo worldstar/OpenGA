@@ -105,4 +105,9 @@ public class bitFlipMutationEDA extends bitFlipMutation implements EDAIMutation{
     }
     return productValue;
   }
+
+  @Override
+  public void setEDAinfo(double[][] container, double[][] inter, int numberOfMutationTournament) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
 }

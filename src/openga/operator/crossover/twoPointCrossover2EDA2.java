@@ -16,7 +16,7 @@ public class twoPointCrossover2EDA2 extends twoPointCrossover2 implements EDAICr
     public twoPointCrossover2EDA2() {
     }
     double container[][];//it's an m-by-m array to store the gene results. The i is job, the j is the position(sequence).
-    double inter[][];
+    double inter[][];//training results
     double evaporateRate = 0.5;
     int numberOfTournament = 2;
     chromosome newChromosomes[] = new chromosome[2];

@@ -48,7 +48,7 @@ public class singleMachineSetupDynamicArrivalEDA2 extends singleMachineEDA2 {
         Crossover = new twoPointCrossover2EDA2();//twoPointCrossover2 oneByOneChromosomeCrossover twoPointCrossover2withAdpative twoPointCrossover2withAdpativeThreshold
         Mutation = new swapMutationEDA2();//shiftMutation shiftMutationWithAdaptive shiftMutationWithAdaptiveThreshold
         ObjectiveFunction = new ObjectiveFunctionMatrixPTimeScheduleI[numberOfObjs];
-        ObjectiveFunction[0] = new ObjectiveEarlinessTardinessPenalty();
+        ObjectiveFunction[0] = new ObjectiveETPenaltyDynamicArrval();
         Fitness = new singleObjectiveFitness();
         objectiveMinimization = new boolean[numberOfObjs];
         objectiveMinimization[0] = true;
@@ -123,11 +123,11 @@ public class singleMachineSetupDynamicArrivalEDA2 extends singleMachineEDA2 {
         int startingGenDividen[] = new int[]{10};//{2, 4}  //2
 
         for (int j = 0; j < jobSets.length; j++) {//jobSets.length
-            for (int k = 0; k < instanceReplication; k++) { 
+            for (int k = 1; k < instanceReplication; k++) { 
               for(int a = 0 ; a < types.length ; a ++){
                 openga.applications.data.singleMachineSetupDynamicData readSingleMachineData1 = new openga.applications.data.singleMachineSetupDynamicData();
                 int numberOfJobs = jobSets[j];
-                String fileName = "instances/SingleMachineSetup/high/"+jobSets[j]+"_"+k+".etp";
+                String fileName = "instances/SingleMachineSetupDynamicArrival/"+types[a]+"/"+jobSets[j]+"_"+k+".etp";
                 System.out.print(fileName + "\t");
                 readSingleMachineData1.setData(fileName, jobSets[j]);
                 readSingleMachineData1.getDataFromFile();                                        

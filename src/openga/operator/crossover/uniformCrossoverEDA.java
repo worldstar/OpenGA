@@ -124,4 +124,9 @@ public class uniformCrossoverEDA extends uniformCrossover implements EDAICrossov
   public populationI getCrossoverResult(){
     return newPop;
   }
+
+  @Override
+  public void setEDAinfo(double[][] container, double[][] inter, int tempNumberOfCrossoverTournament) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
 }
