@@ -1,3 +1,7 @@
 build/**
+build/
+build\
 *.class
-
+classes/**
+classes/
+classes\

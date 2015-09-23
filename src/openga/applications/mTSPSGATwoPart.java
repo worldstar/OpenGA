@@ -164,6 +164,7 @@ double distanceMatrix[][];
         TSPInstances1.calcEuclideanDistanceMatrix();
         int length = TSPInstances1.getSize();
         
+        
         for(int j = 0 ; j < crossoverRate.length ; j ++ ){
           for(int k = 0 ; k < mutationRate.length ; k ++ ){
             for(int n = 0 ; n < elitism.length ; n ++ ){
