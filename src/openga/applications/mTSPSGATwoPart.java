@@ -135,7 +135,7 @@ double distanceMatrix[][];
 
     String implementResult = instanceName+"\t"+DEFAULT_crossoverRate+"\t"+DEFAULT_mutationRate+"\t"+numberOfSalesmen+"\t"+GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
         +"\t"+timeClock1.getExecutionTime()/1000.0+"\n";
-    writeFile("mTSPSGA-newCrossover20150922Full", implementResult);
+    writeFile("mTSPSGA20150922MaxDistanceFull", implementResult);
     System.out.print(implementResult);
     //System.out.print("\n");
     //System.out.print(GaMain.getArchieve().getSingleChromosome(0).toString1());
@@ -143,7 +143,7 @@ double distanceMatrix[][];
   }
 
   public static void main(String[] args) {
-    System.out.println("mTSPSGA-newCrossover20150922Full");
+    System.out.println("mTSPSGA20150922MaxDistanceFull");
     double crossoverRate[], mutationRate[];
     crossoverRate = new double[]{1, 0.5};//1, 0.5 [0.5]
     mutationRate  = new double[]{0.1, 0.5};//0.1, 0.5 [0.1]
