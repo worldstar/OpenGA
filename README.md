@@ -4,25 +4,25 @@ This OpenGA aims at solving different kinds of problems, including continuous, d
 ### Usage
 Continuous problem:
 ```
-$ java -classpath .; src/openga.applications.Himmelblau
+$ java -classpath .; build/classes/src/openga.applications.Himmelblau
 ```
 
 Traveling Salesman Problem (TSP):
 ```
-$ java -classpath .; src/openga.applications.TSP
+$ java -classpath .; build/classes/src/openga.applications.TSP
 ```
 
 Multiple Traveling Salesman Problem (mTSP):
 ```
-$ java -classpath .; src/openga.applications.mTSPSGA
+$ java -classpath .; build/classes/src/openga.applications.mTSPSGA
 ```
 
 Parallel machine problem:
 ```
-$ java -classpath .; src/openga.applications.ParallelMachine
+$ java -classpath .; build/classes/src/openga.applications.ParallelMachine
 ```
 
 Multi-Objective Evolutionary Algorithm for Flowshop Problems (SPGA2):
 ```
-$ java -classpath .; src/openga.applications.SPGA2_forFlowShop
+$ java -classpath .; build/classes/src/openga.applications.SPGA2_forFlowShop
 ```
