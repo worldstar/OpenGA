@@ -80,7 +80,7 @@ public class singleMachineSetupDynamicArrivalEDA2 extends singleMachineEDA2 {
         String implementResult = "";
         int bestInd = getBestSolnIndex(GaMain.getArchieve());
         implementResult = fileName + "\t" + lamda + "\t" + beta + "\t" + numberOfCrossoverTournament + "\t" + numberOfMutationTournament + "\t" + startingGenDividen + "\t" + GaMain.getArchieve().getSingleChromosome(bestInd).getObjValue()[0] + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
-        writeFile("singleMachineEDA2_test", implementResult);
+        writeFile("singleMachineDynamicArrivalEDA2_20151002", implementResult);
         System.out.print(implementResult);
     }
 
@@ -102,13 +102,13 @@ public class singleMachineSetupDynamicArrivalEDA2 extends singleMachineEDA2 {
     }
 
     public static void main(String[] args) {
-        System.out.println("singleMachineEDA2_Rabadi_20150825");
+        System.out.println("singleMachineDynamicArrivalEDA2_20151002");
         //openga.applications.data.singleMachine singleMachineData = new openga.applications.data.singleMachine();
         int jobSets[] = new int[]{10, 15, 20, 25, 50, 100, 150, 200};//10, 15, 20, 25, 50, 100, 150, 200//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80
         int instanceReplication = 15;
         String types[] = new String[]{"low", "med", "high"};
         int counter = 0;
-        int repeatExperiments = 30;
+        int repeatExperiments = 2;
 
         int popSize[] = new int[]{100};//50, 100, 155, 210 [100]
         double crossoverRate[] = new double[]{0.9},//0.6, 0.9 {0.9}
