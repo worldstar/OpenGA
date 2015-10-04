@@ -29,14 +29,17 @@ public class singleMachineSetupDynamicArrivalEDA2 extends singleMachineEDA2 {
         
     }
     
-    int processingTime[][];
+    int processingTime[];
+    int setupTime[][];
     int dynamicArrivalTime[];
     
     ObjectiveFunctionMatrixPTimeScheduleI ObjectiveFunction[];
     
-    public void setData(int numberOfJobs, int processingTime[][], int dynamicArrivalTime[], String fileName){
+    public void setData(int numberOfJobs, int processingTime[], int setupTime[][], 
+            int dynamicArrivalTime[], String fileName){
       this.numberOfJob = numberOfJobs;      
       this.processingTime = processingTime;
+      this.setupTime = setupTime;
       this.dynamicArrivalTime = dynamicArrivalTime;
       this.fileName = fileName;
     }    
@@ -57,6 +60,7 @@ public class singleMachineSetupDynamicArrivalEDA2 extends singleMachineEDA2 {
         //GaMain.setCloneOperatpr(clone1, true);
         //set schedule data to the objectives
         ObjectiveFunction[0].setScheduleData(processingTime, numberOfMachines);
+        ObjectiveFunction[0].setScheduleData(setupTime, numberOfMachines);//We pass the setup time here.
         ((dynamicArrivalTimeI)ObjectiveFunction[0]).setDynamicArrivalTime(dynamicArrivalTime);
         totalSolnsToExamine = 125000;
         DEFAULT_PopSize = 100;
@@ -80,7 +84,12 @@ public class singleMachineSetupDynamicArrivalEDA2 extends singleMachineEDA2 {
         //to output the implementation result.
         String implementResult = "";
         int bestInd = getBestSolnIndex(GaMain.getArchieve());
-        implementResult = fileName + "\t" + lamda + "\t" + beta + "\t" + numberOfCrossoverTournament + "\t" + numberOfMutationTournament + "\t" + startingGenDividen + "\t" + GaMain.getArchieve().getSingleChromosome(bestInd).getObjValue()[0] + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
+        implementResult = fileName + "\t" + lamda + "\t" + beta + "\t" 
+                + numberOfCrossoverTournament + "\t" + numberOfMutationTournament 
+                + "\t" + startingGenDividen + "\t" 
+                //+ GaMain.getArchieve().getSingleChromosome(bestInd).toString1() + "\t"
+                + GaMain.getArchieve().getSingleChromosome(bestInd).getObjValue()[0] 
+                + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
         writeFile("singleMachineDynamicArrivalEDA2_20151002", implementResult);
         System.out.print(implementResult);
     }
@@ -132,7 +141,8 @@ public class singleMachineSetupDynamicArrivalEDA2 extends singleMachineEDA2 {
                 System.out.print(fileName + "\t");
                 readSingleMachineData1.setData(fileName, jobSets[j]);
                 readSingleMachineData1.getDataFromFile();                                        
-                int processingTime[][] = readSingleMachineData1.getProcessingTime();
+                int processingTime[] = readSingleMachineData1.getProcessingTime();
+                int setupTime[][] = readSingleMachineData1.getSetupTime();
                 int dynamicArrivalTime[] = readSingleMachineData1.getDynamicArrivalTime();   
                 
                 for (int lx = 0; lx < lamdalearningrate.length; lx++) {
@@ -143,7 +153,7 @@ public class singleMachineSetupDynamicArrivalEDA2 extends singleMachineEDA2 {
                                     for (int i = 0; i < repeatExperiments; i++) {
                                         System.out.println("Combinations: " + counter);
                                         singleMachineSetupDynamicArrivalEDA2 singleMachine1 = new singleMachineSetupDynamicArrivalEDA2();
-                                        singleMachine1.setData(numberOfJobs, processingTime, dynamicArrivalTime, fileName);
+                                        singleMachine1.setData(numberOfJobs, processingTime, setupTime, dynamicArrivalTime, fileName);
                                         singleMachine1.setEDAinfo(lamdalearningrate[lx], betalearningrate[bx], numberOfCrossoverTournament[m], numberOfMutationTournament[n], startingGenDividen[p]);
                                         singleMachine1.initiateVars();
                                         singleMachine1.startMain();
