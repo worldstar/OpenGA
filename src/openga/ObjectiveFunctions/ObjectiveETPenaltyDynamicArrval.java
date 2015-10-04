@@ -21,7 +21,8 @@ public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixP
   public int length;
   int dueDay;              //Coomon due day of these jobs.
   int machineTime[];         //starting time to process these jobs.
-  int processingTime[][];      //processing time of the job
+  int processingTime[];      //processing time of the job
+  int setupTime[][];         //setup time of the job
   int numberOfMachine;       // the number of parallel machine
   double alpha[];
   double beta[];
@@ -42,8 +43,8 @@ public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixP
   }
 
   @Override
-  public void setScheduleData(int[][] processingTime, int numberOfMachine) {    
-    this.processingTime = processingTime;
+  public void setScheduleData(int[][] setupTime, int numberOfMachine) {    
+    this.setupTime = setupTime;
     this.numberOfMachine = numberOfMachine;    
   }
 
@@ -57,7 +58,8 @@ public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixP
   }
 
   public void setScheduleData(int processingTime[], int numberOfMachine){
-
+    this.processingTime = processingTime;
+    this.numberOfMachine = numberOfMachine;  
   }
 
   public void setAlphaBeta(double alpha[], double beta[]){
@@ -83,7 +85,9 @@ public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixP
     for(int i = 0 ; i < popSize ; i ++ ){
       double originalObjValues[] = originalPop.getObjectiveValues(i);
       //write in the objective value to the variable.                  
-      originalObjValues[indexOfObjective] = calcEarlinessAndTardiness(originalPop.getSingleChromosome(i));
+      //int _seq2[] = new int[]{9, 0, 7, 1, 2, 4, 3, 6, 8, 5 };
+      //originalPop.getSingleChromosome(i).genes = _seq2;
+      originalObjValues[indexOfObjective] = calcEarlinessAndTardiness(originalPop.getSingleChromosome(i));      
       originalPop.setObjectiveValue(i, originalObjValues);
     }
   }
@@ -97,7 +101,7 @@ public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixP
     if(alpha == null){
       for(int i = 0 ; i < length ; i ++ ){
         int jobIndex = chromosome1.getSolution()[i];
-        objVal += Math.abs(finishTime[jobIndex] - dueDay);
+        objVal += Math.abs(finishTime[jobIndex] - dueDay);        
       }
     }
     else{
@@ -111,7 +115,13 @@ public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixP
         }
       }
     }
-
+    
+    //openga.util.printClass printClass1 = new openga.util.printClass();
+    //printClass1.printMatrix("dynamicArrivalTime", dynamicArrivalTime);
+    //printClass1.printMatrix("finishTime", finishTime);
+    
+    //System.out.println(objVal);
+    //System.exit(0);
     return objVal;
   }
 
@@ -124,9 +134,18 @@ public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixP
       if(currentTime < dynamicArrivalTime[_seq[i]]){//To check the arrival time.
         currentTime = dynamicArrivalTime[_seq[i]];
       }
-      finishTime[_seq[i]] = currentTime + processingTime[_seq[i]][i];;
+      
+      if(i == 0){//The first job doesn't has the setup time.
+        finishTime[_seq[i]] = currentTime + processingTime[_seq[i]];
+      }
+      else{//The starting time of this job + processing time + setup time
+        finishTime[_seq[i]] = currentTime + processingTime[_seq[i]] + setupTime[_seq[i-1]][_seq[i]];
+      }
+      
+      //System.out.println(_seq[i]+": "+finishTime[_seq[i]]);
+      
       currentTime = finishTime[_seq[i]];
-    }         
+    }
     
     return finishTime;
   }
@@ -144,6 +163,7 @@ public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixP
       middlePoint = (tempFinishTime.length + 1)/2;
       due = tempFinishTime[middlePoint];
     }    
+    //System.out.println("\ndue: "+due);
     return due;
   }  
 

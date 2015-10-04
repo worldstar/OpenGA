@@ -4,10 +4,10 @@ import java.util.*;
 /**
  * <p>Title: single machine scheduling problems with dynamic arrival time and setup 
  * consideration in a common due date environment</p>
- * <p>Description: Chen, S. H. (2014), A new single machine scheduling problems with dynamic arrival time 
- * and setup consideration in a common due date environment by using the Inver-over CX, 8th International 
- * Conference on Bio-inspired Information and Communications Technologies, Boston, USA.</p>
- * <p>Copyright: Copyright (c) 2006</p>
+ * <p>Description: We modify the instances from Rabadi et al., 2013.</p>
+ * <p>The first row is the processing time of each job, there are n by n matrix denotes the setup time.</P
+ * <p>The last row is the dynamic arrival time of each job.</p>
+ * <p>Copyright: Copyright (c) 2015</p>
  * <p>Company: </p>
  * @author not attributable
  * @version 1.0
@@ -18,7 +18,8 @@ public class singleMachineSetupDynamicData {
   }
   String fileName, message = "";
   String Instances[] = new String[]{""};
-  int processingTime[][];
+  int processingTime[];
+  int setupTime[][];
   int dynamicArrivalTime[];
   int size;
 
@@ -55,11 +56,16 @@ public class singleMachineSetupDynamicData {
 
         //to set the coordination and demand of each customer
         //size = Integer.parseInt(tokens.nextToken());
-        processingTime = new int[size][size];
+        processingTime = new int[size];
+        setupTime = new int[size][size];
+        
+        for(int i = 0 ; i < size ; i ++ ){
+          processingTime[i] = Integer.parseInt(tokens.nextToken());
+        }        
 
         for(int i = 0 ; i < size ; i ++ ){
           for(int j = 0 ; j < size ; j ++ ){
-            processingTime[i][j] = Integer.parseInt(tokens.nextToken());
+            setupTime[i][j] = Integer.parseInt(tokens.nextToken());
           }
         }
         
@@ -80,9 +86,13 @@ public class singleMachineSetupDynamicData {
     return Instances[index];
   }
 
-  public int[][] getProcessingTime(){
+  public int[] getProcessingTime(){
     return processingTime;
-  }
+  }  
+
+  public int[][] getSetupTime(){
+    return this.setupTime;
+  }  
   
   public int[] getDynamicArrivalTime(){
     return dynamicArrivalTime;
