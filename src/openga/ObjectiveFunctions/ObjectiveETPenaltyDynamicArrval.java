@@ -11,7 +11,7 @@ import openga.util.algorithm.*;
  * @version 1.0
  */
 
-public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixPTimeScheduleI, alphaBetaI{
+public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixPTimeScheduleI, alphaBetaI, dynamicArrivalTimeI{
   public ObjectiveETPenaltyDynamicArrval() {
   }
   populationI originalPop;
@@ -24,6 +24,7 @@ public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixP
   int numberOfMachine;       // the number of parallel machine
   double alpha[];
   double beta[];
+  int dynamicArrivalTime[];  //Dynamic Arrival Time of each job.
 
   public void setData(populationI population, int indexOfObjective){
     this.originalPop = population;
@@ -105,9 +106,13 @@ public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixP
 
   private int[] calcFinishTime(int _seq[]){
     int finishTime[] = new int[_seq.length];
+    //The finish time of prior job and it is the starting time of the next job.
     int currentTime = 0;
 
     for(int i = 0 ; i < _seq.length ; i ++ ){      
+      if(currentTime < dynamicArrivalTime[_seq[i]]){//To check the arrival time.
+        currentTime = dynamicArrivalTime[_seq[i]];
+      }
       finishTime[_seq[i]] = currentTime + processingTime[_seq[i]][i];;
       currentTime = finishTime[_seq[i]];
     }
@@ -134,6 +139,16 @@ public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixP
 
   public double[] getObjectiveValues(int index){
     return originalPop.getObjectiveValues(index);
+  }
+  
+  @Override
+  public void setDynamicArrivalTime(int[] dynamicArrivalTime) {
+    this.dynamicArrivalTime = dynamicArrivalTime;
+  }
+
+  @Override
+  public void setDynamicArrivalTime(int[][] dynamicArrivalTime) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
 

@@ -18,8 +18,8 @@ import openga.operator.clone.*;
  * <p>Title: eSGGA2 for the single machine scheduling problem with setup and dynamic arrival
  * time in a common due day environment.</p>
  * <p>Description: </p>
- * <p>Copyright: Copyright (c) 2007</p>
- * <p>Company: Yuan-Ze University</p>
+ * <p>Copyright: Copyright (c) 2015</p>
+ * <p>Company: Cheng Shiu University University</p>
  * @author Chen, Shih-Hsin
  * @version 1.0
  */
@@ -57,6 +57,7 @@ public class singleMachineSetupDynamicArrivalEDA2 extends singleMachineEDA2 {
         //GaMain.setCloneOperatpr(clone1, true);
         //set schedule data to the objectives
         ObjectiveFunction[0].setScheduleData(processingTime, numberOfMachines);
+        ((dynamicArrivalTimeI)ObjectiveFunction[0]).setDynamicArrivalTime(dynamicArrivalTime);
         totalSolnsToExamine = 125000;
         DEFAULT_PopSize = 100;
         //System.out.println(DEFAULT_PopSize);
