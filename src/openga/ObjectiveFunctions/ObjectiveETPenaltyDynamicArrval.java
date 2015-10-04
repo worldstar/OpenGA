@@ -1,4 +1,5 @@
 package openga.ObjectiveFunctions;
+import java.util.Arrays;
 import openga.chromosomes.*;
 import openga.util.algorithm.*;
 /**
@@ -67,11 +68,21 @@ public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixP
   public void setLearningRate(double learningRate){
 
   }
+  
+  @Override
+  public void setDynamicArrivalTime(int[] dynamicArrivalTime) {
+    this.dynamicArrivalTime = dynamicArrivalTime;
+  }
+
+  @Override
+  public void setDynamicArrivalTime(int[][] dynamicArrivalTime) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }  
 
   public void calcObjective(){
     for(int i = 0 ; i < popSize ; i ++ ){
       double originalObjValues[] = originalPop.getObjectiveValues(i);
-      //write in the objective value to the variable.
+      //write in the objective value to the variable.                  
       originalObjValues[indexOfObjective] = calcEarlinessAndTardiness(originalPop.getSingleChromosome(i));
       originalPop.setObjectiveValue(i, originalObjValues);
     }
@@ -115,20 +126,23 @@ public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixP
       }
       finishTime[_seq[i]] = currentTime + processingTime[_seq[i]][i];;
       currentTime = finishTime[_seq[i]];
-    }
+    }         
+    
     return finishTime;
   }
   
   private int calcCommonDueDay(int finishTime[]){
     int due = 0;
-    int middlePoint = finishTime.length/2;
+    int middlePoint = finishTime.length/2;    
+    int tempFinishTime[] = finishTime.clone();
+    Arrays.sort(tempFinishTime);
 
-    if(finishTime.length % 2 == 0){
-      due = finishTime[middlePoint];
+    if(tempFinishTime.length % 2 == 0){
+      due = tempFinishTime[middlePoint];
     }
     else{
-      middlePoint = (finishTime.length + 1)/2;
-      due = finishTime[middlePoint];
+      middlePoint = (tempFinishTime.length + 1)/2;
+      due = tempFinishTime[middlePoint];
     }    
     return due;
   }  
@@ -140,16 +154,4 @@ public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixP
   public double[] getObjectiveValues(int index){
     return originalPop.getObjectiveValues(index);
   }
-  
-  @Override
-  public void setDynamicArrivalTime(int[] dynamicArrivalTime) {
-    this.dynamicArrivalTime = dynamicArrivalTime;
-  }
-
-  @Override
-  public void setDynamicArrivalTime(int[][] dynamicArrivalTime) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-
 }
