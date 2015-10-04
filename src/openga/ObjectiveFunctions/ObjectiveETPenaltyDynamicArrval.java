@@ -85,7 +85,7 @@ public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixP
     for(int i = 0 ; i < popSize ; i ++ ){
       double originalObjValues[] = originalPop.getObjectiveValues(i);
       //write in the objective value to the variable.                  
-      //int _seq2[] = new int[]{3, 7, 5, 6, 4, 2, 9, 8, 0, 1 };
+      //int _seq2[] = new int[]{9, 0, 7, 1, 2, 4, 3, 6, 8, 5 };
       //originalPop.getSingleChromosome(i).genes = _seq2;
       originalObjValues[indexOfObjective] = calcEarlinessAndTardiness(originalPop.getSingleChromosome(i));      
       originalPop.setObjectiveValue(i, originalObjValues);
@@ -115,9 +115,13 @@ public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixP
         }
       }
     }
-
-    System.out.println(objVal);
-    System.exit(0);
+    
+    //openga.util.printClass printClass1 = new openga.util.printClass();
+    //printClass1.printMatrix("dynamicArrivalTime", dynamicArrivalTime);
+    //printClass1.printMatrix("finishTime", finishTime);
+    
+    //System.out.println(objVal);
+    //System.exit(0);
     return objVal;
   }
 
@@ -138,6 +142,8 @@ public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixP
         finishTime[_seq[i]] = currentTime + processingTime[_seq[i]] + setupTime[_seq[i-1]][_seq[i]];
       }
       
+      //System.out.println(_seq[i]+": "+finishTime[_seq[i]]);
+      
       currentTime = finishTime[_seq[i]];
     }
     
@@ -157,7 +163,7 @@ public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixP
       middlePoint = (tempFinishTime.length + 1)/2;
       due = tempFinishTime[middlePoint];
     }    
-    System.out.println("\ndue: "+due);
+    //System.out.println("\ndue: "+due);
     return due;
   }  
 

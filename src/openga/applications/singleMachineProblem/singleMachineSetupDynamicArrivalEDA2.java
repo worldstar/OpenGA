@@ -84,13 +84,16 @@ public class singleMachineSetupDynamicArrivalEDA2 extends singleMachineEDA2 {
         //to output the implementation result.
         String implementResult = "";
         int bestInd = getBestSolnIndex(GaMain.getArchieve());
+        
+        String fileNameArray[] = fileName.split("/");
+        fileName = fileNameArray[2] + "\t"+ fileNameArray[3].substring(0, fileNameArray[3].indexOf("."));
         implementResult = fileName + "\t" + lamda + "\t" + beta + "\t" 
                 + numberOfCrossoverTournament + "\t" + numberOfMutationTournament 
-                + "\t" + startingGenDividen + "\t" 
-                //+ GaMain.getArchieve().getSingleChromosome(bestInd).toString1() + "\t"
+                + "\t" + startingGenDividen + "\t"                 
                 + GaMain.getArchieve().getSingleChromosome(bestInd).getObjValue()[0] 
-                + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
-        writeFile("singleMachineDynamicArrivalEDA2_20151002", implementResult);
+                + "\t" + timeClock1.getExecutionTime() / 1000.0  
+                + "\t" + GaMain.getArchieve().getSingleChromosome(bestInd).toString1() +"\n";
+        writeFile("singleMachineDynamicArrivalEDA2_20151005", implementResult);
         System.out.print(implementResult);
     }
 
@@ -112,11 +115,11 @@ public class singleMachineSetupDynamicArrivalEDA2 extends singleMachineEDA2 {
     }
 
     public static void main(String[] args) {
-        System.out.println("singleMachineDynamicArrivalEDA2_20151002");
+        System.out.println("singleMachineDynamicArrivalEDA2_20151005");
         //openga.applications.data.singleMachine singleMachineData = new openga.applications.data.singleMachine();
         int jobSets[] = new int[]{10, 15, 20, 25, 50, 100, 150, 200};//10, 15, 20, 25, 50, 100, 150, 200//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80
         int instanceReplication = 15;
-        String types[] = new String[]{"low", "med", "high"};
+        String types[] = new String[]{"low", "med", "high"};//
         int counter = 0;
         int repeatExperiments = 2;
 
@@ -133,7 +136,7 @@ public class singleMachineSetupDynamicArrivalEDA2 extends singleMachineEDA2 {
         int startingGenDividen[] = new int[]{10};//{2, 4}  //2
 
         for (int j = 0; j < jobSets.length; j++) {//jobSets.length
-            for (int k = 1; k < instanceReplication; k++) { 
+            for (int k = 1; k <= instanceReplication; k++) { 
               for(int a = 0 ; a < types.length ; a ++){
                 openga.applications.data.singleMachineSetupDynamicData readSingleMachineData1 = new openga.applications.data.singleMachineSetupDynamicData();
                 int numberOfJobs = jobSets[j];
