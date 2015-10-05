@@ -146,7 +146,7 @@ public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixP
       
       currentTime = finishTime[_seq[i]];
     }
-    
+      
     return finishTime;
   }
   
@@ -154,7 +154,7 @@ public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixP
     int due = 0;
     int middlePoint = finishTime.length/2;    
     int tempFinishTime[] = finishTime.clone();
-    Arrays.sort(tempFinishTime);
+    Arrays.sort(tempFinishTime);            
 
     if(tempFinishTime.length % 2 == 0){
       due = tempFinishTime[middlePoint];

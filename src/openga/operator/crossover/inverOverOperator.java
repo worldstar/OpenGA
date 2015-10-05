@@ -10,11 +10,12 @@ import openga.ObjectiveFunctions.*;
  *
  * @author chuan
  */
-public class inverOverOperator extends twoPointCrossover2{
+public class inverOverOperator extends twoPointCrossover2 implements InverOverOperatorI{
 
   ObjectiveFunctionI ObjectiveFunction[];
   public int inversionsCounts = 0;
   double bestObj = Double.MAX_VALUE;
+  int totalSolnsToExamine;
 
   public void setObjectives(ObjectiveFunctionI ObjectiveFunction[]){
     this.ObjectiveFunction = ObjectiveFunction;
@@ -57,13 +58,16 @@ public class inverOverOperator extends twoPointCrossover2{
     int umImprovements = 0;
     inversionsCounts = 0;//reset
 
-    while(continueIteration || umImprovements < 10){
-        System.out.println("\n\nIteration: "+iterationCount++);
+    while(continueIteration || popSize * iterationCount < totalSolnsToExamine){
+        //System.out.println("\n\nIteration: "+iterationCount++);
         continueIteration = inverOverCore();
         double popBestObjective = 0;
 
-        if(iterationCount == 1){
+        if(iterationCount == 0){
             bestObj = popBestObjective = getPopBestObjective();
+        }
+        else{
+          popBestObjective = getPopBestObjective();
         }
 
         if(bestObj > popBestObjective){
@@ -73,7 +77,10 @@ public class inverOverOperator extends twoPointCrossover2{
         else{
             umImprovements ++;
         }
+        iterationCount ++;
+        //System.out.println("bestObj: "+bestObj+", popBestObjective: "+popBestObjective);
     }
+    //System.exit(0);
   }
 
   private boolean inverOverCore(){
@@ -88,13 +95,13 @@ public class inverOverOperator extends twoPointCrossover2{
 
         chromosome chromosomeTemp = newPop.getSingleChromosome(i);
 
-        openga.util.printClass printClass1 = new openga.util.printClass();
+        //openga.util.printClass printClass1 = new openga.util.printClass();
         //printClass1.printMatrix("P"+(i+1), chromosome1.genes);
 
        //test the probability is larger than crossoverRate.
        if(Math.random() <= crossoverRate){
           int cePosition = cutPoint2;
-          System.out.printf("(Type: Direct Inverse) C1: %d, Cs: %d, Ce: %d \n", c1, cs, newPop.getSingleChromosome(i).genes[cePosition]);
+          //System.out.printf("(Type: Direct Inverse) C1: %d, Cs: %d, Ce: %d \n", c1, cs, newPop.getSingleChromosome(i).genes[cePosition]);
           chromosomeTemp = inverseGenes(newPop.getSingleChromosome(i), csPosition, cePosition);
        }
        else{
@@ -106,7 +113,7 @@ public class inverOverOperator extends twoPointCrossover2{
          int cePosition = findCityEndPositionOnP1(ce, i);
 
          if(cs == ce){//csPosition == cePosition - 1, cs == ce
-             System.out.printf("(Type: Stop) C1: %d, Cs: %d, Ce: %d \n", c1, cs, ce);
+             //System.out.printf("(Type: Stop) C1: %d, Cs: %d, Ce: %d \n", c1, cs, ce);
              continueIteration = false;
              break;
          }
@@ -117,7 +124,7 @@ public class inverOverOperator extends twoPointCrossover2{
               csPosition = cePosition;
               cePosition = temp;
             }
-            System.out.printf("(Type: Inver-Over) C1: %d, Cs: %d, Ce: %d \n", c1, cs, ce);
+            //System.out.printf("(Type: Inver-Over) C1: %d, Cs: %d, Ce: %d \n", c1, cs, ce);
             chromosomeTemp = inverseGenes(newPop.getSingleChromosome(i), csPosition, cePosition);
             inversionsCounts ++;
          }
@@ -235,6 +242,11 @@ public class inverOverOperator extends twoPointCrossover2{
             bestObj = population1.getSingleChromosome(i).getObjValue()[0];
        }
     }
-     System.out.printf("bestObj: %f inversionsCounts %d\n", bestObj, twoPointCrossover1.inversionsCounts);
+    //System.out.printf("bestObj: %f inversionsCounts %d\n", bestObj, twoPointCrossover1.inversionsCounts);
+  }
+
+  @Override
+  public void setTotalSolutions(int totalSolnsToExamine) {
+    this.totalSolnsToExamine = totalSolnsToExamine;
   }
 }
