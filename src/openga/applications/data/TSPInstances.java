@@ -12,31 +12,50 @@ import java.util.*;
 
 public class TSPInstances {
   public TSPInstances() {
-      
   }
   /**
    * We obtain the instance from TSPLIB.
    * @return
    */
   String fileName, message = "";
-  String Instances[] = new String[]{"instances/TSP/kroC100.txt","instances/TSP/pr76.txt",//kroC100 test10
+  String Instances[] = new String[]{
+    "instances/TSP/kroC100.txt",
+    "instances/TSP/pr76.txt",
     "instances/TSP/tsp225.txt",  
     "instances/TSP/berlin52.txt",
-    "instances/TSP/kroB100.txt", "instances/TSP/kroB200.txt",
+    "instances/TSP/kroB100.txt", 
+    "instances/TSP/kroB200.txt",
     "instances/TSP/att48.txt",  
     "instances/TSP/pr226.txt",
-    "instances/TSP/lin318.txt", "instances/TSP/rd400.txt", "instances/TSP/pr264.txt",
-    "instances/TSP/kroB150.txt","instances/TSP/kroD100.txt", "instances/TSP/kroE100.txt",
-    "instances/TSP/lin105.txt","instances/TSP/pr124.txt",
-    "instances/TSP/mtsp51.txt","instances/TSP/mtsp100.txt","instances/TSP/mtsp150.txt",
-    "instances/TSP/pr136.txt", "instances/TSP/pr144.txt",
+    "instances/TSP/lin318.txt", 
+    "instances/TSP/rd400.txt", 
+    "instances/TSP/pr264.txt",
+    "instances/TSP/kroB150.txt",
+    "instances/TSP/kroD100.txt", 
+    "instances/TSP/kroE100.txt",
+    "instances/TSP/lin105.txt",
+    "instances/TSP/pr124.txt",
+    "instances/TSP/mtsp51.txt",
+    "instances/TSP/mtsp100.txt",
+    "instances/TSP/mtsp150.txt",
+    "instances/TSP/pr136.txt", 
+    "instances/TSP/pr144.txt",
     "instances/TSP/pr152.txt", 
-    "instances/TSP/pr299.txt", "instances/TSP/rat99.txt", "instances/TSP/rat195.txt",
-     "instances/TSP/st70.txt",
-    "instances/TSP/bier127.txt"
+    "instances/TSP/pr299.txt", 
+    "instances/TSP/rat99.txt", 
+    "instances/TSP/rat195.txt",
+    "instances/TSP/st70.txt",
+    "instances/TSP/bier127.txt",
+    //It's dismiss instances from ANOVA.
+    "instances/TSP/ch130.txt",    
+    "instances/TSP/eil101.txt",
+    "instances/TSP/eil51.txt",
+    "instances/TSP/eli76.txt",
+    "instances/TSP/gr96.txt",
+    "instances/TSP/kroa150.txt",
+    "instances/TSP/kroa200.txt"
     };  
-    //"instances/TSP/ch130.txt","instances/TSP/eil101.txt","instances/TSP/eil51.txt","instances/TSP/eli76.txt","instances/TSP/gr96.txt","instances/TSP/kroa150.txt","instances/TSP/kroa200.txt",
-    //It is dismiss instances from ANOVA.
+
   double coordinates[][];
   double originalPoint[];
   double distanceMatrix[][];
