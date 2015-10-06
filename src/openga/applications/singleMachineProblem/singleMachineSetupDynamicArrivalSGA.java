@@ -60,7 +60,6 @@ public class singleMachineSetupDynamicArrivalSGA extends singleMachine{
     ObjectiveFunction[0].setScheduleData(processingTime, numberOfMachines);
     ObjectiveFunction[0].setScheduleData(setupTime, numberOfMachines);//We pass the setup time here.
     ((dynamicArrivalTimeI)ObjectiveFunction[0]).setDynamicArrivalTime(dynamicArrivalTime);
-    totalSolnsToExamine = 125000;  
 
     //set the data to the GA main program.
     GaMain.setData(Population, Selection, Crossover, Mutation, ObjectiveFunction, Fitness, DEFAULT_generations, DEFAULT_initPopSize,DEFAULT_PopSize,
@@ -117,11 +116,11 @@ public class singleMachineSetupDynamicArrivalSGA extends singleMachine{
         int instanceReplication = 2;
         String types[] = new String[]{"low", "med", "high"};//
     int counter = 0;
-    int repeatExperiments = 30;
+    int repeatExperiments = 1;
 
     int popSize[] = new int[]{100};//50, 100, 155, 210 [100]
-    double crossoverRate[] = new double[]{0.9},//0.6, 0.9 {0.9}
-           mutationRate [] = new double[]{0.5},//0.1, 0.5 {0.5}
+    double crossoverRate[] = new double[]{0.6, 0.9},//0.6, 0.9 {0.9}
+           mutationRate [] = new double[]{0.1, 0.5},//0.1, 0.5 {0.5}
            elitism = 0.2;
     
     for (int j = 0; j < jobSets.length; j++) {//jobSets.length
@@ -137,14 +136,19 @@ public class singleMachineSetupDynamicArrivalSGA extends singleMachine{
             int processingTime[] = readSingleMachineData1.getProcessingTime();
             int setupTime[][] = readSingleMachineData1.getSetupTime();
             int dynamicArrivalTime[] = readSingleMachineData1.getDynamicArrivalTime();   
-
-            for (int i = 0; i < repeatExperiments; i++) {
-                System.out.println("Combinations: " + counter);
-                singleMachineSetupDynamicArrivalSGA singleMachine1 = new singleMachineSetupDynamicArrivalSGA();
-                singleMachine1.setData(numberOfJobs, processingTime, setupTime, dynamicArrivalTime, fileName);		    
-                singleMachine1.initiateVars();
-                singleMachine1.startMain();
-                counter++;
+            
+            for (int m = 0; m < crossoverRate.length; m++) {
+              for (int n = 0; n < mutationRate.length; n++) {
+                for (int i = 0; i < repeatExperiments; i++) {
+                    System.out.println("Combinations: " + counter);
+                    singleMachineSetupDynamicArrivalSGA singleMachine1 = new singleMachineSetupDynamicArrivalSGA();
+                    singleMachine1.setData(numberOfJobs, processingTime, setupTime, dynamicArrivalTime, fileName);		    
+                    singleMachine1.setParameters(popSize[0], crossoverRate[m], mutationRate[n], 125000);
+                    singleMachine1.initiateVars();
+                    singleMachine1.startMain();
+                    counter++;
+                }                                                
+              }
             }                              
           }
         }
