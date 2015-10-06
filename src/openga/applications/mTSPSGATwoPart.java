@@ -22,13 +22,10 @@ import openga.util.fileWrite1;
  * Arthur E. Carter, Cliff T. Ragsdale, A new approach to solving the multiple
  traveling salesperson problem using genetic algorithms, European Journal of
  Operational Research, Volume 175, Issue 1, 16 November 2006, Pages 246-257.
- * In order to fit the original framework of the OpenGA, two populations are used.
- * The first population is the sequence of the part I chromosome, and the secondary
- * population is the part II chromosome. So each pair of chromosomes in the two
- * populations are mapped into a single chromosome when we calculate the objective
- * functions. The benefit is when we do the crossover and mutation operator, we
- * can employ the original operators without no or few modifications. As a result,
- * it speeds up the development speed.
+ * Then, we apply the new crossover operator. This method implements the new 
+two-part encoding crossover by Yuan, S., Skinner, B., Huang, S., & Liu, D. (2013). 
+A new crossover approach for solving the multiple travelling salesmen problem 
+using genetic algorithms. European Journal of Operational Research, 228(1), 72-82.
  */
 
 /**

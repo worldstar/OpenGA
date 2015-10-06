@@ -113,7 +113,7 @@ public class singleMachineSetupDynamicArrivalSGA extends singleMachine{
     System.out.println("singleMachineSetupDynamicArrivalGA_20151006");
     //openga.applications.data.singleMachine singleMachineData = new openga.applications.data.singleMachine();
         int jobSets[] = new int[]{50};//10, 15, 20, 25, 50, 100, 150, 200
-        int instanceReplication = 2;
+        int instanceReplication = 15;
         String types[] = new String[]{"low", "med", "high"};//
     int counter = 0;
     int repeatExperiments = 1;
