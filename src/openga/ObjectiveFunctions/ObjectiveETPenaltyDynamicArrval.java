@@ -14,6 +14,7 @@ import openga.util.algorithm.*;
 
 public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixPTimeScheduleI, alphaBetaI, dynamicArrivalTimeI{
   public ObjectiveETPenaltyDynamicArrval() {
+    
   }
   populationI originalPop;
   int indexOfObjective;
@@ -173,5 +174,9 @@ public class ObjectiveETPenaltyDynamicArrval implements ObjectiveFunctionMatrixP
 
   public double[] getObjectiveValues(int index){
     return originalPop.getObjectiveValues(index);
+  }
+  
+  public static void main(String[] args) {
+    
   }
 }
