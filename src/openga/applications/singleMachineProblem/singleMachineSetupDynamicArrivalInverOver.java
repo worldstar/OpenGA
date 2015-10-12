@@ -1,18 +1,9 @@
 package openga.applications.singleMachineProblem;
 
 import openga.chromosomes.*;
-import openga.operator.selection.*;
 import openga.operator.crossover.*;
-import openga.operator.mutation.*;
-import openga.ObjectiveFunctions.*;
-import openga.MainProgram.*;
 import openga.ObjectiveFunctions.*;
 import openga.Fitness.*;
-//import openga.util.printClass;
-import openga.util.fileWrite1;
-import openga.applications.data.*;
-import openga.applications.singleMachine;
-import openga.operator.clone.*;
 
 /**
  * <p>Title: eSGGA2 for the single machine scheduling problem with setup and dynamic arrival
@@ -85,23 +76,6 @@ public class singleMachineSetupDynamicArrivalInverOver extends singleMachineEDA2
                 + "\t" + population1.getSingleChromosome(bestInd).toString1() +"\n";
         writeFile("singleMachineDynamicArrivalInverOver_20151005", implementResult);
         System.out.print(implementResult);
-    }
-
-    /**
-     * For single objective problem
-     * @param arch1
-     * @return
-     */
-    public int getBestSolnIndex(populationI arch1) {
-        int index = 0;
-        double bestobj = Double.MAX_VALUE;
-        for (int k = 0; k < arch1.getPopulationSize(); k++) {
-            if (bestobj > arch1.getObjectiveValues(k)[0]) {
-                bestobj = arch1.getObjectiveValues(k)[0];
-                index = k;
-            }
-        }
-        return index;
     }
 
     public static void main(String[] args) {

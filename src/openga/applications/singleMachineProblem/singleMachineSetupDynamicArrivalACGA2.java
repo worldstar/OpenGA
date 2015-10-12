@@ -153,29 +153,14 @@ public class singleMachineSetupDynamicArrivalACGA2 extends singleMachine {
         System.out.println(implementResult);
     }
 
-    /**
-     * For single objective problem
-     * @param arch1
-     * @return
-     */
-    public int getBestSolnIndex(populationI arch1) {
-        int index = 0;
-        double bestobj = Double.MAX_VALUE;
-        for (int k = 0; k < GaMain.getArchieve().getPopulationSize(); k++) {
-            if (bestobj > GaMain.getArchieve().getObjectiveValues(k)[0]) {
-                bestobj = GaMain.getArchieve().getObjectiveValues(k)[0];
-                index = k;
-            }
-        }
-        return index;
-    }
+
 
     public static void main(String[] args) {
         System.out.println("singleMachineDynamicArrivalACGA2_20151012");
         //openga.applications.data.singleMachine singleMachineData = new openga.applications.data.singleMachine();
         int jobSets[] = new int[]{10, 15, 20, 25, 50, 100, 150, 200};//10, 15, 20, 25, 50, 100, 150, 200//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80
         int instanceReplication = 15;
-        String types[] = new String[]{"low", "med", "high"};//
+        String types[] = new String[]{"low", "med", "high"};//"low", "med", "high"
         int counter = 0;
         int repeatExperiments = 1;
 
@@ -185,16 +170,16 @@ public class singleMachineSetupDynamicArrivalACGA2 extends singleMachine {
                 elitism = 0.1;
 
         //EDA parameters.
-        int startingGeneration[] = new int[]{50, 100};//200, 500
-        double startingGenerationPercent[] = new double[]{0.5};//0.1, 0.3, 0.5
+        int startingGeneration[] = new int[]{200, 500};//200, 500
+        double startingGenerationPercent[] = new double[]{0.1, 0.3, 0.5};//0.1, 0.3, 0.5
         int interval[] = new int[]{25, 50};
-        double intervalPercent[] = new double[]{0.01};//0.01, 0.05, 0.1
+        double intervalPercent[] = new double[]{0.01, 0.05, 0.1};//0.01, 0.05, 0.1
         int strategy[] = new int[]{0}; //0:sequence, 1:random
         int totalSolnsToExamine = 125000;
         boolean applyEvaporation = false;
         String evaporationMethod[] = new String[]{"method2"};//constant, method1, method2
-        double lamdalearningrate[] = new double[]{0.7};
-        double betalearningrate[] = new double[]{0.1};              
+        double lamdalearningrate[] = new double[]{0.7};//0.9, 0.5, 0.1
+        double betalearningrate[] = new double[]{0.9, 0.5, 0.1}; //0.9, 0.5, 0.1           
 
         for (int j = 0; j < jobSets.length; j++) {//jobSets.length
             for (int k = 1; k <= instanceReplication; k++) { 
