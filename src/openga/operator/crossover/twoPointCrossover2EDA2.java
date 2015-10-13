@@ -111,7 +111,7 @@ public class twoPointCrossover2EDA2 extends twoPointCrossover2 implements EDAICr
         //System.exit(0);
     }
 
-    private double sumGeneInfo(chromosome _chromosome, int cutPoint1, int cutPoint2) {
+    protected double sumGeneInfo(chromosome _chromosome, int cutPoint1, int cutPoint2) {
         double total = 0;
         double sum = 0;
         int job1 = 0;

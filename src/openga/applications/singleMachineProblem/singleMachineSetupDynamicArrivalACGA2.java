@@ -152,8 +152,23 @@ public class singleMachineSetupDynamicArrivalACGA2 extends singleMachine {
         writeFile("singleMachineDynamicArrivalACGA2_20151012", implementResult);
         System.out.println(implementResult);
     }
-
-
+    
+    /**
+     * For single objective problem
+     * @param arch1
+     * @return
+     */
+    public int getBestSolnIndex(populationI arch1) {
+        int index = 0;
+        double bestobj = Double.MAX_VALUE;
+        for (int k = 0; k < arch1.getPopulationSize(); k++) {
+            if (bestobj > arch1.getObjectiveValues(k)[0]) {
+                bestobj = arch1.getObjectiveValues(k)[0];
+                index = k;
+            }
+        }
+        return index;
+    }    
 
     public static void main(String[] args) {
         System.out.println("singleMachineDynamicArrivalACGA2_20151012");
@@ -170,10 +185,10 @@ public class singleMachineSetupDynamicArrivalACGA2 extends singleMachine {
                 elitism = 0.1;
 
         //EDA parameters.
-        int startingGeneration[] = new int[]{200, 500};//200, 500
+        int startingGeneration[] = new int[]{50, 100};//50, 100
         double startingGenerationPercent[] = new double[]{0.1, 0.3, 0.5};//0.1, 0.3, 0.5
         int interval[] = new int[]{25, 50};
-        double intervalPercent[] = new double[]{0.01, 0.05, 0.1};//0.01, 0.05, 0.1
+        double intervalPercent[] = new double[]{0.01};//0.01, 0.05, 0.1
         int strategy[] = new int[]{0}; //0:sequence, 1:random
         int totalSolnsToExamine = 125000;
         boolean applyEvaporation = false;

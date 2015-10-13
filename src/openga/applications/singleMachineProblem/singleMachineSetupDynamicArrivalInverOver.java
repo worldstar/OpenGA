@@ -6,7 +6,7 @@ import openga.ObjectiveFunctions.*;
 import openga.Fitness.*;
 
 /**
- * <p>Title: eSGGA2 for the single machine scheduling problem with setup and dynamic arrival
+ * <p>Title: Inver-Over for the single machine scheduling problem with setup and dynamic arrival
  * time in a common due day environment.</p>
  * <p>Description: </p>
  * <p>Copyright: Copyright (c) 2015</p>
@@ -77,6 +77,23 @@ public class singleMachineSetupDynamicArrivalInverOver extends singleMachineEDA2
         writeFile("singleMachineDynamicArrivalInverOver_20151005", implementResult);
         System.out.print(implementResult);
     }
+    
+    /**
+     * For single objective problem
+     * @param arch1
+     * @return
+     */
+    public int getBestSolnIndex(populationI arch1) {
+        int index = 0;
+        double bestobj = Double.MAX_VALUE;
+        for (int k = 0; k < arch1.getPopulationSize(); k++) {
+            if (bestobj > arch1.getObjectiveValues(k)[0]) {
+                bestobj = arch1.getObjectiveValues(k)[0];
+                index = k;
+            }
+        }
+        return index;
+    }    
 
     public static void main(String[] args) {
         System.out.println("singleMachineDynamicArrivalInverOver_20151005");
