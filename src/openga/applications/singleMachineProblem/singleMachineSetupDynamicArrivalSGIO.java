@@ -94,7 +94,7 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
                 + GaMain.getArchieve().getSingleChromosome(bestInd).getObjValue()[0] 
                 + "\t" + timeClock1.getExecutionTime() / 1000.0  
                 + "\t" + GaMain.getArchieve().getSingleChromosome(bestInd).toString1() +"\n";
-        writeFile("singleMachineSetupDynamicArrivalSGIO_20151005", implementResult);
+        writeFile("SGIO_20151014", implementResult);
         System.out.print(implementResult);
     }
 
@@ -116,7 +116,7 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
     }
 
     public static void main(String[] args) {
-        System.out.println("singleMachineSetupDynamicArrivalSGIO_20151005");
+        System.out.println("SGIO_20151014");
         //openga.applications.data.singleMachine singleMachineData = new openga.applications.data.singleMachine();
         int jobSets[] = new int[]{10, 15, 20, 25, 50, 100, 150, 200};//10, 15, 20, 25, 50, 100, 150, 200//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80
         int instanceReplication = 1;
@@ -130,10 +130,10 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
                 elitism = 0.1;
 
         //EDA parameters.
-        double lamdalearningrate[] = new double[]{0.1}; //0.1
-        double betalearningrate[] = new double[]{0.9};   //0.9
-        int numberOfCrossoverTournament[] = new int[]{4};//{1, 2, 4} //2
-        int numberOfMutationTournament[] = new int[]{2};//{1, 2, 4}  //4
+        double lamdalearningrate[] = new double[]{0.1, 0.5, 0.9}; //[0.1]
+        double betalearningrate[] = new double[]{0.1, 0.5, 0.9};   //[0.9]
+        int numberOfCrossoverTournament[] = new int[]{1, 2, 4};//{1, 2, 4} //2
+        int numberOfMutationTournament[] = new int[]{1, 2, 4};//{1, 2, 4}  //4
         int startingGenDividen[] = new int[]{10};//{2, 4}  //2
 
         for (int j = 0; j < jobSets.length; j++) {//jobSets.length
@@ -156,7 +156,7 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
                                 for (int p = 0; p < startingGenDividen.length; p++) {
                                     for (int i = 0; i < repeatExperiments; i++) {
                                         System.out.println("Combinations: " + counter);
-                                        singleMachineSetupDynamicArrivalEDA2 singleMachine1 = new singleMachineSetupDynamicArrivalEDA2();
+                                        singleMachineSetupDynamicArrivalSGIO singleMachine1 = new singleMachineSetupDynamicArrivalSGIO();
                                         singleMachine1.setData(numberOfJobs, processingTime, setupTime, dynamicArrivalTime, fileName);
                                         singleMachine1.setEDAinfo(lamdalearningrate[lx], betalearningrate[bx], numberOfCrossoverTournament[m], numberOfMutationTournament[n], startingGenDividen[p]);
                                         singleMachine1.initiateVars();
