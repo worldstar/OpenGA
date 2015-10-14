@@ -50,7 +50,7 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
         Population = new population();
         Selection = new binaryTournament();//binaryTournament
         Crossover = new inverOverOperatorEDA2();//twoPointCrossover2 oneByOneChromosomeCrossover twoPointCrossover2withAdpative twoPointCrossover2withAdpativeThreshold
-        Mutation = new swapMutationEDA2();//shiftMutation shiftMutationWithAdaptive shiftMutationWithAdaptiveThreshold
+        Mutation = new dummyMutationEDA2();//shiftMutation shiftMutationWithAdaptive shiftMutationWithAdaptiveThreshold
         ObjectiveFunction = new ObjectiveFunctionMatrixPTimeScheduleI[numberOfObjs];
         ObjectiveFunction[0] = new ObjectiveETPenaltyDynamicArrval();
         Fitness = new singleObjectiveFitness();
@@ -118,7 +118,7 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
     public static void main(String[] args) {
         System.out.println("singleMachineSetupDynamicArrivalSGIO_20151005");
         //openga.applications.data.singleMachine singleMachineData = new openga.applications.data.singleMachine();
-        int jobSets[] = new int[]{100};//10, 15, 20, 25, 50, 100, 150, 200//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80
+        int jobSets[] = new int[]{10, 15, 20, 25, 50, 100, 150, 200};//10, 15, 20, 25, 50, 100, 150, 200//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80
         int instanceReplication = 1;
         String types[] = new String[]{"low", "med", "high"};//
         int counter = 0;
