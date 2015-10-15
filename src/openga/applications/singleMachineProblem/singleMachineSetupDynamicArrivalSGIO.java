@@ -94,7 +94,7 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
                 + GaMain.getArchieve().getSingleChromosome(bestInd).getObjValue()[0] 
                 + "\t" + timeClock1.getExecutionTime() / 1000.0  
                 + "\t" + GaMain.getArchieve().getSingleChromosome(bestInd).toString1() +"\n";
-        writeFile("SGIO_20151015", implementResult);
+        writeFile("SGIO_20151016", implementResult);
         System.out.print(implementResult);
     }
 
@@ -116,9 +116,9 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
     }
 
     public static void main(String[] args) {
-        System.out.println("SGIO_20151015");
+        System.out.println("SGIO_20151016");
         //openga.applications.data.singleMachine singleMachineData = new openga.applications.data.singleMachine();
-        int jobSets[] = new int[]{10, 20, 50, 100, 200};//10, 15, 20, 25, 50, 100, 150, 200
+        int jobSets[] = new int[]{50, 100, 200};//20, 50, 100, 200//10, 15, 20, 25, 50, 100, 150, 200
         int instanceReplication = 1;
         String types[] = new String[]{"low", "med", "high"};//
         int counter = 0;

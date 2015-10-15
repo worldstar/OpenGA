@@ -88,7 +88,7 @@ public class inverOverOperatorEDA2 extends twoPointCrossover2EDA2{
           if (maxProb < probabilitySum){
               maxProb = probabilitySum;
               newPop.setSingleChromosome(selectedSoln, newChromosomes[0]);
-              newPop.setSingleChromosome(index2, newChromosomes[1]);
+              //newPop.setSingleChromosome(index2, newChromosomes[1]);
           }
       }         
       //System.exit(0);
