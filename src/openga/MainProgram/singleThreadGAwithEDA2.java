@@ -75,8 +75,8 @@ public class singleThreadGAwithEDA2 extends singleThreadGA implements EDAMainI {
     public void startGA() {
         Population = initialStage();
         //evaluate the objective values and calculate fitness values
-//System.out.println(generations);
-//System.exit(0);
+        //System.out.println(generations);
+        //System.exit(0);
         ProcessObjectiveAndFitness();
         intialOffspringPopulation();
         archieve = findParetoFront(Population, 0);
@@ -123,10 +123,9 @@ public class singleThreadGAwithEDA2 extends singleThreadGA implements EDAMainI {
             Population = replacementStage(Population, offsrping);  //Population
             evalulatePop(Population);
 
-
-                String generationResults = "";
-                generationResults = i + "\t" + getBest() + "\n";
-                writeFile("eda2_655" , generationResults);
+            //String generationResults = "";
+            //generationResults = i + "\t" + getBest() + "\n";
+            //writeFile("eda2_655" , generationResults);
 
             /*
             if (i == 500) {
@@ -148,7 +147,6 @@ public class singleThreadGAwithEDA2 extends singleThreadGA implements EDAMainI {
                 writeFile("eda2_" + i, generationResults);
             }
 */
-
         }
         //printResults();
     }
