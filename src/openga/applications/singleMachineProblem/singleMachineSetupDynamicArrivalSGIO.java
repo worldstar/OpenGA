@@ -73,7 +73,6 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
                 numberOfJob, DEFAULT_crossoverRate, DEFAULT_mutationRate, objectiveMinimization, numberOfObjs, encodeType, elitism);
         GaMain.setSecondaryCrossoverOperator(Crossover2, false);
         GaMain.setSecondaryMutationOperator(Mutation2, false);
-
         GaMain.setEDAinfo(lamda, beta, numberOfCrossoverTournament, numberOfMutationTournament, startingGenDividen);  //startingGenDividen here is as interval of EDA
     }
 
@@ -93,9 +92,9 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
                 + "\t" + startingGenDividen + "\t"                 
                 + GaMain.getArchieve().getSingleChromosome(bestInd).getObjValue()[0] 
                 + "\t" + timeClock1.getExecutionTime() / 1000.0  
-                + "\t" + GaMain.getArchieve().getSingleChromosome(bestInd).toString1() +"\n";
-        writeFile("SGIO_20151016", implementResult);
-        System.out.print(implementResult);
+                +"\n";
+        writeFile("SGIO_20151016_final", implementResult);
+        //System.out.print(implementResult);
     }
 
     /**
@@ -116,10 +115,10 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
     }
 
     public static void main(String[] args) {
-        System.out.println("SGIO_20151016");
+        System.out.println("SGIO_20151016_final");
         //openga.applications.data.singleMachine singleMachineData = new openga.applications.data.singleMachine();
-        int jobSets[] = new int[]{50, 100, 200};//20, 50, 100, 200//10, 15, 20, 25, 50, 100, 150, 200
-        int instanceReplication = 1;
+        int jobSets[] = new int[]{10, 15, 20, 25, 50, 100, 150, 200};//100, 200//10, 15, 20, 25, 50, 100, 150, 200
+        int instanceReplication = 15;
         String types[] = new String[]{"low", "med", "high"};//
         int counter = 0;
         int repeatExperiments = 2;
@@ -130,11 +129,11 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
                 elitism = 0.1;
 
         //EDA parameters.
-        double lamdalearningrate[] = new double[]{0.1, 0.5, 0.9}; //[0.1]
-        double betalearningrate[] = new double[]{0.1, 0.5, 0.9};   //[0.9]
-        int numberOfCrossoverTournament[] = new int[]{1, 2, 4};//{1, 2, 4} //2
+        double lamdalearningrate[] = new double[]{0.9}; //0.1, 0.5, [0.9]
+        double betalearningrate[] = new double[]{0.9};  //0.1, 0.5, [0.9]
+        int numberOfCrossoverTournament[] = new int[]{2};//{1, [2], 4} 
         int numberOfMutationTournament[] = new int[]{1};//There is no Guided Mutation.
-        int startingGenDividen[] = new int[]{2, 4, 10};//{2, 4}  //2
+        int startingGenDividen[] = new int[]{2};//{[2], 4, 10}  //2
 
         for (int j = 0; j < jobSets.length; j++) {//jobSets.length
             for (int k = 1; k <= instanceReplication; k++) { 
