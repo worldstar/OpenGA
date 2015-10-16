@@ -6,13 +6,7 @@ import openga.operator.crossover.*;
 import openga.operator.mutation.*;
 import openga.ObjectiveFunctions.*;
 import openga.MainProgram.*;
-import openga.ObjectiveFunctions.*;
 import openga.Fitness.*;
-//import openga.util.printClass;
-import openga.util.fileWrite1;
-import openga.applications.data.*;
-import openga.applications.singleMachine;
-import openga.operator.clone.*;
 
 /**
  * <p>Title: Self-Guided Inver-Over Operator for the single machine scheduling problem with setup and dynamic arrival

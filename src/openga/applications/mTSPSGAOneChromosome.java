@@ -143,7 +143,7 @@ double distanceMatrix[][];
     int repeat = 1;
 
     //to test different kinds of combinations.
-      for(int i = 33 ; i <= numInstances ; i ++ ){//numInstances
+      for(int i = 0 ; i <= numInstances ; i ++ ){//numInstances
         //initiate scheduling data, we get the data from a program.
         openga.applications.data.TSPInstances TSPInstances1 = new openga.applications.data.TSPInstances();
         TSPInstances1.setData(TSPInstances1.getFileName(i));

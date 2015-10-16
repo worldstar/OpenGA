@@ -43,22 +43,24 @@ public class forMTSPDistanceCalcOneChromosomeWay2 extends forDistanceCalculation
       for(int k = 0 ; k < chromosome1.genes.length ; k ++){
           if(starting == true && chromosome1.genes[k] < length){
               //The first city in a group
-              objVal += distanceToOriginal[chromosome1.genes[k]];
+              objVal += distanceToOriginal[chromosome1.genes[k]];                                  
               travelDistances[personNumber] += distanceToOriginal[chromosome1.genes[k]];
           }
-          else if(chromosome1.genes[k] >= length && k > 0 && chromosome1.genes[k-1] < length){
+          else if(chromosome1.genes[k] > length && k > 0 && chromosome1.genes[k-1] < length){
               //The last point then go back to original point.
               objVal += distanceToOriginal[chromosome1.genes[k-1]];
               travelDistances[personNumber] += distanceToOriginal[chromosome1.genes[k-1]];
               starting = true;
               personNumber ++;
+              //System.out.println("\nGo back: "+chromosome1.genes[k-1]+" "+chromosome1.genes[k]);
           }
-          else if(chromosome1.genes[k] >= length && k > 0 && chromosome1.genes[k-1] >= length){              
+          else if(chromosome1.genes[k] > length && k > 0 && chromosome1.genes[k-1] >= length){              
               //It shows there is no city assigned to this saleman.
               //We don't apply this condition. We add a largest value to avoid this solution.
               objVal += Double.MAX_VALUE;              
               travelDistances[personNumber] += Double.MAX_VALUE;
               personNumber ++;
+              //System.out.println("\niLLegal: "+chromosome1.genes[k-1]+" "+chromosome1.genes[k]);
           }          
           else if(chromosome1.genes[k] < length){
             int index1 = chromosome1.genes[k];
