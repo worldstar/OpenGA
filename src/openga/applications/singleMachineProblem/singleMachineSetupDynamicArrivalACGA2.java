@@ -149,7 +149,7 @@ public class singleMachineSetupDynamicArrivalACGA2 extends singleMachine {
                 + lamda + "\t" + beta + "\t" 
                 + GaMain.getArchieve().getSingleChromosome(bestInd).getObjValue()[0] + "\t" 
                 + timeClock1.getExecutionTime() / 1000.0 + "\n";
-        writeFile("singleMachineDynamicArrivalACGA2_20151012", implementResult);
+        writeFile("ACGA2_20151020Full", implementResult);
         System.out.println(implementResult);
     }
     
@@ -171,7 +171,7 @@ public class singleMachineSetupDynamicArrivalACGA2 extends singleMachine {
     }    
 
     public static void main(String[] args) {
-        System.out.println("singleMachineDynamicArrivalACGA2_20151012");
+        System.out.println("ACGA2_20151020Full");
         //openga.applications.data.singleMachine singleMachineData = new openga.applications.data.singleMachine();
         int jobSets[] = new int[]{10, 15, 20, 25, 50, 100, 150, 200};//10, 15, 20, 25, 50, 100, 150, 200//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80
         int instanceReplication = 15;
@@ -186,15 +186,15 @@ public class singleMachineSetupDynamicArrivalACGA2 extends singleMachine {
 
         //EDA parameters.
         int startingGeneration[] = new int[]{50, 100};//50, 100
-        double startingGenerationPercent[] = new double[]{0.1, 0.3, 0.5};//0.1, 0.3, 0.5
+        double startingGenerationPercent[] = new double[]{0.5};//0.1, 0.3, 0.5//[0.5]
         int interval[] = new int[]{25, 50};
-        double intervalPercent[] = new double[]{0.01};//0.01, 0.05, 0.1
+        double intervalPercent[] = new double[]{0.05};//0.01, 0.05, 0.1//[0.05]
         int strategy[] = new int[]{0}; //0:sequence, 1:random
         int totalSolnsToExamine = 125000;
         boolean applyEvaporation = false;
         String evaporationMethod[] = new String[]{"method2"};//constant, method1, method2
-        double lamdalearningrate[] = new double[]{0.7};//0.9, 0.5, 0.1
-        double betalearningrate[] = new double[]{0.9, 0.5, 0.1}; //0.9, 0.5, 0.1           
+        double lamdalearningrate[] = new double[]{0.1};//0.9, 0.5, 0.1//[0.1]
+        double betalearningrate[] = new double[]{0.5}; //0.9, 0.5, 0.1 //[0.5]          
 
         for (int j = 0; j < jobSets.length; j++) {//jobSets.length
             for (int k = 1; k <= instanceReplication; k++) { 

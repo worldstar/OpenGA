@@ -106,7 +106,7 @@ public class singleThreadGAwithProbabilityMatrixIL extends singleThreadGA implem
             generationResults = "";
             generationResults = i+"\t"+getBest()+"\t"+genoDiversityValue+"\n";
             //System.out.print(generationResults);
-            writeFile("flowshop_eACGA_NEH_objDiv_ta110_div", generationResults);
+            //writeFile("flowshop_eACGA_NEH_objDiv_ta110_div", generationResults);
              
             if (i < startingGeneration || i % interval != 0) {
                 SGA();
