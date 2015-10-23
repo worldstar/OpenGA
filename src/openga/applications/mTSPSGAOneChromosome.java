@@ -96,24 +96,9 @@ double distanceMatrix[][];
     //set the data to the GA main program.
     /*Note: the gene length is problem size + numberOfSalesmen*/
     GaMain.setData(Population, Selection, Crossover, Mutation, ObjectiveFunction, Fitness, DEFAULT_generations,
-            DEFAULT_initPopSize,DEFAULT_PopSize, length + numberOfSalesmen , DEFAULT_crossoverRate, DEFAULT_mutationRate,
+            DEFAULT_initPopSize,DEFAULT_PopSize, length + numberOfSalesmen - 1, DEFAULT_crossoverRate, DEFAULT_mutationRate,
             objectiveMinimization, numberOfObjs, encodeType, elitism);    
     //GaMain.setLocalSearchOperator(localSearch1, applyLocalSearch, 20);
-  }
-
-  public chromosome moveGenes(chromosome _chromosome, int cutPoint1, int cutPoint2){
-    //Because the original cutPoint1 is always less than cutPoint2, we shuffle the position.
-    if(Math.random() < 0.5){
-      int tempIndex = cutPoint1;
-      cutPoint1 = cutPoint2;
-      cutPoint2 = tempIndex;
-    }
-    //To move the number of cities from cutPoint2 to cutPoint1 and it ensures the
-    //number of visiting city of the salesmen at cutPoint2 is at least one city.
-    int maxMovedCities = (int)((_chromosome.genes[cutPoint2] - 1)*Math.random()*.5);
-    _chromosome.genes[cutPoint1] += maxMovedCities;
-    _chromosome.genes[cutPoint2] -= maxMovedCities;
-    return _chromosome;
   }
 
   public void start(){
@@ -140,7 +125,7 @@ double distanceMatrix[][];
     double elitism[] = new double[]{0.1};
     int generations[] = new int[]{1000};//1000
     int numInstances = 33;//33
-    int numberOfSalesmen[] = new int[]{2, 3, 5, 10, 20};//2, 3, 5, 10, 20, 30
+    int numberOfSalesmen[] = new int[]{3};//2, 3, 5, 10, 20, 30
     int repeat = 1;
 
     //to test different kinds of combinations.

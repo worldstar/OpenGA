@@ -105,7 +105,7 @@ public class singleThreadGAwithEDA extends singleThreadGA implements EDAMainI{
     //intialOffspringPopulation();
     archieve = findParetoFront(Population, 0);
     //We initial the model in the application level
-    //PBIL1 = new PBILwithLapaceCorrection(Population, lamda);
+    PBIL1 = new PBILwithLapaceCorrection(Population, lamda);
     container = PBIL1.getContainer();
 
     for(int i = 0 ; i < generations ; i ++ ){            

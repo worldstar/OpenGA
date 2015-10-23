@@ -142,8 +142,8 @@ public class mTSPSGA_SGGA extends TSP {
     mutationRate  = new double[]{0.1, 0.5};//1, 0.5 
     int counter = 0;
     double elitism[] = new double[]{0.1};
-    int generations[] = new int[]{120000};//50000  
-    int numInstances = 2;//33
+    int generations[] = new int[]{1000};//50000  
+    int numInstances = 33;//33
     int numberOfSalesmen[] = new int[]{3, 5, 10, 20, 30};//2, 3, 5, 10, 20, 30
     int repeat = 5;
     
@@ -154,7 +154,7 @@ public class mTSPSGA_SGGA extends TSP {
     int startingGenDividen[] = new int[]{4};//{2, 4}{4}    
 
     //to test different kinds of combinations.
-      for(int i = 2 ; i <= numInstances ; i ++ ){//numInstances
+      for(int i = 0 ; i <= numInstances ; i ++ ){//numInstances
         //initiate scheduling data, we get the data from a program.
         openga.applications.data.TSPInstances TSPInstances1 = new openga.applications.data.TSPInstances();
         String instanceName = TSPInstances1.getFileName(i);//getFileName getCaterFileName
