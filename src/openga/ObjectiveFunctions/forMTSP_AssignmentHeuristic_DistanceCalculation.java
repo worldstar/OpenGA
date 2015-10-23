@@ -1,5 +1,6 @@
 /*
- * It calculates the mTSP objective values which employs the minimum loading heuristic to assign the n cities to m salesmen.
+ * It calculates the mTSP objective values which employs the minimum loading heuristic 
+ * to assign the n cities to m salesmen.
  * Step 1: Assign the first m cities in the sequence directly.
  * Step 2: Assign the first un-assigned city in the sequence to a salesman which is depeneded on the minimum loading.
  * Step 3: If there is one or more un-assigned cities, go to Step 2.
@@ -62,10 +63,8 @@ public class forMTSP_AssignmentHeuristic_DistanceCalculation extends forDistance
       int personNumber = getDataIndex(cityIndex);
       int position = capacity[personNumber] - 1;
       int preCity = tempAssigments[personNumber][position];
-
-      tempAssigments[personNumber][position + 1] = chromosome1.genes[i];
-      
-      travelDistances[i] += distanceMatrix[preCity][cityIndex];
+      tempAssigments[personNumber][position + 1] = chromosome1.genes[i];       
+      travelDistances[personNumber] += distanceMatrix[preCity][cityIndex];
       capacity[personNumber] += 1;
     }
   }

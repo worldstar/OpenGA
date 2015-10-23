@@ -222,4 +222,21 @@ public class singleThreadGAwithEDA extends singleThreadGA implements EDAMainI{
     return replace1.getSelectionResult();
   }
 
+  public void setEDAinfo(double lamda, int numberOfCrossoverTournament, int numberOfMutationTournament, int startingGenDividen){
+    this.lamda = lamda;
+    this.numberOfCrossoverTournament = numberOfCrossoverTournament;
+    this.numberOfMutationTournament = numberOfMutationTournament;
+    this.startingGenDividen = startingGenDividen;
+  }
+
+  @Override
+  public void setEDAinfo(double lamda, double beta, int numberOfCrossoverTournament, int numberOfMutationTournament, int startingGenDividen) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void setFlowShopData(int numberOfJob, int numberOfMachines, int[][] processingTime) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
 }
