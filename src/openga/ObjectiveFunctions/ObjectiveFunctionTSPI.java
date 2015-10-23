@@ -14,4 +14,5 @@ public interface ObjectiveFunctionTSPI extends ObjectiveFunctionI{
   public void setTSPData(double originalPoint[], double coordinates[][], populationI PartIIChromosomes);
   public void setTSPData(double originalPoint[], double coordinates[][], int numberOfSalesmen);
   //public void setTSPData(populationI population, populationI PartIIChromosomes, int indexOfObjective);
+  public void setObjectiveFunctionType(String typeName);
 }

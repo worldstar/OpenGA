@@ -101,6 +101,7 @@ double distanceMatrix[][];
     
     //To set the part II chromosomes to the objective function object.
     ObjectiveFunction[0].setTSPData(originalPoint, coordinates, Population2);
+    ObjectiveFunction[0].setObjectiveFunctionType("TotalDistance");
     Crossover2.setFixedSumNumberData(length);    
 
     //set the data to the GA main program.

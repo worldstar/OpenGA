@@ -91,7 +91,8 @@ double distanceMatrix[][];
     //localSearch1.setMTSPData(Population, distanceMatrix, numberOfSalesmen);
         
     ObjectiveFunction[0].setTSPData(originalPoint, coordinates, numberOfSalesmen);
-
+    ObjectiveFunction[0].setObjectiveFunctionType("TotalDistance");
+    
     //set the data to the GA main program.
     /*Note: the gene length is problem size + numberOfSalesmen*/
     GaMain.setData(Population, Selection, Crossover, Mutation, ObjectiveFunction, Fitness, DEFAULT_generations,

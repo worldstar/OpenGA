@@ -19,8 +19,12 @@ public class ObjectiveFunctionTSP implements ObjectiveFunctionTSPI{
   double objectiveValue = 0;
   double distanceMatrix[][];
   double distanceToOriginal[];
+  String typeName = "TotalDistance";//MaxDistance
 
-
+  public void setObjectiveFunctionType(String typeName) {
+    this.typeName = typeName;
+  }
+  
   public void setTSPData(double originalPoint[], double coordinates[][]){
     this.originalPoint = originalPoint;
     this.coordinates = coordinates;
@@ -88,5 +92,5 @@ public class ObjectiveFunctionTSP implements ObjectiveFunctionTSPI{
 
   public double[] getObjectiveValues(int index) {
     return population.getObjectiveValues(index);
-  }
+  }  
 }

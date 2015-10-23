@@ -72,8 +72,14 @@ public class ObjectiveFunctionMTSPOneChromosome extends ObjectiveFunctionTSP imp
   public double evaluateAll(chromosome _chromosome1){
     forMTSPDistanceCalcOneChromosomeWay2 forDistanceCalculation1 = new forMTSPDistanceCalcOneChromosomeWay2();
     forDistanceCalculation1.setData(distanceToOriginal, distanceMatrix, _chromosome1, numberOfSalesmen);    
-    forDistanceCalculation1.calcObjective();    
-    return forDistanceCalculation1.getObjectiveValue2();
+    forDistanceCalculation1.calcObjective();   
+    
+    if(typeName.equals("TotalDistance")){
+      return forDistanceCalculation1.getObjectiveValue();
+    }
+    else{
+      return forDistanceCalculation1.getObjectiveValue2();
+    }    
   }
 
   public populationI getPopulation() {

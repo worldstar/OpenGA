@@ -31,8 +31,15 @@ public class TPObjectiveFunctionMTSP extends ObjectiveFunctionMTSP{
   }
 
   public double evaluateAll(chromosome _chromosome1, int numberOfSalesmen){
-    //TPforMTSPDistanceCalculation TPforDistanceCalculation1 = new TPforMTSPDistanceCalculation();
-    TPforMTSPMaxDistanceCalculation TPforDistanceCalculation1 = new TPforMTSPMaxDistanceCalculation();
+    TPforMTSPDistanceCalculation TPforDistanceCalculation1 = new TPforMTSPDistanceCalculation();
+    
+    if(typeName.equals("TotalDistance")){
+      TPforDistanceCalculation1 = new TPforMTSPDistanceCalculation();
+    }
+    else{//MaxDistance
+      TPforDistanceCalculation1 = new TPforMTSPMaxDistanceCalculation();
+    }    
+    
     TPforDistanceCalculation1.setData(distanceToOriginal, distanceMatrix, _chromosome1, numberOfSalesmen);
     TPforDistanceCalculation1.calcObjective();
 //    System.out.println(TPforDistanceCalculation1.getObjectiveValue());

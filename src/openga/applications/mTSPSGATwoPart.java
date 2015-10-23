@@ -100,6 +100,7 @@ double distanceMatrix[][];
     localSearch1 = new localSearchBy2OptForMTSP();    
     //localSearch1.setMTSPData(Population, distanceMatrix, numberOfSalesmen);
     ObjectiveFunction[0].setTSPData(originalPoint, coordinates, numberOfSalesmen);
+    ObjectiveFunction[0].setObjectiveFunctionType("TotalDistance");
     
     //set the data to the GA main program.
     /*Note: the gene length is problem size + numberOfSalesmen*/
@@ -142,17 +143,17 @@ double distanceMatrix[][];
   public static void main(String[] args) {
     System.out.println("mTSPSGA20150922MaxDistanceFull");
     double crossoverRate[], mutationRate[];
-    crossoverRate = new double[]{1, 0.5};//1, 0.5 [0.5]
-    mutationRate  = new double[]{0.1, 0.5};//0.1, 0.5 [0.1]
+    crossoverRate = new double[]{0.5};//1, 0.5 [0.5]
+    mutationRate  = new double[]{0.1};//0.1, 0.5 [0.1]
     int counter = 0;
     double elitism[] = new double[]{0.1};
     int generations[] = new int[]{1000};//1000
-    int numInstances = 33;//33
-    int numberOfSalesmen[] = new int[]{2, 3, 5, 10, 20};//2, 3, 5, 10, 20, 30
+    int numInstances = 0;//33
+    int numberOfSalesmen[] = new int[]{3};//3, 5, 10, 20, 30
     int repeat = 1;
 
     //to test different kinds of combinations.
-      for(int i = 1 ; i <= numInstances ; i ++ ){//numInstances
+      for(int i = 0 ; i <= 0 ; i ++ ){//numInstances
         //initiate scheduling data, we get the data from a program.
         openga.applications.data.TSPInstances TSPInstances1 = new openga.applications.data.TSPInstances();
         TSPInstances1.setData(TSPInstances1.getFileName(i));

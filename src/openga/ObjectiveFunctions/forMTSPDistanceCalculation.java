@@ -16,16 +16,17 @@ public class forMTSPDistanceCalculation extends forDistanceCalculation2{
   chromosome chromosome1;    //A chromosome
   int length;                //chromosome length
   double objVal = 0;         //The traveling distance.
-
+  
   //MTSP
   chromosome PIISolutions;
+  double travelDistances[]; 
   
   public void setData(double distanceToOriginal[], double distanceMatrix[][], chromosome chromosome1, chromosome PIISolutions){
     this.distanceToOriginal = distanceToOriginal;
     this.distanceMatrix = distanceMatrix;
     this.chromosome1 = chromosome1;
     this.PIISolutions = PIISolutions;
-    length = distanceMatrix.length;
+    length = distanceMatrix.length;    
   }
 
   public void setData(populationI population){
@@ -37,10 +38,12 @@ public class forMTSPDistanceCalculation extends forDistanceCalculation2{
   public void calcObjective(){
       //to get the distance of each salesmen
       int currentPosition = 0;//To record the position of the Part I chromosome
+      travelDistances = new double[PIISolutions.genes.length];
       
       for(int k = 0 ; k < PIISolutions.genes.length ; k ++){
         //from the original point to the first position.
         objVal += distanceToOriginal[chromosome1.genes[currentPosition]];
+        travelDistances[k] += distanceToOriginal[chromosome1.genes[currentPosition]];
         
         int numberOfCities = PIISolutions.getSolution()[k];
         int stopPosition = numberOfCities + currentPosition - 1;
@@ -50,10 +53,12 @@ public class forMTSPDistanceCalculation extends forDistanceCalculation2{
             int index1 = chromosome1.genes[i];
             int index2 = chromosome1.genes[i+1];
             objVal += distanceMatrix[index1][index2];       
+            travelDistances[k] += distanceMatrix[index1][index2]; 
           }
           else{
             //The last point then go back to original point.
             objVal += distanceToOriginal[chromosome1.genes[currentPosition]];
+            travelDistances[k] += distanceToOriginal[chromosome1.genes[currentPosition]];
           }
           currentPosition ++;
         }
@@ -63,5 +68,15 @@ public class forMTSPDistanceCalculation extends forDistanceCalculation2{
   public double getObjectiveValue(){
     return objVal;
   }
+  
+  public double getObjectiveValue2(){//Max distance
+    double maxDistance = 0;
+    for(int i = 0 ; i < PIISolutions.genes.length ; i ++ ){
+      if(maxDistance < travelDistances[i]){
+        maxDistance = travelDistances[i];
+      }
+    }
+    return maxDistance;
+  }   
 }
 

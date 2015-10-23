@@ -73,7 +73,13 @@ public class ObjectiveFunctionMTSPHeu extends ObjectiveFunctionTSP implements Ob
     forMTSP_AssignmentHeuristic_DistanceCalculation forDistanceCalculation1 = new forMTSP_AssignmentHeuristic_DistanceCalculation();
     forDistanceCalculation1.setData(distanceToOriginal, distanceMatrix, _chromosome1, numberOfSalesmen);
     forDistanceCalculation1.calcObjective();
-    return forDistanceCalculation1.getObjectiveValue();
+    
+    if(typeName.equals("TotalDistance")){
+      return forDistanceCalculation1.getObjectiveValue();
+    }
+    else{//Currently assign to MaxDistance
+      return forDistanceCalculation1.getObjectiveValue2();
+    }     
   }
 
   public populationI getPopulation() {
