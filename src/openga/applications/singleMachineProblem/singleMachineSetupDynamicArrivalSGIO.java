@@ -57,7 +57,6 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
         ObjectiveFunction[0].setScheduleData(processingTime, numberOfMachines);
         ObjectiveFunction[0].setScheduleData(setupTime, numberOfMachines);//We pass the setup time here.
         ((dynamicArrivalTimeI)ObjectiveFunction[0]).setDynamicArrivalTime(dynamicArrivalTime);
-        totalSolnsToExamine = 125000;
         DEFAULT_PopSize = 100;
         //System.out.println(DEFAULT_PopSize);
         //System.exit(0);
@@ -87,7 +86,7 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
                 + GaMain.getArchieve().getSingleChromosome(bestInd).getObjValue()[0] 
                 + "\t" + timeClock1.getExecutionTime() / 1000.0  
                 +"\n";
-        writeFile("SGIO_20151025_DOE", implementResult);
+        writeFile("SGIO_20151025_Full", implementResult);
         System.out.print(implementResult);
     }
 
@@ -109,26 +108,26 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
     }
 
     public static void main(String[] args) {
-        System.out.println("SGIO_20151025_DOE");
+        System.out.println("SGIO_20151025_Full");
         //openga.applications.data.singleMachine singleMachineData = new openga.applications.data.singleMachine();
-        int jobSets[] = new int[]{200};//100, 200//10, 15, 20, 25, 50, 100, 150, 200
-        int instanceReplication = 1;
-        String types[] = new String[]{"low"};//"low", "med", "high"
+        int jobSets[] = new int[]{10, 15, 20, 25, 50, 100, 150, 200};//100, 200//10, 15, 20, 25, 50, 100, 150, 200
+        int instanceReplication = 15;
+        String types[] = new String[]{"low", "med", "high"};//"low", "med", "high"
         int counter = 0;
-        int repeatExperiments = 10;
+        int repeatExperiments = 2;
         int totalSolnsToExamine = 125000;
 
         int popSize[] = new int[]{100};//50, 100, 155, 210 [100]
-        double crossoverRate[] = new double[]{0.9, 0.5, 0.1},//0.6, 0.9 {0.9}
+        double crossoverRate[] = new double[]{0.1},//0.9, 0.5, [0.1]
                 mutationRate[] = new double[]{0.5},//0.1, 0.5 {0.5}
                 elitism = 0.1;
 
         //EDA parameters.
-        double lamdalearningrate[] = new double[]{0.1, 0.5,0.9}; //0.1, 0.5, [0.9]
-        double betalearningrate[] = new double[]{0.1, 0.5,0.9};  //0.1, 0.5, [0.9]
-        int numberOfCrossoverTournament[] = new int[]{1, 2, 4};//{1, [2], 4} 
+        double lamdalearningrate[] = new double[]{0.9}; //0.1, 0.5, [0.9]
+        double betalearningrate[] = new double[]{0.9};  //0.1, 0.5, [0.9]
+        int numberOfCrossoverTournament[] = new int[]{2};//{1, [2], 4} 
         int numberOfMutationTournament[] = new int[]{1};//There is no Guided Mutation.
-        int startingGenDividen[] = new int[]{2, 4, 10};//{[2], 4, 10}  //2
+        int startingGenDividen[] = new int[]{2};//{[2], 4, 10}  //2
 
         for (int j = 0; j < jobSets.length; j++) {//jobSets.length
             for (int k = 1; k <= instanceReplication; k++) { 
