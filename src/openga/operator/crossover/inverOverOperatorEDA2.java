@@ -56,12 +56,9 @@ public class inverOverOperatorEDA2 extends twoPointCrossover2EDA2{
     }    
     
     for (int i = 0; i < popSize ; i++) {
-        //test the probability is larger than crossoverRate.
-        if (Math.random() <= crossoverRate) {
-            //to get the other chromosome to crossover
-            setCutpoint();
-            checkCutPoints(i);
-        }
+        //to get the other chromosome to crossover
+        setCutpoint();
+        checkCutPoints(i);
     }    
   }
   
@@ -76,7 +73,8 @@ public class inverOverOperatorEDA2 extends twoPointCrossover2EDA2{
 
       for (int i = 0; i < numberOfTournament; i++) {
           int index2 = getCrossoverChromosome(selectedSoln);//to get a chromosome to be mated.
-          inverOverCore(originalPop.getSingleChromosome(selectedSoln), originalPop.getSingleChromosome(index2), newChromosomes[0]);
+          inverOverCore(originalPop.getSingleChromosome(selectedSoln), originalPop.getSingleChromosome(index2), 
+                  newChromosomes[0], selectedSoln);
 
           if (numberOfTournament == 1) {//it needs not to collect the gene information
               probabilitySum = 10.0;
@@ -94,43 +92,39 @@ public class inverOverOperatorEDA2 extends twoPointCrossover2EDA2{
       //System.exit(0);
   }   
 
-  private boolean inverOverCore(chromosome chromosome1, chromosome chromosome2, chromosome child1){
+  private boolean inverOverCore(chromosome chromosome1, chromosome chromosome2, chromosome child1, int selectedSoln){
     boolean continueIteration = true;
-    
-    for(int i = 0 ; i < popSize ; i ++ ){        
-        setCutpoint();
-        int c1 = chromosome1.genes[cutPoint1];
-        int cs = chromosome1.genes[cutPoint1+1];
-        int csPosition = cutPoint1+1;
+          
+    int c1 = chromosome1.genes[cutPoint1];
+    int cs = chromosome1.genes[cutPoint1+1];
+    int csPosition = cutPoint1+1;
+    int cePosition = 0;
 
-       //test the probability is larger than crossoverRate.
-       if(Math.random() <= crossoverRate){
-          int cePosition = cutPoint2;
-          //System.out.printf("(Type: Direct Inverse) C1: %d, Cs: %d, Ce: %d \n", c1, cs, newPop.getSingleChromosome(i).genes[cePosition]);
-          child1 = inverseGenes(chromosome1, csPosition, cePosition);
-       }
-       else{
-         int ce = findCityEndOnP2(c1, chromosome2);
-         int cePosition = findCityEndPositionOnP1(ce, i);
-
-         if(cs == ce){//csPosition == cePosition - 1, cs == ce
-             //System.out.printf("(Type: Stop) C1: %d, Cs: %d, Ce: %d \n", c1, cs, ce);
-             continueIteration = false;
-             break;
-         }
-         else{
-            //swap position
-            if(csPosition > cePosition){
-              int temp = csPosition;
-              csPosition = cePosition;
-              cePosition = temp;
-            }
-            //System.out.printf("(Type: Inver-Over) C1: %d, Cs: %d, Ce: %d \n", c1, cs, ce);
-            child1 = inverseGenes(chromosome1, csPosition, cePosition);
-            inversionsCounts ++;
-         }
-       }               
+    //test the probability is larger than crossoverRate.
+    if(Math.random() <= crossoverRate){
+       cePosition = cutPoint2;//Directly take the cutPoint2 without using the population information.
+       //System.out.printf("(Type: Direct Inverse) C1: %d, Cs: %d, Ce: %d \n", c1, cs, newPop.getSingleChromosome(i).genes[cePosition]);       
     }
+    else{
+      int ce = findCityEndOnP2(c1, chromosome2);
+      cePosition = findCityEndPositionOnP1(ce, chromosome1);
+
+      if(cs == ce){//csPosition == cePosition - 1, cs == ce
+          //System.out.printf("(Type: Stop) C1: %d, Cs: %d, Ce: %d \n", c1, cs, ce);
+          continueIteration = false;          
+      }
+      else{
+         //Check the correctness of the csPosition should be less than cePosition 
+         if(csPosition > cePosition){
+           int temp = csPosition;
+           csPosition = cePosition;
+           cePosition = temp;
+         }
+         //System.out.printf("(Type: Inver-Over) C1: %d, Cs: %d, Ce: %d \n", c1, cs, ce);
+         inversionsCounts ++;
+      }
+    }        
+    child1 = inverseGenes(chromosome1, csPosition, cePosition);
     return continueIteration;
   }
 
@@ -150,9 +144,9 @@ public class inverOverOperatorEDA2 extends twoPointCrossover2EDA2{
     return ce;
   }
 
-  private int findCityEndPositionOnP1(int ce, int index1){
+  private int findCityEndPositionOnP1(int ce, chromosome chromosome1){
     for(int i = 0 ; i < chromosomeLength; i ++ ){
-      if(newPop.getSingleChromosome(index1).genes[i] == ce){
+      if(chromosome1.genes[i] == ce){
         return i;
       }
     }

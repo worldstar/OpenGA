@@ -81,14 +81,14 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
         
         String fileNameArray[] = fileName.split("/");
         fileName = fileNameArray[2] + "\t"+ fileNameArray[3].substring(0, fileNameArray[3].indexOf("."));
-        implementResult = fileName + "\t" + lamda + "\t" + beta + "\t" 
+        implementResult = fileName + "\t" + this.DEFAULT_crossoverRate+ "\t" + lamda + "\t" + beta + "\t" 
                 + numberOfCrossoverTournament + "\t" + numberOfMutationTournament 
                 + "\t" + startingGenDividen + "\t"                 
                 + GaMain.getArchieve().getSingleChromosome(bestInd).getObjValue()[0] 
                 + "\t" + timeClock1.getExecutionTime() / 1000.0  
                 +"\n";
-        writeFile("SGIO_20151016_final", implementResult);
-        //System.out.print(implementResult);
+        writeFile("SGIO_20151025_DOE", implementResult);
+        System.out.print(implementResult);
     }
 
     /**
@@ -109,25 +109,26 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
     }
 
     public static void main(String[] args) {
-        System.out.println("SGIO_20151016_final");
+        System.out.println("SGIO_20151025_DOE");
         //openga.applications.data.singleMachine singleMachineData = new openga.applications.data.singleMachine();
-        int jobSets[] = new int[]{10, 15, 20, 25, 50, 100, 150, 200};//100, 200//10, 15, 20, 25, 50, 100, 150, 200
-        int instanceReplication = 15;
-        String types[] = new String[]{"low", "med", "high"};//
+        int jobSets[] = new int[]{200};//100, 200//10, 15, 20, 25, 50, 100, 150, 200
+        int instanceReplication = 1;
+        String types[] = new String[]{"low"};//"low", "med", "high"
         int counter = 0;
-        int repeatExperiments = 2;
+        int repeatExperiments = 10;
+        int totalSolnsToExamine = 125000;
 
         int popSize[] = new int[]{100};//50, 100, 155, 210 [100]
-        double crossoverRate[] = new double[]{0.9},//0.6, 0.9 {0.9}
+        double crossoverRate[] = new double[]{0.9, 0.5, 0.1},//0.6, 0.9 {0.9}
                 mutationRate[] = new double[]{0.5},//0.1, 0.5 {0.5}
                 elitism = 0.1;
 
         //EDA parameters.
-        double lamdalearningrate[] = new double[]{0.9}; //0.1, 0.5, [0.9]
-        double betalearningrate[] = new double[]{0.9};  //0.1, 0.5, [0.9]
-        int numberOfCrossoverTournament[] = new int[]{2};//{1, [2], 4} 
+        double lamdalearningrate[] = new double[]{0.1, 0.5,0.9}; //0.1, 0.5, [0.9]
+        double betalearningrate[] = new double[]{0.1, 0.5,0.9};  //0.1, 0.5, [0.9]
+        int numberOfCrossoverTournament[] = new int[]{1, 2, 4};//{1, [2], 4} 
         int numberOfMutationTournament[] = new int[]{1};//There is no Guided Mutation.
-        int startingGenDividen[] = new int[]{2};//{[2], 4, 10}  //2
+        int startingGenDividen[] = new int[]{2, 4, 10};//{[2], 4, 10}  //2
 
         for (int j = 0; j < jobSets.length; j++) {//jobSets.length
             for (int k = 1; k <= instanceReplication; k++) { 
@@ -147,15 +148,18 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
                         for (int m = 0; m < numberOfCrossoverTournament.length; m++) {
                             for (int n = 0; n < numberOfMutationTournament.length; n++) {
                                 for (int p = 0; p < startingGenDividen.length; p++) {
+                                  for(int q = 0 ; q < crossoverRate.length ; q ++){
                                     for (int i = 0; i < repeatExperiments; i++) {
                                         System.out.println("Combinations: " + counter);
                                         singleMachineSetupDynamicArrivalSGIO singleMachine1 = new singleMachineSetupDynamicArrivalSGIO();
+                                        singleMachine1.setParameters(popSize[0], crossoverRate[q], mutationRate[0], totalSolnsToExamine);
                                         singleMachine1.setData(numberOfJobs, processingTime, setupTime, dynamicArrivalTime, fileName);
                                         singleMachine1.setEDAinfo(lamdalearningrate[lx], betalearningrate[bx], numberOfCrossoverTournament[m], numberOfMutationTournament[n], startingGenDividen[p]);
                                         singleMachine1.initiateVars();
                                         singleMachine1.startMain();
                                         counter++;
-                                    }
+                                    }                                    
+                                  }
                                 }
                             }
                         }
