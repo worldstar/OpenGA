@@ -86,7 +86,7 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
                 + GaMain.getArchieve().getSingleChromosome(bestInd).getObjValue()[0] 
                 + "\t" + timeClock1.getExecutionTime() / 1000.0  
                 +"\n";
-        writeFile("SGIO_20151025_Full", implementResult);
+        writeFile("SGIO_20151026_Full", implementResult);
         System.out.print(implementResult);
     }
 
@@ -108,7 +108,7 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
     }
 
     public static void main(String[] args) {
-        System.out.println("SGIO_20151025_Full");
+        System.out.println("SGIO_20151026_Full");
         //openga.applications.data.singleMachine singleMachineData = new openga.applications.data.singleMachine();
         int jobSets[] = new int[]{10, 15, 20, 25, 50, 100, 150, 200};//100, 200//10, 15, 20, 25, 50, 100, 150, 200
         int instanceReplication = 15;
@@ -124,10 +124,10 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
 
         //EDA parameters.
         double lamdalearningrate[] = new double[]{0.9}; //0.1, 0.5, [0.9]
-        double betalearningrate[] = new double[]{0.9};  //0.1, 0.5, [0.9]
-        int numberOfCrossoverTournament[] = new int[]{2};//{1, [2], 4} 
+        double betalearningrate[] = new double[]{0.1};  //[0.1], 0.5, 0.9
+        int numberOfCrossoverTournament[] = new int[]{4};//1, 2, [4]
         int numberOfMutationTournament[] = new int[]{1};//There is no Guided Mutation.
-        int startingGenDividen[] = new int[]{2};//{[2], 4, 10}  //2
+        int startingGenDividen[] = new int[]{2};//[2], 4, 10
 
         for (int j = 0; j < jobSets.length; j++) {//jobSets.length
             for (int k = 1; k <= instanceReplication; k++) { 
