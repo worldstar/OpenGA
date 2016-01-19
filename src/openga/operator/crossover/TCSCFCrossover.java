@@ -35,7 +35,7 @@ public class TCSCFCrossover extends TPCrossOver implements CrossoverMTSPI {
 
     List<List<Integer>> segmentofChild = new ArrayList<List<Integer>>();
     List<Integer> sizeofchildCities = new ArrayList<Integer>();
-    List<Integer> segmentofChildcities;
+    List<Integer> segmentofChildcities = new ArrayList<Integer>();;
     int[][] segmentofMom = new int[numberofSalesmen][];
     int[][] segmentofDad = new int[numberofSalesmen][];
     int cities = mom.length - numberofSalesmen;
@@ -96,6 +96,7 @@ public class TCSCFCrossover extends TPCrossOver implements CrossoverMTSPI {
         }
       }
     } else {
+
       for (int i = 0; i < numberofSalesmen; i++) {
         segmentofChildcities = new ArrayList<Integer>();
         for (int j = 0; j < segmentofMom[i].length; j++) {
@@ -112,15 +113,15 @@ public class TCSCFCrossover extends TPCrossOver implements CrossoverMTSPI {
           segmentofChild.add(segmentofChildcities);
         }
       }
-      
+
       System.out.println("segmentofMom = ");
-    for(int i = 0; i < segmentofMom.length; i++){
-      for(int j = 0; j < segmentofMom[i].length; j++){
-        System.out.print(segmentofMom[i][j]);
+      for (int i = 0; i < segmentofMom.length; i++) {
+        for (int j = 0; j < segmentofMom[i].length; j++) {
+          System.out.print(segmentofMom[i][j]);
+        }
+        System.out.println();
       }
       System.out.println();
-    }
-    System.out.println();
 
       int cutPoint1, cutPoint2;
 
@@ -135,24 +136,23 @@ public class TCSCFCrossover extends TPCrossOver implements CrossoverMTSPI {
           cutPoint1 = cutPoint2;
           cutPoint2 = tmp;
         }
-        
-        System.out.println("cutPoint1 = "+cutPoint1);
-        System.out.println("cutPoint2 = "+cutPoint2);
-        
-        for (int j = cutPoint1; j < cutPoint2; j++) {
-          
-          
-        }
 
-      }
-      
-      for (int i = 0; i < segmentofChild.size(); i++) {
-        for (int j = 0; j < sizeofchildCities.get(i); j++) {
-          System.out.print(segmentofChild.get(i).get(j));
+        System.out.println("cutPoint1 = " + cutPoint1);
+        System.out.println("cutPoint2 = " + cutPoint2);
+        System.out.println("segmentofMom = ");
+        for (int j = cutPoint1; j < cutPoint2; j++) {
+          segmentofChild.get(i).add(segmentofMom[i][j]);
+          System.out.print(segmentofMom[i][j]);
         }
         System.out.println();
       }
 
+    }
+    for (int i = 0; i < segmentofChild.size(); i++) {
+      for (int j = 0; j < sizeofchildCities.get(i); j++) {
+        System.out.print(segmentofChild.get(i).get(j));
+      }
+      System.out.println();
     }
 
     return Child;
