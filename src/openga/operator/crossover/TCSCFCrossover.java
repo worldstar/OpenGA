@@ -22,35 +22,36 @@ public class TCSCFCrossover extends TPCrossOver implements CrossoverMTSPI {
 
   public static void main(String[] args) {
     int[] dad = {1, 2, 3, 4, 5, 6, 7, 8, 9, 4, 2, 3},
-          mom = {1, 2, 3, 4, 5, 6, 7, 8, 9, 2, 2, 5};
+            mom = {1, 2, 3, 4, 5, 6, 7, 8, 9, 2, 2, 5};
 
     TCSCFCrossover TCSCFX = new TCSCFCrossover();
     TCSCFX.CrossOver2(mom, dad);
   }
 
   public int[] CrossOver2(int[] mom, int[] dad) {
-    
+
     numberofSalesmen = 3;//test
     int[] Child = new int[mom.length];
-    
+
     List<List<Integer>> segmentofChild = new ArrayList<List<Integer>>();
-    
-    int[][] segmentofMom = new int [numberofSalesmen][];
-    int[][] segmentofDad = new int [numberofSalesmen][];
-    int numberofCities = (mom.length - numberofSalesmen);//test = 9
-//      rsm = numberofCities - mom[mom.length-1],
-//      rsd = numberofCities - dad[dad.length-1];
+    List<Integer> sizeofchildCities = new ArrayList<Integer>();
+    List<Integer> segmentofChildcities;
+    int[][] segmentofMom = new int[numberofSalesmen][];
+    int[][] segmentofDad = new int[numberofSalesmen][];
+    int cities = mom.length - numberofSalesmen;
     boolean isOA = false;
+    boolean hasSame = false;
     //according to the numberofSalesmen,Cutting the gene segment and assign it to segmentofMom
     int length = 0;
-    
-    for(int i = 0; i < numberofSalesmen; i++){
-        int cities = mom.length-(numberofSalesmen-i);
-        segmentofMom[i] = new int [mom[cities]];
-      for(int j = 0; j < mom[cities]; j++){
+
+    for (int i = 0; i < numberofSalesmen; i++) {
+
+      segmentofMom[i] = new int[mom[cities]];
+      for (int j = 0; j < mom[cities]; j++) {
         segmentofMom[i][j] = mom[length];
         length++;
       }
+      cities++;
     }
     //print segmentofMom
 //    System.out.println("segmentofMom = ");
@@ -61,74 +62,98 @@ public class TCSCFCrossover extends TPCrossOver implements CrossoverMTSPI {
 //      System.out.println();
 //    }
 //    System.out.println();
+
     //according to the numberofSalesmen,Cutting the gene segment and assign it to segmentofDad
     length = 0;
-    
-    for(int i = 0; i < numberofSalesmen; i++){
-        int cities = dad.length-(numberofSalesmen-i);
-        segmentofDad[i] = new int [dad[cities]];
-      for(int j = 0; j < dad[cities]; j++){
+    cities = dad.length - numberofSalesmen;
+    for (int i = 0; i < numberofSalesmen; i++) {
+
+      segmentofDad[i] = new int[dad[cities]];
+      for (int j = 0; j < dad[cities]; j++) {
         segmentofDad[i][j] = dad[length];
         length++;
       }
+      cities++;
     }
-    
-    
-    List<Integer> sizeofChildcities = new ArrayList<Integer>();
-    if(isOA){
-      
-    }
-    else{
-      for(int i = 0; i < numberofSalesmen; i++){
-        boolean hasSame = false;
-        List<Integer> segmentofChildcities = new ArrayList<Integer>();
-          for(int j = 0; j < segmentofMom[i].length; j++){
-            for(int k = 0; k < segmentofDad[i].length; k++){
-              if(segmentofMom[i][j] == segmentofDad[i][k]){
-                segmentofChildcities.add(segmentofMom[i][j]);
-                hasSame = true;
-              }
+    //print segmentofDad
+//    System.out.println("segmentofDad = ");
+//    for(int i = 0; i < segmentofDad.length; i++){
+//      for(int j = 0; j < segmentofDad[i].length; j++){
+//        System.out.print(segmentofDad[i][j]);
+//      }
+//      System.out.println();
+//    }
+//    System.out.println();
+
+    if (isOA) {
+      segmentofChildcities = new ArrayList<Integer>();
+      for (int j = 0; j < segmentofMom[mom.length - 1].length; j++) {
+        for (int k = 0; k < segmentofDad[mom.length - 1].length; k++) {
+          if (segmentofMom[mom.length - 1][j] == segmentofDad[mom.length - 1][k]) {
+            segmentofChildcities.add(segmentofMom[mom.length - 1][j]);
+            hasSame = true;
+          }
+        }
+      }
+    } else {
+      for (int i = 0; i < numberofSalesmen; i++) {
+        segmentofChildcities = new ArrayList<Integer>();
+        for (int j = 0; j < segmentofMom[i].length; j++) {
+          for (int k = 0; k < segmentofDad[i].length; k++) {
+            if (segmentofMom[i][j] == segmentofDad[i][k]) {
+              segmentofChildcities.add(segmentofMom[i][j]);
+              segmentofMom[i][j] = -1;
+              hasSame = true;
             }
           }
-          if(hasSame){
-            sizeofChildcities.add(segmentofChildcities.size());
-            segmentofChild.add(segmentofChildcities);
-          }
+        }
+        if (hasSame) {
+          sizeofchildCities.add(segmentofChildcities.size());
+          segmentofChild.add(segmentofChildcities);
+        }
       }
-    }
-    
-    System.out.println("segmentofChild = ");
-    for(int i = 0; i < segmentofChild.size(); i++){
-      for(int j = 0; j < sizeofChildcities.get(i); j++){
-        System.out.print(segmentofChild.get(i).get(j));
+      
+      System.out.println("segmentofMom = ");
+    for(int i = 0; i < segmentofMom.length; i++){
+      for(int j = 0; j < segmentofMom[i].length; j++){
+        System.out.print(segmentofMom[i][j]);
       }
       System.out.println();
     }
     System.out.println();
 
+      int cutPoint1, cutPoint2;
 
-//    System.out.println("mom.length = "+mom.length);
-//    System.out.println("numberofCities = "+numberofCities);
-//    System.out.println("rsm = "+rsm);
-//    System.out.println("rsd = "+rsd);
+      for (int i = 0; i < numberofSalesmen; i++) {
+        do {
+          cutPoint1 = new Random().nextInt(segmentofMom[i].length);
+          cutPoint2 = new Random().nextInt(segmentofMom[i].length);
+        } while (cutPoint1 == cutPoint2);
 
-    
-    //assign the same-site genes to childReject List
-//    for (int i = 0; i < mom[mom.length-1]; i++) {
-//      for (int j = 0; j < dad[dad.length-1]; j++) {
-//        if (mom[rsm + i] == dad[rsd + j]) {
-//          childReject.add(mom[rsm + i]);
-//        }
-//      }
-//    }
-    //print childReject List
-//    System.out.print("childReject.get : ");
-//    for (int i = 0; i < childReject.size(); i++) {
-//      System.out.print(childReject.get(i));
-//    }
-//    System.out.println();
-    
+        if (cutPoint1 > cutPoint2) {
+          int tmp = cutPoint1;
+          cutPoint1 = cutPoint2;
+          cutPoint2 = tmp;
+        }
+        
+        System.out.println("cutPoint1 = "+cutPoint1);
+        System.out.println("cutPoint2 = "+cutPoint2);
+        
+        for (int j = cutPoint1; j < cutPoint2; j++) {
+          
+          
+        }
 
+      }
+      
+      for (int i = 0; i < segmentofChild.size(); i++) {
+        for (int j = 0; j < sizeofchildCities.get(i); j++) {
+          System.out.print(segmentofChild.get(i).get(j));
+        }
+        System.out.println();
+      }
+
+    }
 
     return Child;
   }
