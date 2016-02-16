@@ -72,7 +72,7 @@ double distanceMatrix[][];
     GaMain     = new singleThreadGAwithInitialPop();//singleThreadGAwithMultipleCrossover singleThreadGA adaptiveGA
     Population = new population();
     Selection  = new binaryTournament();
-    Crossover  = new TPCrossOver();
+    Crossover  = new TCSCFCrossover();
     Mutation   = new swapMutationTwoPart();//TwoPartMTSPMutation
     ObjectiveFunction = new ObjectiveFunctionTSPI[numberOfObjs];
     ObjectiveFunction[0] = new TPObjectiveFunctionMTSP();//the first objective
