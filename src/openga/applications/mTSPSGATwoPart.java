@@ -33,7 +33,8 @@ using genetic algorithms. European Journal of Operational Research, 228(1), 72-8
  * @author Shih-Hsin Chen
  */
 public class mTSPSGATwoPart extends TSP {
-int numberOfSalesmen = 2;
+int numberOfSalesmen = 3;
+int type = 3; //type = 0 : mtsp,  type = 2 : OA,  type = 3 : TCX
 singleThreadGA GaMain;
 SelectI Selection;
 CrossoverMTSPI Crossover;
@@ -72,7 +73,7 @@ double distanceMatrix[][];
     GaMain     = new singleThreadGAwithInitialPop();//singleThreadGAwithMultipleCrossover singleThreadGA adaptiveGA
     Population = new population();
     Selection  = new binaryTournament();
-    Crossover  = new TCSCFCrossover();
+    Crossover  = new TCSCFCrossover(type);
     Mutation   = new swapMutationTwoPart();//TwoPartMTSPMutation
     ObjectiveFunction = new ObjectiveFunctionTSPI[numberOfObjs];
     ObjectiveFunction[0] = new TPObjectiveFunctionMTSP();//the first objective
@@ -80,6 +81,8 @@ double distanceMatrix[][];
     objectiveMinimization = new boolean[numberOfObjs];
     objectiveMinimization[0] = true;
     encodeType = true;
+    
+    
     
     if(numberOfSalesmen >= length){
       System.out.println("The number of salesmen is "+numberOfSalesmen+", which should be greater than the number of visiting locations.");
@@ -150,10 +153,10 @@ double distanceMatrix[][];
     int generations[] = new int[]{1000};//1000
     int numInstances = 0;//33
     int numberOfSalesmen[] = new int[]{3};//3, 5, 10, 20, 30
-    int repeat = 1;
+    int repeat = 30;
 
     //to test different kinds of combinations.
-      for(int i = 0 ; i <= 0 ; i ++ ){//numInstances
+      for(int i = 0 ; i <= numInstances ; i ++ ){//numInstances
         //initiate scheduling data, we get the data from a program.
         openga.applications.data.TSPInstances TSPInstances1 = new openga.applications.data.TSPInstances();
         TSPInstances1.setData(TSPInstances1.getFileName(i));
@@ -167,7 +170,7 @@ double distanceMatrix[][];
             for(int n = 0 ; n < elitism.length ; n ++ ){
               for(int p = 0 ; p < numberOfSalesmen.length ; p ++){
                 for(int m = 0 ; m < repeat ; m ++ ){
-                  System.out.print("counter "+counter+" ");
+//                  System.out.print("counter "+counter+" ");
                   mTSPSGATwoPart TSP1 = new mTSPSGATwoPart();
 
                   TSP1.setParameter(i, crossoverRate[j], mutationRate[k], counter, elitism[n], generations[0], 
