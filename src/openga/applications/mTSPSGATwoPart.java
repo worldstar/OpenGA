@@ -34,7 +34,7 @@ using genetic algorithms. European Journal of Operational Research, 228(1), 72-8
  */
 public class mTSPSGATwoPart extends TSP {
 int numberOfSalesmen = 3;
-int type = 3; //type = 0 : mtsp,  type = 2 : OA,  type = 3 : TCX
+int type = 0; //type = 0 : mtsp,  type = 2 : OA,  type = 3 : TCX
 singleThreadGA GaMain;
 SelectI Selection;
 CrossoverMTSPI Crossover;
@@ -151,9 +151,9 @@ double distanceMatrix[][];
     int counter = 0;
     double elitism[] = new double[]{0.1};
     int generations[] = new int[]{1000};//1000
-    int numInstances = 0;//33
-    int numberOfSalesmen[] = new int[]{3};//3, 5, 10, 20, 30
-    int repeat = 30;
+    int numInstances = 33;//33
+    int numberOfSalesmen[] = new int[]{3, 5, 10, 20};//3, 5, 10, 20, 30
+    int repeat = 2;
 
     //to test different kinds of combinations.
       for(int i = 0 ; i <= numInstances ; i ++ ){//numInstances

@@ -19,6 +19,7 @@ public class TSPInstances {
    */
   String fileName, message = "";
   String Instances[] = new String[]{
+//    "instances/TSP/berlin10.txt",//test
     "instances/TSP/kroC100.txt",
     "instances/TSP/pr76.txt",
     "instances/TSP/tsp225.txt",  
