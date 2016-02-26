@@ -52,7 +52,7 @@ double distanceMatrix[][];
   * The method is to modify the default value.
   */
  public void setParameter(int instance, double crossoverRate, double mutationRate, int counter,
-                          double elitism, int generation, int numberOfSalesmen, 
+                          double elitism, int generation,int type, int numberOfSalesmen, 
                           double originalPoint[], double coordinates[][], double distanceMatrix[][], 
                           int cities, String instanceName){
    this.instance = instance;
@@ -61,6 +61,7 @@ double distanceMatrix[][];
    this.counter = counter;
    this.elitism = elitism;
    this.DEFAULT_generations = generation;
+   this.type = type;
    this.numberOfSalesmen = numberOfSalesmen;
    this.originalPoint = originalPoint;
    this.coordinates = coordinates;
@@ -134,9 +135,9 @@ double distanceMatrix[][];
     GaMain.startGA();
     timeClock1.end();
 
-    String implementResult = instanceName+"\t"+DEFAULT_crossoverRate+"\t"+DEFAULT_mutationRate+"\t"+numberOfSalesmen+"\t"+GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
+    String implementResult = instanceName+"\t"+DEFAULT_crossoverRate+"\t"+DEFAULT_mutationRate+"\t"+type+"\t"+numberOfSalesmen+"\t"+GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
         +"\t"+timeClock1.getExecutionTime()/1000.0+"\n";
-    writeFile("mTSPSGA20150922MaxDistanceFull", implementResult);
+    writeFile("mTSPSGA20160226MaxDistanceFull", implementResult);
     System.out.print(implementResult);
     //System.out.print("\n");
     //System.out.print(GaMain.getArchieve().getSingleChromosome(0).toString1());
@@ -144,7 +145,7 @@ double distanceMatrix[][];
   }
 
   public static void main(String[] args) {
-    System.out.println("mTSPSGA20150922MaxDistanceFull");
+    System.out.println("mTSPSGA20160226MaxDistanceFull");
     double crossoverRate[], mutationRate[];
     crossoverRate = new double[]{0.5};//1, 0.5 [0.5]
     mutationRate  = new double[]{0.1};//0.1, 0.5 [0.1]
@@ -153,6 +154,7 @@ double distanceMatrix[][];
     int generations[] = new int[]{1000};//1000
     int numInstances = 33;//33
     int numberOfSalesmen[] = new int[]{3, 5, 10, 20};//3, 5, 10, 20, 30
+    int type [] = new int[]{0,2,3};//0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
     int repeat = 2;
 
     //to test different kinds of combinations.
@@ -169,16 +171,17 @@ double distanceMatrix[][];
           for(int k = 0 ; k < mutationRate.length ; k ++ ){
             for(int n = 0 ; n < elitism.length ; n ++ ){
               for(int p = 0 ; p < numberOfSalesmen.length ; p ++){
-                for(int m = 0 ; m < repeat ; m ++ ){
-//                  System.out.print("counter "+counter+" ");
-                  mTSPSGATwoPart TSP1 = new mTSPSGATwoPart();
-
-                  TSP1.setParameter(i, crossoverRate[j], mutationRate[k], counter, elitism[n], generations[0], 
-                          numberOfSalesmen[p], TSPInstances1.getOriginalPoint(), TSPInstances1.getCoordinates(),
-                          TSPInstances1.getDistanceMatrix(), TSPInstances1.getSize(), instanceName);
-                  TSP1.initiateVars();
-                  TSP1.start();
-                  counter ++;
+                for(int q = 0 ; q < type.length ; q ++){
+                  for(int m = 0 ; m < repeat ; m ++ ){
+  //                  System.out.print("counter "+counter+" ");
+                    mTSPSGATwoPart TSP1 = new mTSPSGATwoPart();
+                    TSP1.setParameter(i, crossoverRate[j], mutationRate[k], counter, elitism[n], generations[0], type[q],
+                            numberOfSalesmen[p], TSPInstances1.getOriginalPoint(), TSPInstances1.getCoordinates(),
+                            TSPInstances1.getDistanceMatrix(), TSPInstances1.getSize(), instanceName);
+                    TSP1.initiateVars();
+                    TSP1.start();
+                    counter ++;
+                  }
                 }
               }
             }
