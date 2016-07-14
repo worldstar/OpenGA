@@ -4,78 +4,42 @@ import java.util.*;
 /**
  * <p>Title: The OpenGA project which is to build general framework of Genetic algorithm.</p>
  * <p>Description: </p>
- * <p>Copyright: Copyright (c) 2006</p>
- * <p>Company: Yuan-Ze University</p>
- * @author Chen, Shih-Hsin
- * @version 1.0
+ * <p>Copyright: Copyright (c) 2016</p>
+ * <p>Company: Cheng Shiu University</p>
+ * @authors Chen, Shih-Hsin ; Chang, Yu-Tang
+ * @version 2.0
+ * We obtain the instance from OASLIB.
+ * Reference "A tabu search algorithm for order acceptance and scheduling", http://home.ku.edu.tr/~coguz/Research/Dataset_OAS.zip
  */
 
 public class OASInstances {
   
-  public String folderPath = "instances/SingleMachineOAS";
-  public List<File> FileList = new ArrayList<>();
-  
   public String fileName;
-  public Double [] r;
-  public Double [] p;
-  public Double [] d;
-  public Double [] d_bar;
-  public Double [] e;
-  public Double [] w;
-  public Double [][] s;
-  public int size;
-  
+  public Double [] r;       //  release date.
+  public Double [] p;       //  processing time
+  public Double [] d;       //  due-date
+  public Double [] d_bar;   //  deadline
+  public Double [] e;       //  revenue
+  public Double [] w;       //  weight
+  public Double [][] s;     //  setup times
+  public int size;          //  instance lengh
   
   public OASInstances() {
   }
-  
-  /**
-   * We obtain the instance from OASLIB.
-   * @return
-   */
-    public void Import(String folderPath) {
-        final File folder = new File(folderPath);
-        Import(folder);
-    }
     
-    private void Import(File folder) {
-        //FileList = new ArrayList<>();
-        for (final File fileEntry : folder.listFiles()) {
-            if (fileEntry.isDirectory()) {
-                Import(fileEntry);
-            } else {
-                FileList.add(fileEntry);
-            }
-        }
-    }
-        
-    public List<File> getFileList() {
-        return FileList;
-    }
+//  Testing for read files.
+//    public static void main(String[] args) {
+//        OASInstances OAS = new OASInstances();
+//        OAS.setData(".\\instances\\SingleMachineOAS\\10orders\\Tao1\\R1\\Dataslack_10orders_Tao1R1_1.txt");
+//        OAS.getDataFromFile();
+//    }
     
-    public static void main(String[] args) {
-        OASInstances OAS = new OASInstances();
-        OAS.Import("instances/SingleMachineOAS");
-        OAS.getDataFromFileList();
-    }
-    
-    public void getDataFromFileList(){
-      for(int i = 0; i < FileList.size(); i++){
-//        System.out.println(FileList.get(i));
-//        getDataFromFile(i);
-      }
-      int test = 250;
-      System.out.println(FileList.get(test));
-      getDataFromFile(test);
-    }
-    
-    public void getDataFromFile(int fileNumber){
+    public void getDataFromFile(){
       try
       {
-        FileInputStream fis = new FileInputStream(FileList.get(fileNumber));
+        FileInputStream fis = new FileInputStream(fileName);
         DataInputStream in = new DataInputStream(fis);
         BufferedReader br = new BufferedReader(new InputStreamReader(in));
-        
         
         String line;	    
         String[] tmp;
@@ -85,7 +49,6 @@ public class OASInstances {
         r = new Double [tmp.length];
         for(int i = 0; i < tmp.length; i++){
           r[i] = Double.parseDouble(tmp[i]);
-          System.out.println(r[i]);
         }
         
         tmp = br.readLine().split(",");
@@ -135,9 +98,6 @@ public class OASInstances {
       }
     }
 
- 
-
-
   public void setData(String fileName){
     this.fileName = fileName;
     if( fileName == null ){
@@ -145,10 +105,9 @@ public class OASInstances {
         System.exit(1);
     }
   }
-
-
-  public String getFileName(int index){
-    return FileList.get(index).toString();
+  
+  public String getFileName() {
+    return fileName;
   }
 
   public Double[] getR() {
