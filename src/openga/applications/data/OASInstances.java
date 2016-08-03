@@ -1,7 +1,6 @@
 package openga.applications.data;
 import java.io.*;
-import java.util.*;
-/**
+/*
  * <p>Title: The OpenGA project which is to build general framework of Genetic algorithm.</p>
  * <p>Description: </p>
  * <p>Copyright: Copyright (c) 2016</p>
@@ -14,15 +13,15 @@ import java.util.*;
 
 public class OASInstances {
   
-  public String fileName;
-  public Double [] r;       //  release date.
-  public Double [] p;       //  processing time
-  public Double [] d;       //  due-date
-  public Double [] d_bar;   //  deadline
-  public Double [] e;       //  revenue
-  public Double [] w;       //  weight
-  public Double [][] s;     //  setup times
-  public int size;          //  instance lengh
+  private String fileName;
+  private double [] r;       //  release date.
+  private double [] p;       //  processing time
+  private double [] d;       //  due-date
+  private double [] d_bar;   //  deadline
+  private double [] e;       //  revenue
+  private double [] w;       //  weight
+  private double [][] s;     //  setup times
+  private int size;          //  instance lengh
   
   public OASInstances() {
   }
@@ -45,43 +44,44 @@ public class OASInstances {
         String[] tmp;
         
         tmp = br.readLine().split(",");
+        
         size = tmp.length;
-        r = new Double [tmp.length];
+        r = new double [tmp.length];
         for(int i = 0; i < tmp.length; i++){
           r[i] = Double.parseDouble(tmp[i]);
         }
         
         tmp = br.readLine().split(",");
-        p = new Double [tmp.length];
+        p = new double [tmp.length];
         for(int i = 0; i < tmp.length; i++){
           p[i] = Double.parseDouble(tmp[i]);
         }
         
         tmp = br.readLine().split(",");
-        d = new Double [tmp.length];
+        d = new double [tmp.length];
         for(int i = 0; i < tmp.length; i++){
           d[i] = Double.parseDouble(tmp[i]);
         }
         
         tmp = br.readLine().split(",");
-        d_bar = new Double [tmp.length];
+        d_bar = new double [tmp.length];
         for(int i = 0; i < tmp.length; i++){
           d_bar[i] = Double.parseDouble(tmp[i]);
         }
         
         tmp = br.readLine().split(",");
-        e = new Double [tmp.length];
+        e = new double [tmp.length];
         for(int i = 0; i < tmp.length; i++){
           e[i] = Double.parseDouble(tmp[i]);
         }
         
         tmp = br.readLine().split(",");
-        w = new Double [tmp.length];
+        w = new double [tmp.length];
         for(int i = 0; i < tmp.length; i++){
           w[i] = Double.parseDouble(tmp[i]);
         }
         
-        s = new Double [tmp.length][tmp.length];
+        s = new double [tmp.length][tmp.length];
         int n = 0;
         while ((line = br.readLine()) != null) { 
           tmp = line.split(",");
@@ -110,32 +110,36 @@ public class OASInstances {
     return fileName;
   }
 
-  public Double[] getR() {
+  public double[] getR() {
     return r;
   }
 
-  public Double[] getP() {
+  public double[] getP() {
     return p;
   }
 
-  public Double[] getD() {
+  public double[] getD() {
     return d;
   }
 
-  public Double[] getD_bar() {
+  public double[] getD_bar() {
     return d_bar;
   }
 
-  public Double[] getE() {
+  public double[] getE() {
     return e;
   }
 
-  public Double[] getW() {
+  public double[] getW() {
     return w;
   }
 
-  public Double[][] getS() {
+  public double[][] getS() {
     return s;
+  }
+
+  public int getSize() {
+    return size;
   }
 
 }
