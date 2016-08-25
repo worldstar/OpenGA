@@ -12,6 +12,8 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
   double minimumCost;
   double[] acceptionCost;
   double[] rejectionCost;
+  double maximumRevenue;
+  boolean havePunish = true;
   
   //Instance Data
   double [] r;       //  release date.
@@ -24,12 +26,13 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
   double [] T;
   double [] C;
   
+  
   @Override
   public void calcObjective() {
     double obj;
     double objectives[];
-
-    for(int i = 0 ; i < population.getPopulationSize() ; i ++ ){
+    for(int i = 0 ; i < 1 ; i ++ ){
+//    for(int i = 0 ; i < population.getPopulationSize() ; i ++ ){
       objectives = population.getObjectiveValues(i);
       obj = evaluateAll(population.getSingleChromosome(i), numberOfSalesmen);
 //      System.out.println(obj);
@@ -44,8 +47,56 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
   @Override
   public double evaluateAll(chromosome _chromosome1, int numberOfSalesmen){
     this.setData(_chromosome1, numberOfSalesmen);
-    this.calcMinimumCost();
-    return this.getMinimumCost();
+    this.calcMaximumRevenue();
+    return this.getMaximumRevenue();
+  }
+  
+  public void calcMaximumRevenue() {
+
+    maximumRevenue = 0;
+    int numberOfCities = length - numberOfSalesmen;
+    int currentPosition = 0;//To record the position of the Part I chromosome
+    int stopPosition = chromosome1.genes[numberOfCities];
+    int lastindex = 0;
+    double time = 0;
+    
+    for(int i = 0; i < numberOfSalesmen; i++){
+      for(int j = currentPosition; j < stopPosition; j++){
+        int index = chromosome1.genes[j];
+        
+        
+//        System.out.println("obj:"+(index+1));
+        
+        time += r[index];
+        time += p[index];
+        if(j == 0) {
+          s[index][lastindex] = 0;
+        }
+        time += s[index][lastindex];
+        
+        C[index] = time;
+//        System.out.println("C = r:"+r[index]+" + p:"+p[index]+" + s:"+s[index][lastindex]+" = "+C[index]);
+        
+        T[index] = Math.max(0,C[index]-d[index]);
+        System.out.println("T = C:"+C[index]+" - d:"+d[index]+" = "+(C[index]-d[index]));
+        
+        //if Object have Fine
+        if(havePunish) {
+          maximumRevenue += (e[index]-(w[index]*T[index]));
+          System.out.println("Revenue = e:"+e[index]+" - ( w:"+w[index]+" * T:"+T[index]+" ) = "+(e[index]-(w[index]*T[index])));
+        }
+        else {
+          maximumRevenue += Math.max(0,(e[index]-(w[index]*T[index])));
+//          System.out.println("Revenue = e:"+e[index]+" - ( w:"+w[index]+" * T:"+T[index]+" ) = "+Math.max(0,(e[index]-(w[index]*T[index]))));
+        }
+//        System.out.println();
+//        System.out.println("e = "+e[index]+"- ( w = "+w[index]+" * T = "+T[index]+" ) = maximumRevenue = "+maximumRevenue);
+
+        lastindex = index;
+        currentPosition ++;
+      }
+      stopPosition += (numberOfCities - currentPosition); //for parallel machine
+    }
   }
 
   public void calcMinimumCost() {
@@ -54,26 +105,45 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
     int stopPosition = chromosome1.genes[numberOfCities];
     int t = 0;
     
+//    System.out.print("chromosome1 : ");
+//      for(int i = 0; i < chromosome1.getLength(); i++){
+//        System.out.print(chromosome1.genes[i]+",");
+//      }
+//      System.out.println();
+//    int i;
+    int lasti = 0;
+//    System.out.print("i = ");
     for(int j = 0; j < numberOfSalesmen; j++){
+      int  i = chromosome1.genes[j];
+//      System.out.print(i+" ");
       for(int k = currentPosition; k < stopPosition; k++){
-          int i = chromosome1.genes[j];
-        if(j == numberOfSalesmen - 1) {//Ii = 0
+        
+          
+          
+        if(j == numberOfSalesmen - 1) {//for Rejection
           rejectionCost[i] = e[i];
           minimumCost += rejectionCost[i];   
         }
-        else {//Ii = 1
+        else {//for Acception
+          t += r[i];
+//          System.out.println("r = "+r[i]);
+//          t += s[i][lasti];
+//          System.out.println("s = "+s[i][lasti]);
           t += p[i];
+//          System.out.println("p = "+p[i]);
           C[i] = t;
           T[i] = Math.max(0,C[i]-d[i]);
           acceptionCost[i] = w[i]*T[i];
           minimumCost += acceptionCost[i];
         }
-          currentPosition ++;
+          lasti = i;  //last object sequence
+          currentPosition ++; //for parallel machine
       }
-      stopPosition += (numberOfCities - currentPosition);
+      stopPosition += (numberOfCities - currentPosition); //for parallel machine
     }
+//    System.out.println();
   }
-  
+
   public void setOASData(double[] r, double[] p, double[] d, double[] d_bar, double[] e, double[] w, double[][] s, int numberOfSalesmen) {
     this.r = r;
     this.p = p;
@@ -97,6 +167,10 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
   
   public double getMinimumCost() {
     return minimumCost;
+  }
+
+  public double getMaximumRevenue() {
+    return maximumRevenue;
   }
   
 }
