@@ -122,6 +122,11 @@ public class singleThreadGAwithEDA2 extends singleThreadGA implements EDAMainI {
             ProcessObjectiveAndFitness(offsrping);
             Population = replacementStage(Population, offsrping);  //Population
             evalulatePop(Population);
+            
+            //local search
+            if (applyLocalSearch == true && i % this.generations/2 == 0) {
+                localSearchStage(1);
+            }  
 
             //String generationResults = "";
             //generationResults = i + "\t" + getBest() + "\n";
@@ -150,6 +155,16 @@ public class singleThreadGAwithEDA2 extends singleThreadGA implements EDAMainI {
         }
         //printResults();
     }
+    
+    public void localSearchStage(int iteration) {
+        //openga.operator.localSearch.localSearchByVNS localSearch1 = new openga.operator.localSearch.localSearchByVNS();
+        currentUsedSolution += fixPopSize;//Solutions used in genetic search
+        localSearch1.setData(Population, totalExaminedSolution, maxNeighborhood);
+        localSearch1.setData(Population, archieve, currentUsedSolution, iteration);
+        localSearch1.setObjectives(ObjectiveFunction);
+        localSearch1.startLocalSearch();
+        currentUsedSolution = localSearch1.getCurrentUsedSolution();
+    }    
 
     public void intialOffspringPopulation() {
         offsrping.setGenotypeSizeAndLength(encodeType, fixPopSize, length, numberOfObjs);

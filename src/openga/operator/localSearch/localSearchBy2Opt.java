@@ -24,6 +24,7 @@ public class localSearchBy2Opt implements localSearchI{
   int currentUsedSolution;
   int maxNeighborhood = 5;  //A default value of the maximum neighbors to search.
   int selectedIndex;
+  int totalTimes = 2;
 
   public void setData(populationI population1, int totalExaminedSolution, int maxNeighborhood){
     pop = new population();
@@ -42,6 +43,16 @@ public class localSearchBy2Opt implements localSearchI{
     popSize = population1.getPopulationSize();
     chromosomeLength = population1.getSingleChromosome(0).genes.length;
   }
+  
+    public void setData(populationI population1, populationI archive, int currentUsedSolution, int iter) {
+        pop = new population();
+        this.pop = population1;
+        this.archive = archive;
+        this.currentUsedSolution = currentUsedSolution;
+        popSize = population1.getPopulationSize();
+        chromosomeLength = population1.getSingleChromosome(0).genes.length;
+        this.totalTimes = iter;
+    }  
 
   public void setObjectives(ObjectiveFunctionI ObjectiveFunction[]){
     this.ObjectiveFunction = ObjectiveFunction;
