@@ -86,8 +86,9 @@ public class singleThreadGAwithEDA2 extends singleThreadGA implements EDAMainI {
         container = PBIL1.getContainer();
         inter = PBIL1.getInter();
         temporaryContainer = new double[length][length];
-
-        for (int i = 0; i < generations; i++) {
+        
+        int i = 0;
+        do {
             //System.out.println("generations "+i);
             currentGeneration = i;
             offsrping = selectionStage(Population);
@@ -152,7 +153,7 @@ public class singleThreadGAwithEDA2 extends singleThreadGA implements EDAMainI {
                 writeFile("eda2_" + i, generationResults);
             }
 */
-        }
+        }while(currentUsedSolution < fixPopSize * generations);
         //printResults();
     }
     
