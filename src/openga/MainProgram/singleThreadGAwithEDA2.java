@@ -88,7 +88,9 @@ public class singleThreadGAwithEDA2 extends singleThreadGA implements EDAMainI {
         temporaryContainer = new double[length][length];
         
         int i = 0;
-        do {
+
+        //for (int i = 0; i < generations; i++) {
+        do{
             //System.out.println("generations "+i);
             currentGeneration = i;
             offsrping = selectionStage(Population);
@@ -123,15 +125,20 @@ public class singleThreadGAwithEDA2 extends singleThreadGA implements EDAMainI {
             ProcessObjectiveAndFitness(offsrping);
             Population = replacementStage(Population, offsrping);  //Population
             evalulatePop(Population);
-            
-            //local search
-            if (applyLocalSearch == true && i % this.generations/2 == 0) {
-                localSearchStage(1);
-            }  
 
             //String generationResults = "";
             //generationResults = i + "\t" + getBest() + "\n";
             //writeFile("eda2_655" , generationResults);
+            
+            currentUsedSolution += fixPopSize;//Solutions used in genetic search
+
+            //local search
+            if (applyLocalSearch == true && i % 10 == 0 ) {
+              System.out.println("gen: "+i);
+                localSearchStage(1);
+            } 
+            
+            i ++;
 
             /*
             if (i == 500) {
@@ -153,19 +160,18 @@ public class singleThreadGAwithEDA2 extends singleThreadGA implements EDAMainI {
                 writeFile("eda2_" + i, generationResults);
             }
 */
-        }while(currentUsedSolution < fixPopSize * generations);
+        }while(i < generations && currentUsedSolution < this.fixPopSize*this.generations);
         //printResults();
     }
-    
+
     public void localSearchStage(int iteration) {
-        //openga.operator.localSearch.localSearchByVNS localSearch1 = new openga.operator.localSearch.localSearchByVNS();
-        currentUsedSolution += fixPopSize;//Solutions used in genetic search
+        //openga.operator.localSearch.localSearchByVNS localSearch1 = new openga.operator.localSearch.localSearchByVNS();        
         localSearch1.setData(Population, totalExaminedSolution, maxNeighborhood);
         localSearch1.setData(Population, archieve, currentUsedSolution, iteration);
         localSearch1.setObjectives(ObjectiveFunction);
         localSearch1.startLocalSearch();
-        currentUsedSolution = localSearch1.getCurrentUsedSolution();
-    }    
+        currentUsedSolution += localSearch1.getCurrentUsedSolution();
+    } 
 
     public void intialOffspringPopulation() {
         offsrping.setGenotypeSizeAndLength(encodeType, fixPopSize, length, numberOfObjs);

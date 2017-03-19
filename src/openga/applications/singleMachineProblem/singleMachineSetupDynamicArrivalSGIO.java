@@ -8,7 +8,6 @@ import openga.ObjectiveFunctions.*;
 import openga.MainProgram.*;
 import openga.Fitness.*;
 import openga.operator.localSearch.*;
-
 /**
  * <p>Title: Self-Guided Inver-Over Operator for the single machine scheduling problem with setup and dynamic arrival
  * time in a common due day environment.</p>
@@ -24,19 +23,20 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
     public singleMachineSetupDynamicArrivalSGIO() {
         
     }
-    /**
-     * Local Search Operator
-     */
-    boolean applyLocalSearch = true;
-    localSearchI localSearch1;
-    int maxNeighborhood = 2;  //A default value of the maximum neighbors to search.
-  
+    
     int processingTime[];
     int setupTime[][];
     int dynamicArrivalTime[];
     
     ObjectiveFunctionMatrixPTimeScheduleI ObjectiveFunction[];
     
+    /**
+     * Local Search Operator
+     */
+    boolean applyLocalSearch = true;
+    localSearchI localSearch1;
+    int maxNeighborhood = 3;  //A default value of the maximum neighbors to search.
+
     public void setData(int numberOfJobs, int processingTime[], int setupTime[][], 
             int dynamicArrivalTime[], String fileName){
       this.numberOfJob = numberOfJobs;      
@@ -74,7 +74,7 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
         GaMain.setSecondaryCrossoverOperator(Crossover2, false);
         GaMain.setSecondaryMutationOperator(Mutation2, false);
         GaMain.setEDAinfo(lamda, beta, numberOfCrossoverTournament, numberOfMutationTournament, startingGenDividen);  //startingGenDividen here is as interval of EDA
-        
+
         //Set local search by IG operator
         localSearch1 = new localSearchByVNS();//localSearchBy2Opt localSearchBySwap
         GaMain.setLocalSearchOperator(localSearch1, applyLocalSearch, maxNeighborhood);
@@ -97,7 +97,7 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
                 + GaMain.getArchieve().getSingleChromosome(bestInd).getObjValue()[0] 
                 + "\t" + timeClock1.getExecutionTime() / 1000.0  
                 +"\n";
-        writeFile("SGIO_20170318_Full_2opt", implementResult);
+        writeFile("SGIO_20170319_Full", implementResult);
         System.out.print(implementResult);
     }
 
@@ -119,11 +119,11 @@ public class singleMachineSetupDynamicArrivalSGIO extends singleMachineEDA2 {
     }
 
     public static void main(String[] args) {
-        System.out.println("SGIO_20170318_Full_2opt");
+        System.out.println("SGIO_20170319_Full");
         //openga.applications.data.singleMachine singleMachineData = new openga.applications.data.singleMachine();
-        int jobSets[] = new int[]{100, 150, 200};//100, 200//10, 15, 20, 25, 50, 100, 150, 200
+        int jobSets[] = new int[]{10, 15, 20, 25, 50, 100, 150, 200};//100, 200//10, 15, 20, 25, 50, 100, 150, 200
         int instanceReplication = 15;
-        String types[] = new String[]{"high"};//"low", "med", "high"
+        String types[] = new String[]{"low", "med", "high"};//"low", "med", "high"
         int counter = 0;
         int repeatExperiments = 30;
         int totalSolnsToExamine = 125000;
