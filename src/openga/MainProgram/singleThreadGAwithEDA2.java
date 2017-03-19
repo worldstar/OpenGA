@@ -134,7 +134,6 @@ public class singleThreadGAwithEDA2 extends singleThreadGA implements EDAMainI {
 
             //local search
             if (applyLocalSearch == true && i % 10 == 0 ) {
-              System.out.println("gen: "+i);
                 localSearchStage(1);
             } 
             
