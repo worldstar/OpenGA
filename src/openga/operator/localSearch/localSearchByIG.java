@@ -16,7 +16,6 @@ import openga.chromosomes.populationI;
  * @author Administrator
  */
 public class localSearchByIG extends localSearchBy2Opt {
-  int number;
   
   public void startLocalSearch(){
     int selectedIndex = getTargetChromosome();
@@ -31,7 +30,7 @@ public class localSearchByIG extends localSearchBy2Opt {
     
     _pop.setChromosome(1, _pop.getSingleChromosome(0));
           //local search by 2-Opt (inverse mutation)
-          iterateGreedyAlgorithm(_pop.getSingleChromosome(1),number);
+          inverseGenes(_pop.getSingleChromosome(1));
           evaluateNewSoln(_pop.getSingleChromosome(1));
           currentUsedSolution ++;
           if(continueLocalSearch()){
