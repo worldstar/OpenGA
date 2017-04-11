@@ -46,6 +46,8 @@ public class singleThreadGA implements MainI{
   boolean encodeType;  //binary of realize code
   double elitism;     //the percentage of elite chromosomes
   int maxNeighborhood = 5;
+  int totalExaminedSolution = 0;
+  int currentUsedSolution = 0;
 
   //Results
   double bestObjectiveValues[];
@@ -205,9 +207,20 @@ public class singleThreadGA implements MainI{
       populationI tempFront = (population)findParetoFront(Population,0);
       archieve = updateParetoSet(archieve,tempFront);
       //additionalStage();
+      if (applyLocalSearch == true && i % 10 == 0 ) {
+                localSearchStage(1);
+      } 
     }
     //printResults();
   }
+  
+  public void localSearchStage(int iteration) {      
+        localSearch1.setData(Population, totalExaminedSolution, maxNeighborhood);
+        localSearch1.setData(Population, archieve, currentUsedSolution, iteration);
+        localSearch1.setObjectives(ObjectiveFunction);
+        localSearch1.startLocalSearch();
+        currentUsedSolution += localSearch1.getCurrentUsedSolution();
+    } 
 
   public populationI initialStage(){
     //Population = new population();

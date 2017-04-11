@@ -5,7 +5,7 @@ import openga.chromosomes.*;
  *
  * @author Administrator
  */
-public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implements ObjectiveFunctionOASI {
+public class TPObjectiveFunctionforOASII extends TPObjectiveFunctionMTSP implements ObjectiveFunctionOASI {
   chromosome chromosome1;
   
   //Objective Value
@@ -13,7 +13,7 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
   double[] acceptionCost;
   double[] rejectionCost;
   double maximumRevenue;
-  boolean havePunish = false;
+  boolean havePunish = true;
   
   //Instance Data
   double [] r;       //  release date.
@@ -23,8 +23,8 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
   double [] e;       //  revenue
   double [] w;       //  weight
   double [][] s;     //  setup times
-  double [] T;//
-  double [] C;//completion Time
+  double [] T;
+  double [] C;
   
   
   @Override
@@ -47,33 +47,25 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
   @Override
   public double evaluateAll(chromosome _chromosome1, int numberOfSalesmen){
     this.setData(_chromosome1, numberOfSalesmen);
-    this.calcMaximumRevenue(numberOfSalesmen);
+    this.calcMaximumRevenue();
     return this.getMaximumRevenue();
   }
   
-  public void calcMaximumRevenue(int numberOfSalesmen) {
+  public void calcMaximumRevenue() {
+
     maximumRevenue = 0;
     int numberOfCities = length - numberOfSalesmen;
-//    System.out.println("length "+length);
-//    System.out.println("numberOfSalesmen "+numberOfSalesmen);
-//    System.out.println("numberOfCities "+numberOfCities);
-    
     int currentPosition = 0;//To record the position of the Part I chromosome
     int stopPosition = chromosome1.genes[numberOfCities];
     int lastindex = 0;
     double time = 0;
     
-//    System.out.println("stopPosition "+stopPosition);
-    
-//    for(int i = 0; i < chromosome1.genes.length; i++){
-//      System.out.println("obj:"+i+" "+(chromosome1.genes[i]+1));
-//    }
-    
     for(int i = 0; i < numberOfSalesmen; i++){
       for(int j = currentPosition; j < stopPosition; j++){
         int index = chromosome1.genes[j];
         
-//        System.out.println("obj:"+(index));
+        
+//        System.out.println("obj:"+(index+1));
         
         time += r[index];
         time += p[index];
@@ -83,34 +75,19 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
         time += s[index][lastindex];
         
         C[index] = time;
-//        System.out.println("Completion-Time = release-date:"+r[index]+" + processing-time:"+p[index]+" + sequence dependent setup times:"+s[index][lastindex]+" = "+C[index]);
+//        System.out.println("C = r:"+r[index]+" + p:"+p[index]+" + s:"+s[index][lastindex]+" = "+C[index]);
         
-//        T[index] = Math.max(0,C[index]-d[index]);
-//        System.out.println("T = C:"+C[index]+" - d:"+d[index]+" = "+T[index]);
+        T[index] = Math.max(0,C[index]-d[index]);
+        System.out.println("T = C:"+C[index]+" - d:"+d[index]+" = "+(C[index]-d[index]));
         
         //if Object have Fine
         if(havePunish) {
-          double dayGap = C[index]-d_bar[index];
-          maximumRevenue += dayGap*w[index];
-//          System.out.println("Revenue = "+maximumRevenue);
+          maximumRevenue += (e[index]-(w[index]*T[index]));
+          System.out.println("Revenue = e:"+e[index]+" - ( w:"+w[index]+" * T:"+T[index]+" ) = "+(e[index]-(w[index]*T[index])));
         }
         else {
-          
-//          System.out.println("due-date = "+d[index]);
-//          System.out.println("deadline = "+d_bar[index]);
-//          System.out.println("Completion-Time = "+C[index]);
-          
-          double dayGap = Math.max(0,Math.min((d_bar[index]-d[index]),(d_bar[index]-C[index])));
-          
-//          System.out.println("dayGap = "+dayGap);
-//          System.out.println("weight = "+w[index]);
-          
-          double Revenue = dayGap*w[index];
-          maximumRevenue += Revenue;
-          
-//          maximumRevenue += (e[index]-(w[index]*T[index]));
-//          System.out.println("Revenue = "+Revenue);
-//          System.out.println("maximumRevenue = "+maximumRevenue);
+          maximumRevenue += Math.max(0,(e[index]-(w[index]*T[index])));
+//          System.out.println("Revenue = e:"+e[index]+" - ( w:"+w[index]+" * T:"+T[index]+" ) = "+Math.max(0,(e[index]-(w[index]*T[index]))));
         }
 //        System.out.println();
 //        System.out.println("e = "+e[index]+"- ( w = "+w[index]+" * T = "+T[index]+" ) = maximumRevenue = "+maximumRevenue);
@@ -118,7 +95,7 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
         lastindex = index;
         currentPosition ++;
       }
-//      stopPosition += (numberOfCities - currentPosition); //for parallel machine
+      stopPosition += (numberOfCities - currentPosition); //for parallel machine
     }
   }
 
@@ -182,7 +159,6 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
     rejectionCost = new double[e.length];
   }
 
-  @Override
   public void setData(chromosome chromosome1, int numberOfSalesmen) {
     this.chromosome1 = chromosome1;
     this.numberOfSalesmen = numberOfSalesmen;
