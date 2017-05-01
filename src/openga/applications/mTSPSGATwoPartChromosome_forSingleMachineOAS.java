@@ -7,6 +7,7 @@ import openga.operator.localSearch.*;
 import openga.ObjectiveFunctions.*;
 import openga.MainProgram.*;
 import openga.Fitness.*;
+import openga.applications.data.OASInstances;
 /*
  * <p>Title: The OpenGA project which is to build general framework of Genetic algorithm.</p>
  * <p>Description: </p>
@@ -20,8 +21,11 @@ import openga.Fitness.*;
 
 public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends TSP {
   
-  int numberOfSalesmen;
-  int type; //type = 0 : mtsp,  type = 2 : OA,  type = 3 : TCX
+  int numberOfSalesmen = 2;
+  int type = 0; //type = 0 : mtsp,  type = 2 : OA,  type = 3 : TCX
+  int maxNeighborhood = 3;  //A default value of the maximum neighbors to search.
+  int TournamentSize = 7;
+  
   singleThreadGA GaMain;
   SelectI Selection;
   CrossoverMTSPI Crossover;
@@ -30,15 +34,16 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends TSP {
   populationI Population2;
   ObjectiveFunctionOASI[] ObjectiveFunction;
   String instanceName = "";
-  boolean applyLocalSearch = true;
   
-  public double [] r;       //  release date.
-  public double [] p;       //  processing time
-  public double [] d;       //  due-date
-  public double [] d_bar;   //  deadline
-  public double [] e;       //  revenue
-  public double [] w;       //  weight
-  public double [][] s;     //  setup times
+  boolean applyLocalSearch =false;
+  
+  double [] r;       //  release date.
+  double [] p;       //  processing time
+  double [] d;       //  due-date
+  double [] d_bar;   //  deadline
+  double [] e;       //  revenue
+  double [] w;       //  weight
+  double [][] s;     //  setup times
   
   public mTSPSGATwoPartChromosome_forSingleMachineOAS() {
   }
@@ -65,13 +70,19 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends TSP {
    this.s = s;
   }
   
+  public void setLocalSearchData(boolean applyLocalSearch, int maxNeighborhood){
+    this.applyLocalSearch = applyLocalSearch;
+    this.maxNeighborhood = maxNeighborhood;
+  }
+  
   @Override
   public void initiateVars(){   
     GaMain     = new singleThreadGAwithInitialPop();//singleThreadGAwithMultipleCrossover singleThreadGA adaptiveGA
     Population = new population();
-    Selection  = new binaryTournament();
+    Selection  = new varySizeTournament();
     Crossover  = new TCSCFCrossover(type);
     Mutation   = new swapMutationTwoPart();//TwoPartMTSPMutation
+    localSearch1 = new localSearchByIG(); 
     ObjectiveFunction = new ObjectiveFunctionOASI[numberOfObjs];
     ObjectiveFunction[0] = new TPObjectiveFunctionforOAS();//the first objective
     Fitness    = new singleObjectiveFitness();//singleObjectiveFitness singleObjectiveFitnessByNormalize
@@ -92,34 +103,22 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends TSP {
       Population.getSingleChromosome(i).generateTwoPartPop(length + numberOfSalesmen, numberOfSalesmen);
     }
     
+    Selection.setTournamentSize(7);
     Crossover.setNumberofSalesmen(numberOfSalesmen);
     Mutation.setNumberofSalesmen(numberOfSalesmen);
+    localSearch1.setNumberofSalesmen(numberOfSalesmen);
     
-//    localSearch1 = new localSearchBy2OptForMTSP(); 
-
-//      System.out.println(r);
-     ObjectiveFunction[0].setOASData(r, p, d, d_bar, e, w, s, numberOfSalesmen);
-     
+    ObjectiveFunction[0].setOASData(r, p, d, d_bar, e, w, s, numberOfSalesmen);
+    
     //set the data to the GA main program.
     /*Note: the gene length is problem size + numberOfSalesmen*/
     GaMain.setData(Population, Selection, Crossover, Mutation, ObjectiveFunction, Fitness, DEFAULT_generations,
             DEFAULT_initPopSize,DEFAULT_PopSize, length + numberOfSalesmen , DEFAULT_crossoverRate, DEFAULT_mutationRate,
             objectiveMinimization, numberOfObjs, encodeType, elitism);   
-  }
-  
-  public chromosome moveGenes(chromosome _chromosome, int cutPoint1, int cutPoint2){
-    //Because the original cutPoint1 is always less than cutPoint2, we shuffle the position.
-    if(Math.random() < 0.5){
-      int tempIndex = cutPoint1;
-      cutPoint1 = cutPoint2;
-      cutPoint2 = tempIndex;
-    }
-    //To move the number of cities from cutPoint2 to cutPoint1 and it ensures the
-    //number of visiting city of the salesmen at cutPoint2 is at least one city.
-    int maxMovedCities = (int)((_chromosome.genes[cutPoint2] - 1)*Math.random()*.5);
-    _chromosome.genes[cutPoint1] += maxMovedCities;
-    _chromosome.genes[cutPoint2] -= maxMovedCities;
-    return _chromosome;
+    
+    
+    
+    GaMain.setLocalSearchOperator(localSearch1, applyLocalSearch, maxNeighborhood);
   }
   
   @Override
@@ -141,18 +140,21 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends TSP {
   
   public static void main(String[] args) {
     
-    System.out.println("mTSPSGATwoPartChromosome_forSingleMachineOAS20160718MaxRevenueFull");
+    System.out.println("mTSPSGATwoPartChromosome_forSingleMachineOAS20170327MaxRevenueFull");
     
+    boolean applyLocalSearch = true;
     double[] crossoverRate = new double[]{0.5};//1, 0.5 [0.5]
-    double[] mutationRate  = new double[]{0.1};//0.1, 0.5 [0.1]
+    double[] mutationRate  = new double[]{0.5};//0.1, 0.5 [0.1]
     int counter = 0;
     double elitism[] = new double[]{0.1};
     int numberOfSalesmen[] = new int[]{2};//3, 5, 10, 20, 30
     int type = 0;//0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
     int repeat = 1;
+    int maxNeighborhood = 3;  //A default value of the maximum neighbors to search.
+    
     
     //Test Parameter
-    int generations[] = new int[]{0};//1000
+    int generations[] = new int[]{1000};//1000
     int[] orders = new int[]{10};
     int[] Tao = new int[]{1};
     int[] R = new int[]{1};
@@ -170,7 +172,7 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends TSP {
         for(int k = 0; k < R.length; k++){
           for(int l = 0; l < instanceReplications; l++){
             
-            openga.applications.data.OASInstances OASInstances1 = new openga.applications.data.OASInstances();
+            OASInstances OASInstances1 = new OASInstances();
             String instanceName = new String(".\\instances\\SingleMachineOAS\\"+orders[i]+"orders\\Tao"+Tao[j]+"\\R"+R[k]+"\\Dataslack_"+orders[i]+"orders_Tao"+Tao[j]+"R"+R[k]+"_"+(l+1)+".txt");
 
 //            System.out.println(instanceName);
@@ -189,7 +191,7 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends TSP {
                       TSP1.setParameter(crossoverRate[m], mutationRate[n], counter, elitism[o], generations[0],
                               type, numberOfSalesmen[p], OASInstances1.getSize(), instanceName, 
                               OASInstances1.getR(), OASInstances1.getP(), OASInstances1.getD(), OASInstances1.getD_bar(), OASInstances1.getE(), OASInstances1.getW(), OASInstances1.getS());
-                      
+                      TSP1.setLocalSearchData(applyLocalSearch, maxNeighborhood);
                       TSP1.initiateVars();
                       TSP1.start();
                       TSP1.printResults();
@@ -208,6 +210,8 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends TSP {
     
     System.exit(0);
   }
+  
+
   
   public void printResults(){
     //to output the implementation result.
@@ -232,3 +236,4 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends TSP {
     writeFile("singleMachineArchive_"+Clength, implementResult);
   }
 }
+

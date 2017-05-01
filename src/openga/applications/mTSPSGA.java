@@ -39,7 +39,7 @@ int numberOfSalesmen = 2;
 singleThreadGAforMTSP GaMain;
 SelectMTSPI Selection;
 ArithmeticFixIntegerSumCrossoverI Crossover2;
-localSearchMTSPI localSearch1;
+localSearchMTSP localSearch1;
 populationI Population2;
 String instanceName = "";
 boolean applyLocalSearch = true;

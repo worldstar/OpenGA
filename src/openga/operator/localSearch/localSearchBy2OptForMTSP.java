@@ -10,7 +10,7 @@ import openga.ObjectiveFunctions.*;
  * @version 1.0
  */
 
-public class localSearchBy2OptForMTSP extends localSearchMTSPI {
+public class localSearchBy2OptForMTSP extends localSearchMTSP {
   public localSearchBy2OptForMTSP() {
   }
 

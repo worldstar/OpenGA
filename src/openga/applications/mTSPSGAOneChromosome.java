@@ -38,7 +38,7 @@ public class mTSPSGAOneChromosome extends TSP {
 int numberOfSalesmen = 2;
 singleThreadGA GaMain;
 SelectI Selection;
-localSearchMTSPI localSearch1;
+localSearchMTSP localSearch1;
 populationI Population2;
 String instanceName = "";
 boolean applyLocalSearch = true;

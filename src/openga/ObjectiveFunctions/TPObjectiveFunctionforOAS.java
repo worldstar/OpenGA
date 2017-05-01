@@ -41,6 +41,8 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
 //      for(int j=0; j<population.getObjectiveValues(i).length; j++){
 //        System.out.println(population.getObjectiveValues(i)[j]);
 //      }
+      chromosome1.setObjValue(objectives);
+      System.out.println(chromosome1.getObjValue()[0]);
     }
   }
   
@@ -196,5 +198,10 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
   public double getMaximumRevenue() {
     return maximumRevenue;
   }
+  
+  public double[] getObjectiveValues(int index) {
+    System.out.println("getObjectiveValues");
+    return chromosome1.getObjValue();
+  } 
   
 }

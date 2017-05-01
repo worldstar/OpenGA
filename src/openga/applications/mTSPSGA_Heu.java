@@ -23,7 +23,7 @@ public class mTSPSGA_Heu extends TSP {
 int numberOfSalesmen = 2;
 singleThreadGA GaMain;
 SelectI Selection;
-localSearchMTSPI localSearch1;
+localSearchMTSP localSearch1;
 
 String instanceName = "";
 boolean applyLocalSearch = true;

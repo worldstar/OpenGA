@@ -39,7 +39,7 @@ singleThreadGA GaMain;
 SelectI Selection;
 CrossoverMTSPI Crossover;
 MutationMTSPI Mutation;
-localSearchMTSPI localSearch1;
+localSearchMTSP localSearch1;
 populationI Population2;
 String instanceName = "";
 boolean applyLocalSearch = true;

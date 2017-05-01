@@ -12,7 +12,7 @@ import openga.util.fileWrite1;
 import openga.applications.data.*;
 import openga.applications.singleMachine;
 import openga.operator.localSearch.localSearchBy2OptForMTSP;
-import openga.operator.localSearch.localSearchMTSPI;
+import openga.operator.localSearch.localSearchMTSP;
 
 /**
  * This SGGA solve the objective of multiple traveling salesmen problems.
@@ -25,7 +25,7 @@ public class mTSPSGA_SGGA extends TSP {
   
  int numberOfSalesmen = 2;
  SelectI Selection;
- localSearchMTSPI localSearch1;  
+ localSearchMTSP localSearch1;  
  EDAMainI GaMain;
  EDAICrossover Crossover;
  EDAIMutation Mutation;
