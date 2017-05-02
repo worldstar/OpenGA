@@ -1,4 +1,5 @@
 package openga.chromosomes;
+import java.util.List;
 import openga.util.printClass;
 /**
  * <p>Title: The OpenGA project</p>
@@ -179,6 +180,13 @@ public class chromosome {
     //System.arraycopy(soln, 0, this.genes, 0, soln.length );
     for(int i = 0 ; i < soln.length ; i ++ ){
       genes[i] = soln[i];
+    }
+  }
+  
+  public final void setSolution(List<Integer> soln){
+    //System.arraycopy(soln, 0, this.genes, 0, soln.length );
+    for(int i = 0 ; i < soln.size() ; i ++ ){
+      genes[i] = soln.get(i);
     }
   }
 
