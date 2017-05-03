@@ -133,7 +133,15 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
     }
     
     for(int i=0; i<maxNeighborhood; i++){
-      for(int j=0; j<insertPoint; j++){
+      
+      int tmpchromosomeLength = tmpPart.size();
+      chromosome tmpChromosome = new chromosome();
+      tmpChromosome.setGenotypeAndLength(true, tmpchromosomeLength, 1);
+      tmpChromosome.initChromosome();
+      tmpPart.add(0,destructedPart.get(i));
+      
+      
+      for(int j=1; j<insertPoint; j++){
 //        System.out.println("insertPoint"+":"+insertPoint);
 //        System.out.println("i"+":"+i);
         System.out.println("j"+":"+j);
@@ -150,10 +158,8 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
         }
         System.out.println();
         
-        int tmpchromosomeLength = tmpPart.size();
-        chromosome tmpChromosome = new chromosome();
-        tmpChromosome.setGenotypeAndLength(true, tmpchromosomeLength, 1);
-        tmpChromosome.initChromosome();
+        
+        
         for(int k=0; k<tmpchromosomeLength; k++){
           tmpChromosome.genes[k] = tmpPart.get(k);
         }
