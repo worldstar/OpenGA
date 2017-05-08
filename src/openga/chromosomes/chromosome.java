@@ -31,11 +31,6 @@ public class chromosome {
   static double lwBounds[];//lower bound
   static double upBound[]; //upper bound
 
-  
-  
-  
-  
-  
   /**
    * @param thetype if it's true which means binary one.
    * @param num The length of a chromosome.
@@ -312,5 +307,4 @@ public class chromosome {
     printClass printClass1 = new printClass();
     printClass1.printMatrix("chromosome1",chromosome1.genes);
   }
-
 }

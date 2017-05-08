@@ -80,66 +80,89 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
 //    updateArchive(_pop.getSingleChromosome(0)); //update the solution in the elite set.
   }
 
-  public final populationI IG_ls(populationI _sp) {
-    int count = 0;
-    boolean compareResult;
-    
+  public final populationI IG_ls(populationI _sp) {    
     chromosomeLength = _sp.getSingleChromosome(0).genes.length;
-//    System.out.println("chromosomeLength"+chromosomeLength);
+//    System.out.println("chromosomeLength : "+chromosomeLength);
+
     int numberofCity = chromosomeLength-numberofSalesmen;
-//    System.out.println("numberofCity"+numberofCity);
+//    System.out.println("numberofCity : "+numberofCity);
     
     List<Integer> destructedPart = new ArrayList<Integer>();
     List<Integer> reservePart = new ArrayList<Integer>();
+    List<Integer> salesmenPart = new ArrayList<Integer>();
+    
+//    for(int i=0; i<_sp.getSingleChromosome(0).genes.length; i++){
+//      System.out.println("getSingleChromosome"+i+" : "+_sp.getSingleChromosome(0).genes[i]);
+//    }
     
     for(int i=0; i<numberofCity; i++){
       reservePart.add(_sp.getSingleChromosome(0).genes[i]);
-//      System.out.println("getSingleChromosome1"+i+":"+_sp.getSingleChromosome(0).genes[i]);
-//      System.out.println("getSingleChromosome"+i+":"+reservePart.get(i));
+//      System.out.println("reservePart"+i+" : "+reservePart.get(i));
     }
+    for(int i=numberofCity; i<chromosomeLength; i++){
+      salesmenPart.add(_sp.getSingleChromosome(0).genes[i]);
+    }
+    for(int i=0; i<salesmenPart.size(); i++){
+//      System.out.println("salesmenPart"+i+" : "+salesmenPart.get(i));
+    }
+    
+//    int currentPosition = 0;
+//    int stopPosition = salesmenPart.get(0);
+//    for(int i=0; i<numberofSalesmen; i++){
+////    System.out.println("currentPosition"+i+" : "+currentPosition);
+////    System.out.println("stopPosition"+i+" : "+stopPosition);
+//      for(int j = currentPosition; j < stopPosition; j++){
+//        currentPosition ++;
+//      }
+//      //for parallel machine
+//      if(i+1<numberofSalesmen){
+//        stopPosition += salesmenPart.get(i+1); 
+//      }
+//    }
+    
+    //maxNeighborhood : number of destructedPart genes
     
     for(int i=0; i<maxNeighborhood; i++){
       int tmp = new Random().nextInt(reservePart.size());
+      System.out.println("tmp : "+tmp);
+//      System.out.println("reservePart : "+reservePart.get(tmp));
       destructedPart.add(reservePart.get(tmp));
-      reservePart.remove(reservePart.get(tmp));
+      reservePart.remove(reservePart.get(tmp));      
     }
-    
 //    for(int i=0; i<reservePart.size(); i++){
 //      System.out.println("reservePart"+i+":"+reservePart.get(i));
 //    }
-//    
 //    for(int i=0; i<destructedPart.size(); i++){
 //      System.out.println("destructed"+i+":"+destructedPart.get(i));
 //    }
+
+//  insertPoint : number of insert position
+    int insertPoint = reservePart.size()+1;
+//    System.out.println("insertPoint : "+insertPoint);
     
-    int reservechromosomeLength = reservePart.size();
-    chromosome reserveChromosome = new chromosome();
-    reserveChromosome.setGenotypeAndLength(true, reservechromosomeLength, 1);
-    reserveChromosome.initChromosome();
+    List<Integer> tmpPart = new ArrayList<Integer>();
+    tmpPart.addAll(reservePart);
+//    for(int i=0; i<tmpPart.size(); i++){
+//      System.out.println("tmpPart"+i+":"+tmpPart.get(i));
+//    }
     
-    for(int i=0; i<reservechromosomeLength; i++){
-      reserveChromosome.genes[i] = reservePart.get(i);
-    }
-    evaluateNewSoln(reserveChromosome);
-    
-    List<Integer> lsPart = new ArrayList<Integer>();
-    int insertPoint = reservechromosomeLength+1;
     double tmpObjValue;
     
-    double lsObjValue = reserveChromosome.getObjValue()[0];
-    List<Integer> tmpPart = new ArrayList<Integer>();
-    for(int i=0; i<reservechromosomeLength; i++){
-      tmpPart.add(reservePart.get(i));
-    }
+//  the best chromosome genes
+    List<Integer> lsPart = new ArrayList<Integer>();
+    double lsObjValue;
     
     for(int i=0; i<maxNeighborhood; i++){
       
-      int tmpchromosomeLength = tmpPart.size();
-      chromosome tmpChromosome = new chromosome();
-      tmpChromosome.setGenotypeAndLength(true, tmpchromosomeLength, 1);
-      tmpChromosome.initChromosome();
+//    add destructedPart gene and initialize Chromosome then calculate objectivefunction
       tmpPart.add(0,destructedPart.get(i));
-      
+      chromosome tmpChromosome = new chromosome();
+      tmpChromosome.setGenotypeAndLength(true, tmpPart.size(), 1);
+      tmpChromosome.initChromosome();
+      tmpChromosome.setSolution(tmpPart);
+      lsObjValue = tmpChromosome.getObjValue()[0];
+      System.out.println("lsObjValue"+":"+lsObjValue);
+      System.exit(0);
       
       for(int j=1; j<insertPoint; j++){
 //        System.out.println("insertPoint"+":"+insertPoint);
@@ -158,11 +181,7 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
         }
         System.out.println();
         
-        
-        
-        for(int k=0; k<tmpchromosomeLength; k++){
-          tmpChromosome.genes[k] = tmpPart.get(k);
-        }
+        tmpChromosome.setSolution(tmpPart);
         evaluateNewSoln(tmpChromosome);
         tmpObjValue = tmpChromosome.getObjValue()[0];
         System.out.println("tmpObjValue"+":"+tmpObjValue);
