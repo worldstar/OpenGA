@@ -115,9 +115,6 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends TSP {
     GaMain.setData(Population, Selection, Crossover, Mutation, ObjectiveFunction, Fitness, DEFAULT_generations,
             DEFAULT_initPopSize,DEFAULT_PopSize, length + numberOfSalesmen , DEFAULT_crossoverRate, DEFAULT_mutationRate,
             objectiveMinimization, numberOfObjs, encodeType, elitism);   
-    
-    
-    
     GaMain.setLocalSearchOperator(localSearch1, applyLocalSearch, maxNeighborhood);
   }
   
