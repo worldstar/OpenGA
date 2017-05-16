@@ -91,7 +91,7 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
     List<Integer> reservePart = new ArrayList<Integer>();
     List<Integer> salesmenPart = new ArrayList<Integer>();
     
-    System.out.println("getSingleChromosome : ");
+    System.out.print("getSingleChromosome : ");
     for(int i=0; i<_sp.getSingleChromosome(0).genes.length; i++){
       System.out.print(_sp.getSingleChromosome(0).genes[i]+" ");
     }
@@ -99,7 +99,7 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
     
     for(int i=0; i<numberofCity; i++){
       reservePart.add(_sp.getSingleChromosome(0).genes[i]);
-//      System.out.println("reservePart"+i+" : "+reservePart.get(i));
+//      System.out.println("reservePart(before)"+i+" : "+reservePart.get(i));
     }
     for(int i=numberofCity; i<chromosomeLength; i++){
       salesmenPart.add(_sp.getSingleChromosome(0).genes[i]);
@@ -121,19 +121,19 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
 //        stopPosition += salesmenPart.get(i+1); 
 //      }
 //    }
-    System.out.println("reservePart : ");
+    System.out.print("reservePart : ");
     for(int i=0; i<reservePart.size(); i++){
       System.out.print(reservePart.get(i)+" ");
     }
     System.out.println("End");
     
-    System.out.println("destructedPart : ");
+    System.out.print("destructedPart : ");
     for(int i=0; i<destructedPart.size(); i++){
       System.out.print(destructedPart.get(i)+" ");
     }
     System.out.println("End");
     
-    System.out.println("salesmenPart : ");
+    System.out.print("salesmenPart : ");
     for(int i=0; i<salesmenPart.size(); i++){
       System.out.print(salesmenPart.get(i)+" ");
     }
@@ -255,38 +255,45 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
   
   public final void setdestructedPart(List<Integer> reservePart, List<Integer> destructedPart, List<Integer> salesmenPart) {
     int cities = chromosomeLength-salesmenPart.size();
-    int[] Destructgenes = new int[numberofSalesmen-1];
-    for(int i=0; i<Destructgenes.length; i++){
-      Destructgenes[i] = (int)Math.round((double)(maxNeighborhood*salesmenPart.get(i)/cities));
-//      System.out.println("weight"+":"+Destructgenes[i]);
-    }
+    int[] Destructgenes = new int[numberofSalesmen];
     int numberofDestructgenes = maxNeighborhood;
-    for(int i=0; i<numberofSalesmen-1; i++){
+    
+    System.out.print("number of Destructgenes : ");
+    for(int i=0; i<Destructgenes.length-1; i++){
+      Destructgenes[i] = (int)Math.round(((double)(maxNeighborhood*salesmenPart.get(i))/cities));
+      numberofDestructgenes -= Destructgenes[i];
+      System.out.print(Destructgenes[i]+" ");
+    }
+    Destructgenes[numberofSalesmen-1] = numberofDestructgenes;
+    System.out.print(Destructgenes[numberofSalesmen-1]+" ");
+    System.out.println("End");
+    
+    int currentPosition = 0;
+    for(int i=0; i<Destructgenes.length; i++){
+      System.out.println("i"+":"+i);
       int frequency = Destructgenes[i];
+      System.out.println("Destructfrequency"+":"+frequency);
       for(int j=0; j<frequency; j++){
-//        System.out.println("weight"+":"+Destructgenes[i]);
-//        System.out.println("i"+":"+i);
 //        System.out.println("j"+":"+j);
         int tmp;
-        if(i>0){
-          tmp = new Random().nextInt(Destructgenes[i])+salesmenPart.get(i);
-        }else{
-          tmp = new Random().nextInt(Destructgenes[i]);
-        }
+        tmp = new Random().nextInt(salesmenPart.get(i))+currentPosition;
+        System.out.println("tmp"+":"+tmp);
         destructedPart.add(reservePart.get(tmp));
         reservePart.remove(reservePart.get(tmp));
         salesmenPart.set(i, (salesmenPart.get(i)-1));
         Destructgenes[i]--;
-        numberofDestructgenes--;
       }
+      currentPosition += salesmenPart.get(i);
+      System.out.println("END");
     }
-    for(int i=0; i<numberofDestructgenes; i++){
-      int tmp = new Random().nextInt(numberofDestructgenes)+salesmenPart.get(numberofSalesmen-1)-1;
-      System.out.println("tmp"+":"+tmp);
-      destructedPart.add(reservePart.get(tmp));
-      reservePart.remove(reservePart.get(tmp));
-      salesmenPart.set(numberofSalesmen-1, (salesmenPart.get(numberofSalesmen-1)-1));
-    }
+    
+//    for(int i=0; i<numberofDestructgenes; i++){
+//      int tmp = new Random().nextInt(numberofDestructgenes)+salesmenPart.get(numberofSalesmen-1)-1;
+//      System.out.println("tmp"+":"+tmp);
+//      destructedPart.add(reservePart.get(tmp));
+//      reservePart.remove(reservePart.get(tmp));
+//      salesmenPart.set(numberofSalesmen-1, (salesmenPart.get(numberofSalesmen-1)-1));
+//    }
   }
 
   public final chromosome iterateGreedyAlgorithm(chromosome _chromosome, int number) {
