@@ -185,9 +185,12 @@ public class chromosome {
   
   public final void setSolution(List<Integer> soln){
     //System.arraycopy(soln, 0, this.genes, 0, soln.length );
+//    System.out.print("setSoln : ");
     for(int i = 0 ; i < soln.size() ; i ++ ){
-      genes[i] = soln.get(i);
+      this.genes[i] = soln.get(i);
+//      System.out.print(genes[i]+" ");
     }
+//    System.out.println("END");
   }
   
   /**

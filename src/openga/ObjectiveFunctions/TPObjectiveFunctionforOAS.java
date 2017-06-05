@@ -42,7 +42,7 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
 //        System.out.println(population.getObjectiveValues(i)[j]);
 //      }
       chromosome1.setObjValue(objectives);
-      System.out.println(chromosome1.getObjValue()[0]);
+//      System.out.println(chromosome1.getObjValue()[0]);
     }
   }
   
@@ -71,9 +71,9 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
 //      System.out.println("obj:"+i+" "+(chromosome1.genes[i]+1));
 //    }
     
-    for(int i = 0; i < numberOfSalesmen; i++){
+    for(int i = 0; i < numberOfSalesmen-1; i++){
       for(int j = currentPosition; j < stopPosition; j++){
-        int index = chromosome1.genes[j];
+         int index = chromosome1.genes[j];
         
 //        System.out.println("obj:"+(index));
         
@@ -200,7 +200,12 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
   }
   
   public double[] getObjectiveValues(int index) {
-    System.out.println("getObjectiveValues");
+//    System.out.println("getObjectiveValues");
+    double objectives[];
+    objectives = chromosome1.getObjValue();
+    double obj = evaluateAll(chromosome1, numberOfSalesmen);
+    objectives[0] = obj;
+    chromosome1.setObjValue(objectives);
     return chromosome1.getObjValue();
   } 
   
