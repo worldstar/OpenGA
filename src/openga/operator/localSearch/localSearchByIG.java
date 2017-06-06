@@ -20,7 +20,7 @@ import openga.chromosomes.populationI;
 public class localSearchByIG extends localSearchBy2Opt implements localSearchMTSPI{
   
   int numberofSalesmen;
-  
+  int currentUsedSolution = 1;
   public void startLocalSearch() {
     System.out.print("startLocalSearch\n");
     int selectedIndex = getBestIndex(archive);
@@ -30,11 +30,9 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
     _pop.initNewPop();
 
     _pop.setChromosome(0, archive.getSingleChromosome(selectedIndex));//Set the original solution to the 1st chromosome (best).
-    currentUsedSolution = 0;
     IG_ls(_pop);
     _pop.setChromosome(0, _pop.getSingleChromosome(0));
     _pop.setObjectiveValue(0, _pop.getSingleChromosome(0).getObjValue());
-    currentUsedSolution++;
 //    System.out.println("-----current best result-----------");
 //    System.out.println(iteration + ":" + _pop.getSingleChromosome(0).toString1() + "->" + _pop.getSingleChromosome(0).getObjValue()[0] + " used:" + currentUsedSolution);
 //
@@ -77,6 +75,7 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
   }
 
   public final void IG_ls(populationI _sp) {    //
+    currentUsedSolution =0;
     chromosomeLength = _sp.getSingleChromosome(0).genes.length;
     int numberofCity = chromosomeLength-numberofSalesmen;
     List<Integer> destructedPart = new ArrayList<Integer>();
@@ -85,7 +84,7 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
     
     evaluateNewSoln(_sp.getSingleChromosome(0));
     double originalObjValue = _sp.getSingleChromosome(0).getObjValue()[0];
-    System.out.println("originalObjValue : "+originalObjValue);
+//    System.out.println("originalObjValue : "+originalObjValue);
 /* Print SingleChromosome.
     System.out.print("getSingleChromosome : ");
     for(int i=0; i<_sp.getSingleChromosome(0).genes.length; i++){
@@ -93,6 +92,13 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
     }
     System.out.println("End");
 //*/
+
+    for(int i=0; i<numberofSalesmen; i++){
+      currentUsedSolution += _sp.getSingleChromosome(0).genes[numberofCity]+i;
+    }
+    currentUsedSolution++;
+    
+    System.out.println("currentUsedSolution : "+currentUsedSolution);
 
     for(int i=0; i<numberofCity; i++){
       reservePart.add(_sp.getSingleChromosome(0).genes[i]);
@@ -179,13 +185,13 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
       tmpPart.addAll(lsPart);
       insertPoint++;
     }
-    System.out.println("lsObjValue"+":"+lsObjValue);
+//    System.out.println("lsObjValue"+":"+lsObjValue);
     
     if(lsObjValue > originalObjValue){
       _sp.getSingleChromosome(0).setSolution(lsPart);
       evaluateNewSoln(_sp.getSingleChromosome(0));
       double localsearchObj = _sp.getSingleChromosome(0).getObjValue()[0];
-      System.out.println("localsearchObj : "+localsearchObj);
+//      System.out.println("localsearchObj : "+localsearchObj);
     }
   }
   
@@ -282,5 +288,8 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
   @Override
   public void setNumberofSalesmen(int numberofSalesmen) {
     this.numberofSalesmen = numberofSalesmen;
+  }
+  public int getCurrentUsedSolution(){
+    return currentUsedSolution;
   }
 }
