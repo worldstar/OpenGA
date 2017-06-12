@@ -1,172 +1,242 @@
 package openga.ObjectiveFunctions;
+
+import java.util.ArrayList;
+import java.util.List;
 import openga.chromosomes.*;
 
 /**
  *
- * @author Administrator
+ * @author YU-TANG CHANG
  */
 public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implements ObjectiveFunctionOASI {
+
   chromosome chromosome1;
-  
+
   //Objective Value
   double minimumCost;
-  double[] acceptionCost;
-  double[] rejectionCost;
   double maximumRevenue;
-  boolean havePunish = false;
-  
+  boolean havePunish;
+
   //Instance Data
-  double [] r;       //  release date.
-  double [] p;       //  processing time
-  double [] d;       //  due-date
-  double [] d_bar;   //  deadline
-  double [] e;       //  revenue
-  double [] w;       //  weight
-  double [][] s;     //  setup times
-  double [] T;//
-  double [] C;//completion Time
-  
-  
+  double[] r;       //  release date.(arrival time)
+  double[] p;       //  processing time
+  double[] d;       //  due-date
+  double[] d_bar;   //  deadline
+  double[] e;       //  revenue
+  double[] w;       //  weight
+  double[][] s;     //  setup times
+  double[] C;       //completion Time
+
   @Override
   public void calcObjective() {
     double obj;
     double objectives[];
-    for(int i = 0 ; i < 1 ; i ++ ){
-//    for(int i = 0 ; i < population.getPopulationSize() ; i ++ ){
+//    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < population.getPopulationSize(); i++) {
+//      System.out.print("population(before): ");
+//      for (int j = 0; j < population.getSingleChromosome(i).genes.length; j++) {
+//        System.out.print(population.getSingleChromosome(i).genes[j] + " ");
+//      }
+//      System.out.println("End");
       objectives = population.getObjectiveValues(i);
       obj = evaluateAll(population.getSingleChromosome(i), numberOfSalesmen);
-//      System.out.println(obj);
       objectives[indexOfObjective] = obj;
       population.setObjectiveValue(i, objectives);
-//      for(int j=0; j<population.getObjectiveValues(i).length; j++){
-//        System.out.println(population.getObjectiveValues(i)[j]);
-//      }
       chromosome1.setObjValue(objectives);
-//      System.out.println(chromosome1.getObjValue()[0]);
+      population.setSingleChromosome(i, chromosome1);
+//      System.out.print("population(after):  ");
+//      for (int j = 0; j < population.getSingleChromosome(i).genes.length; j++) {
+//        System.out.print(population.getSingleChromosome(i).genes[j] + " ");
+//      }
+//      System.out.println("End");
     }
   }
-  
+
+  public List<Integer> chromosometoList(chromosome _chromosome1) {
+    List<Integer> soln = new ArrayList<Integer>();
+    for (int i = 0; i < _chromosome1.genes.length; i++) {
+      soln.add(_chromosome1.genes[i]);
+    }
+    return soln;
+  }
+
   @Override
-  public double evaluateAll(chromosome _chromosome1, int numberOfSalesmen){
+  public double evaluateAll(chromosome _chromosome1, int numberOfSalesmen) {
     this.setData(_chromosome1, numberOfSalesmen);
-    this.calcMaximumRevenue(numberOfSalesmen);
+    this.calcMaximumRevenue();
     return this.getMaximumRevenue();
   }
-  
+
+  public void calcMaximumRevenue() {
+    maximumRevenue = 0;
+    int numberOfCities = length - numberOfSalesmen,
+            currentPosition = 0, stopPosition = 0,
+            index, lastindex = 0;
+    double time = 0, Revenue, dayGap;
+    List<Integer> _chromosome1 = new ArrayList<Integer>();
+    List<Integer> accept = new ArrayList<Integer>();
+    List<Integer> reject = new ArrayList<Integer>();
+    List<Integer> salesmen = new ArrayList<Integer>();
+    _chromosome1.addAll(chromosometoList(chromosome1));
+
+    for (int i = 0; i < numberOfSalesmen; i++) {
+      stopPosition += _chromosome1.get(numberOfCities + i);
+      for (int j = currentPosition; j < stopPosition; j++) {
+        index = chromosome1.genes[j];
+        if (time < r[index]) {
+          time = r[index];
+        }
+        if (j != 0) {
+          time += s[index][lastindex];
+        }
+        time += p[index];
+        C[index] = time;
+
+        dayGap = Math.max(0, Math.min((d_bar[index] - d[index]), (d_bar[index] - C[index])));
+        Revenue = dayGap * w[index];
+        maximumRevenue += Revenue;
+//        System.out.println("currentPosition: " + currentPosition);
+//        System.out.println("stopPocurrentPositionsition: " + stopPosition);
+//        System.out.println("obj: " + (index));
+//        System.out.println("release date: " + r[index]);
+//        System.out.println("processing time: " + p[index]);
+//        System.out.println("setup times: " + s[index][lastindex]);
+//        System.out.println("time: " + time);
+//        System.out.println("dayGap = " + dayGap);
+//        System.out.println("weight = " + w[index]);
+//        System.out.println("Revenue = " + Revenue);
+//        System.out.println("maximumRevenue = " + maximumRevenue);
+
+        if (Revenue == 0) {
+          reject.add(_chromosome1.get(j));
+        } else {
+          accept.add(_chromosome1.get(j));
+        }
+        lastindex = index;
+      }
+      currentPosition += _chromosome1.get(numberOfCities + i);
+    }
+
+    for (int i = 0; i < numberOfSalesmen - 1; i++) {
+      int cities = (int) Math.round((double) accept.size() / (numberOfSalesmen - 1));
+      salesmen.add(cities);
+    }
+    salesmen.add(reject.size());
+    _chromosome1.clear();
+    _chromosome1.addAll(accept);
+    _chromosome1.addAll(reject);
+    _chromosome1.addAll(salesmen);
+    chromosome1.setSolution(_chromosome1);
+    /*
+    System.out.print("accept: ");
+    for (int i = 0; i < accept.size(); i++) {
+      System.out.print(accept.get(i) + " ");
+    }
+    System.out.println("End");
+    System.out.print("reject: ");
+    for (int i = 0; i < reject.size(); i++) {
+      System.out.print(reject.get(i) + " ");
+    }
+    System.out.println("End");
+    System.out.print("salesmen: ");
+    for (int i = 0; i < salesmen.size(); i++) {
+      System.out.print(salesmen.get(i) + " ");
+    }
+    System.out.println("End");
+    System.out.print("_chromosome1(after): ");
+    for (int i = 0; i < _chromosome1.size(); i++) {
+      System.out.print(_chromosome1.get(i) + " ");
+    }
+    System.out.println("End");//*/
+  }
+
   public void calcMaximumRevenue(int numberOfSalesmen) {
     maximumRevenue = 0;
     int numberOfCities = length - numberOfSalesmen;
 //    System.out.println("length "+length);
 //    System.out.println("numberOfSalesmen "+numberOfSalesmen);
 //    System.out.println("numberOfCities "+numberOfCities);
-    
+
     int currentPosition = 0;//To record the position of the Part I chromosome
     int stopPosition = chromosome1.genes[numberOfCities];
     int lastindex = 0;
     double time = 0;
-    
-//    System.out.println("stopPosition "+stopPosition);
-    
-//    for(int i = 0; i < chromosome1.genes.length; i++){
-//      System.out.println("obj:"+i+" "+(chromosome1.genes[i]+1));
+    double Revenue = 0;
+    double dayGap = 0;
+    int index;
+//    System.out.print("getSingleChromosome: ");
+//    for (int i = 0; i < chromosome1.genes.length; i++) {
+//      System.out.print(chromosome1.genes[i] + " ");
 //    }
-    
-    for(int i = 0; i < numberOfSalesmen-1; i++){
-      for(int j = currentPosition; j < stopPosition; j++){
-         int index = chromosome1.genes[j];
-        
-//        System.out.println("obj:"+(index));
-        
-        time += r[index];
-        time += p[index];
-        if(j == 0) {
-          s[index][lastindex] = 0;
-        }
-        time += s[index][lastindex];
-        
-        C[index] = time;
-//        System.out.println("Completion-Time = release-date:"+r[index]+" + processing-time:"+p[index]+" + sequence dependent setup times:"+s[index][lastindex]+" = "+C[index]);
-        
-//        T[index] = Math.max(0,C[index]-d[index]);
-//        System.out.println("T = C:"+C[index]+" - d:"+d[index]+" = "+T[index]);
-        
-        //if Object have Fine
-        if(havePunish) {
-          double dayGap = C[index]-d_bar[index];
-          maximumRevenue += dayGap*w[index];
-//          System.out.println("Revenue = "+maximumRevenue);
-        }
-        else {
-          
-//          System.out.println("due-date = "+d[index]);
-//          System.out.println("deadline = "+d_bar[index]);
-//          System.out.println("Completion-Time = "+C[index]);
-          
-          double dayGap = Math.max(0,Math.min((d_bar[index]-d[index]),(d_bar[index]-C[index])));
-          
-//          System.out.println("dayGap = "+dayGap);
-//          System.out.println("weight = "+w[index]);
-          
-          double Revenue = dayGap*w[index];
-          maximumRevenue += Revenue;
-          
-//          maximumRevenue += (e[index]-(w[index]*T[index]));
-//          System.out.println("Revenue = "+Revenue);
-//          System.out.println("maximumRevenue = "+maximumRevenue);
-        }
-//        System.out.println();
-//        System.out.println("e = "+e[index]+"- ( w = "+w[index]+" * T = "+T[index]+" ) = maximumRevenue = "+maximumRevenue);
+//    System.out.println("End");
 
+    for (int i = 0; i < numberOfSalesmen; i++) {
+      for (int j = currentPosition; j < stopPosition; j++) {
+        index = chromosome1.genes[j];
+        if (time < r[index]) {
+          time = r[index];
+        }
+        if (j != 0) {
+          time += s[index][lastindex];
+        }
+        time += p[index];
+        C[index] = time;
+
+//        System.out.println("Completion-Time = release-date:"+r[index]+" + processing-time:"+p[index]+" + sequence dependent setup times:"+s[index][lastindex]+" = "+C[index]);
+        System.out.println("obj: " + (index));
+//        System.out.println("release date: " + r[index]);
+//        System.out.println("processing time: " + p[index]);
+//        System.out.println("setup times: " + s[index][lastindex]);
+//        System.out.println("time: " + time);
+        //if Object have Fine
+        if (havePunish) {
+          dayGap = C[index] - d_bar[index];
+        } else {
+          dayGap = Math.max(0, Math.min((d_bar[index] - d[index]), (d_bar[index] - C[index])));
+        }
+
+        Revenue = dayGap * w[index];
+        maximumRevenue += Revenue;
+
+//        System.out.println("dayGap = " + dayGap);
+//        System.out.println("weight = " + w[index]);
+        System.out.println("Revenue = " + Revenue);
+        System.out.println("maximumRevenue = " + maximumRevenue);
+//if Revenue is 0, the job is going to moved to rejection part.
+        if (Revenue == 0) {
+          List<Integer> _chromosome1 = new ArrayList<Integer>();
+          _chromosome1.addAll(chromosometoList(chromosome1));
+
+          System.out.print("_chromosome1(before): ");
+          for (int l = 0; l < _chromosome1.size(); l++) {
+            System.out.print(_chromosome1.get(l) + " ");
+          }
+          System.out.println("End");
+          int tmpgenes = _chromosome1.get(j);//swap gene
+          _chromosome1.remove(j);//remove gene
+          _chromosome1.set(_chromosome1.size() - numberOfSalesmen + i, _chromosome1.get(_chromosome1.size() - numberOfSalesmen + i) - 1);//part of salesman have to minus one.
+          _chromosome1.add(_chromosome1.size() - numberOfSalesmen, tmpgenes);//add gene to rejection part.
+
+          _chromosome1.set(_chromosome1.size() - 1, _chromosome1.get(_chromosome1.size() - 1) + 1);
+
+          System.out.println("tmpgenes: " + tmpgenes);
+          System.out.print("_chromosome1(after):  ");
+          for (int l = 0; l < _chromosome1.size(); l++) {
+            System.out.print(_chromosome1.get(l) + " ");
+          }
+          System.out.println("End");
+          chromosome1.setSolution(_chromosome1);
+        }
+//        if(i == numberOfSalesmen && Revenue != 0)
         lastindex = index;
-        currentPosition ++;
+        currentPosition++;
       }
 //      stopPosition += (numberOfCities - currentPosition); //for parallel machine
     }
+//    System.out.println("calcMaximumRevenue End \n");
   }
 
   public void calcMinimumCost() {
-    int currentPosition = 0;//To record the position of the Part I chromosome
-    int numberOfCities = length - numberOfSalesmen;
-    int stopPosition = chromosome1.genes[numberOfCities];
-    int t = 0;
-    
-//    System.out.print("chromosome1 : ");
-//      for(int i = 0; i < chromosome1.getLength(); i++){
-//        System.out.print(chromosome1.genes[i]+",");
-//      }
-//      System.out.println();
-//    int i;
-    int lasti = 0;
-//    System.out.print("i = ");
-    for(int j = 0; j < numberOfSalesmen; j++){
-      int  i = chromosome1.genes[j];
-//      System.out.print(i+" ");
-      for(int k = currentPosition; k < stopPosition; k++){
-        
-          
-          
-        if(j == numberOfSalesmen - 1) {//for Rejection
-          rejectionCost[i] = e[i];
-          minimumCost += rejectionCost[i];   
-        }
-        else {//for Acception
-          t += r[i];
-//          System.out.println("r = "+r[i]);
-//          t += s[i][lasti];
-//          System.out.println("s = "+s[i][lasti]);
-          t += p[i];
-//          System.out.println("p = "+p[i]);
-          C[i] = t;
-          T[i] = Math.max(0,C[i]-d[i]);
-          acceptionCost[i] = w[i]*T[i];
-          minimumCost += acceptionCost[i];
-        }
-          lasti = i;  //last object sequence
-          currentPosition ++; //for parallel machine
-      }
-      stopPosition += (numberOfCities - currentPosition); //for parallel machine
-    }
-//    System.out.println();
   }
 
   public void setOASData(double[] r, double[] p, double[] d, double[] d_bar, double[] e, double[] w, double[][] s, int numberOfSalesmen) {
@@ -179,9 +249,6 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
     this.s = s;
     this.numberOfSalesmen = numberOfSalesmen;
     C = new double[p.length];
-    T = new double[p.length];
-    acceptionCost = new double[p.length];
-    rejectionCost = new double[e.length];
   }
 
   @Override
@@ -190,7 +257,7 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
     this.numberOfSalesmen = numberOfSalesmen;
     length = chromosome1.getLength();
   }
-  
+
   public double getMinimumCost() {
     return minimumCost;
   }
@@ -198,15 +265,14 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
   public double getMaximumRevenue() {
     return maximumRevenue;
   }
-  
+
+  @Override
   public double[] getObjectiveValues(int index) {
-//    System.out.println("getObjectiveValues");
     double objectives[];
     objectives = chromosome1.getObjValue();
     double obj = evaluateAll(chromosome1, numberOfSalesmen);
     objectives[0] = obj;
     chromosome1.setObjValue(objectives);
     return chromosome1.getObjValue();
-  } 
-  
+  }
 }

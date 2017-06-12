@@ -135,9 +135,9 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends TSP {
     //System.out.print("\n");
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] argsz) {
 
-    System.out.println("mTSPSGATwoPartChromosome_forSingleMachineOAS20170606MaxRevenueFull");
+    System.out.println("mTSPSGATwoPartChromosome_forSingleMachineOAS20170612MaxRevenueFull");
 
     int counter = 0;
     boolean applyLocalSearch = true;
@@ -147,7 +147,7 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends TSP {
     double elitism[] = new double[]{0.1};
     int[] numberOfSalesmen = new int[]{2};//3, 5, 10, 20, 30
     int type = 0;//0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
-    int repeat = 1;
+    int repeat = 30;
     int[] maxNeighborhood = new int[]{3};  //A default value of the maximum neighbors to search.
 
     //Test Parameter
@@ -156,7 +156,7 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends TSP {
     int[] Tao = new int[]{1};
     int[] R = new int[]{1};
     int instanceReplications = 1;
-
+//    double[] 
     //Real Parameter
 //    int generations[] = new int[]{1000};
 //    int[] orders = new int[]{10,15,20,25,50,100};

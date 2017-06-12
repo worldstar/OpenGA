@@ -1,13 +1,6 @@
 package openga.MainProgram;
 
 import openga.chromosomes.*;
-import openga.operator.clone.*; //ct
-import openga.operator.selection.*;
-import openga.operator.crossover.*;
-import openga.operator.mutation.*;
-import openga.ObjectiveFunctions.*;
-import openga.Fitness.*;
-
 /**
  * <p>
  * Title: The OpenGA project which is to build general framework of Genetic
@@ -23,7 +16,7 @@ import openga.Fitness.*;
  * @version 1.0
  */
 public class singleThreadGAwithInitialPop extends singleThreadGA {
-
+  double maxNeighborhood;
   public singleThreadGAwithInitialPop() {
   }
 
@@ -54,7 +47,7 @@ public class singleThreadGAwithInitialPop extends singleThreadGA {
       Mutation.setData(Population);
 
       //Crossover
-      //System.out.println("Crossover");
+//      System.out.println("Crossover");
       Population = crossoverStage(Population);
 
       //Mutation
@@ -74,8 +67,9 @@ public class singleThreadGAwithInitialPop extends singleThreadGA {
       //additionalStage();
 
       currentUsedSolution += fixPopSize;//Solutions used in genetic search//???
-
+      
       //local search
+//      System.out.println("LocalSearch");
       if (applyLocalSearch == true && i % 10 == 0) {
         localSearchStage(1);
       }
