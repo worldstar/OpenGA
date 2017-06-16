@@ -1,6 +1,7 @@
 package openga.ObjectiveFunctions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -11,87 +12,102 @@ public class TPObjectiveFunctionOASParallel extends TPObjectiveFunctionforOAS {
 
   @Override
   public void calcMaximumRevenue() {
-    List<Integer> _chromosome1 = new ArrayList<Integer>();
+    List<Integer> _chromosome1 = new ArrayList<>();
     _chromosome1.addAll(chromosometoList(chromosome1));
-    List<List<Integer>> accept = new ArrayList<List<Integer>>();
-    List<Integer> reject = new ArrayList<Integer>();
-    List<Integer> salesmen = new ArrayList<Integer>();
+    List<List<Integer>> accept = new ArrayList<>();
+    List<Integer> reject = new ArrayList<>();
+    List<Integer> salesmen = new ArrayList<>();
     List<List<Double>> completionTimes = new ArrayList<>();
-    List<List<Double>> Revenues = new ArrayList<>();
-    double[] time = new double[numberOfSalesmen - 1];
-    int numberOfCities = length - numberOfSalesmen, index;
+    double[] time = new double[numberOfSalesmen - 1],
+            revenues = new double[numberOfSalesmen - 1];
+    int index;
     maximumRevenue = 0;
 
     System.out.println("_chromosome1(B):" + _chromosome1.toString());
     for (int m = 0; m < numberOfSalesmen - 1; m++) {
-      moveGenes(_chromosome1, accept, 0);       //give every accept machine a order first.
+//      System.out.println("m: " + m);
       List<Double> times = new ArrayList<>();   //initialize times & revenue.
       completionTimes.add(times);
-      List<Double> revenue = new ArrayList<>();
-      Revenues.add(revenue);
+      moveGenes(_chromosome1, accept, 0);       //give every accept machine a order first.
       index = accept.get(m).get(0);
       time[m] = calccompletionTime(0, index, -1);
       completionTimes.get(m).add(time[m]);
-      Revenues.get(m).add(calcRevenue(time[m], index));
+      revenues[m] = calcRevenue(time[m], index);
     }
-    System.out.println("accept:" + accept.toString());
-    System.out.println("_chromosome1(A):" + _chromosome1.toString());
+//    System.out.println("accept:" + accept.toString());
+//    System.out.println("_chromosome1(A):" + _chromosome1.toString());
 //    System.out.println("completionTimes:" + completionTimes.toString());
-//    System.out.println("Revenues:" + Revenues.toString());
-//    System.out.println();
+    System.out.println();
 
     /*try to insert last order on every machine, 
       if revenue & completion time is better, 
       put the order into the machine.*/
-    double bestRevenue = calctotalRevenue(Revenues), revenue = 0;
-    double _time = time[0];
+    double _time = 0, _time2 = 0,revenue = 0,_revenue = 0;
+    List<List<Integer>> _accept = new ArrayList<>();
+    List<List<Integer>> _accept2 = new ArrayList<>();
+    _accept.addAll(accept);
+    
 
-    for (int i = 0; i < _chromosome1.size()-numberOfSalesmen; i++) {
+    for (int i = 0; i < _chromosome1.size() - numberOfSalesmen; i++) {
+      _time += time[0];
       index = _chromosome1.get(i);
-      copyGene(_chromosome1, accept.get(0), 0);
-      System.out.println("accept(copyGene):" + accept.toString());
+      copyGene(_chromosome1, _accept.get(0), 0);
+      System.out.println("_accept(copyGene1):" + _accept.toString());
+      System.out.println("_accept2(copyGene1):" + _accept.toString());
 
-      _time += calccompletionTime(_time, index, accept.get(0).get(accept.get(0).size() - 1));
+      _time += calccompletionTime(_time, index, _accept.get(0).get(_accept.get(0).size() - 1));
       revenue = calcRevenue(_time, index);
-      accept.get(0).remove(accept.get(0).size() - 1);
-      System.out.println("accept(remove):" + accept.toString());
 
       for (int m = 1; m < numberOfSalesmen - 1; m++) {
-        double tmpRevenue = 0;
-        double _time2 = 0;
-        copyGene(_chromosome1, accept.get(m), 0);
-        _time2 = time[m];
-        _time2 += calccompletionTime(_time2, index, accept.get(m).get(accept.get(m).size() - 1));
-        tmpRevenue = calcRevenue(_time2, index);
-        System.out.println("accept(AA):" + accept.toString());
+        _accept2.addAll(accept);
+        System.out.println("_accept2:" + _accept2.toString());
+//        System.out.println("m: " + m);
+        _time2 += time[m];
+        copyGene(_chromosome1, _accept2.get(m), 0);
+        System.out.println("_accept2(copyGene2):" + _accept2.toString());
 
-        if (tmpRevenue > bestRevenue) {
-          _chromosome1.remove(0);
-          System.out.println("accept(tmpRevenue > bestRevenue):" + accept.toString());
-          System.out.println("_chromosome1(A):" + _chromosome1.toString());
-        } else if (tmpRevenue == bestRevenue) {
+        _time2 += calccompletionTime(_time2, index, _accept2.get(m).get(_accept2.get(m).size() - 1));
+        _revenue = calcRevenue(_time2, index);
 
+        if (_revenue == 0 && revenue == 0 && m == numberOfSalesmen - 2) {
+          moveGene(_chromosome1, reject, 0);
+        } else if (_revenue > revenue) {
+          _accept.clear();
+          _accept.addAll(_accept2);
+          _time = _time2;
+          revenue = _revenue;
+          System.out.println("tmpRevenue > bestRevenue");
+        } else if (_revenue == revenue) {
           if (_time2 < _time) {
-            _chromosome1.remove(0);
-            System.out.println("accept(tmpRevenue == bestRevenue & _time2 < _time):" + accept.toString());
-            System.out.println("_chromosome1(A):" + _chromosome1.toString());
-          } else {
-            accept.get(m).remove(accept.get(m).size() - 1);
-            copyGene(_chromosome1, accept.get(0), 0);
-            _chromosome1.remove(0);
-            System.out.println("accept(tmpRevenue == bestRevenue & _time2 > _time):" + accept.toString());
-            System.out.println("_chromosome1(A):" + _chromosome1.toString());
+            _accept.clear();
+            _accept.addAll(_accept2);
+            _time = _time2;
+            revenue = _revenue;
+            System.out.println("tmpRevenue == bestRevenue & _time2 < _time");
+          } else {//_time2 >= _time
+            System.out.println("tmpRevenue == bestRevenue & _time2 >= _time");
           }
-        } else {
-          accept.get(m).remove(accept.get(m).size() - 1);
-          copyGene(_chromosome1, accept.get(0), 0);
-          _chromosome1.remove(0);
-          System.out.println("accept(4):" + accept.toString());
-          System.out.println("_chromosome1(A):" + _chromosome1.toString());
+        } else {//tmpRevenue <= revenue
+          System.out.println("tmpRevenue <= revenue");
         }
-      }
 
+        System.out.println("accept:" + accept.toString());
+      }
+      System.out.println();
     }
+
+    for (int m = 0; m < numberOfSalesmen - 1; m++) {
+      salesmen.add(accept.get(m).size());
+    }
+    salesmen.add(reject.size());
+
+//    System.out.println("_chromosome1(F):" + _chromosome1.toString());
+//    System.out.println("accept:" + accept.toString());
+//    System.out.println("reject:" + reject.toString());
+//    System.out.println("salesmen:" + salesmen.toString());
+//    System.out.println("completionTimes:" + completionTimes.toString());
+//    System.out.println("revenues:" + Arrays.toString(revenues));
+//    System.out.println();
 
     /*for (int i = 0; i < _chromosome1.size(); i++) {
       index = _chromosome1.get(i);
