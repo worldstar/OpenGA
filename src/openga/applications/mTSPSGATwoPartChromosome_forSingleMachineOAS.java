@@ -20,12 +20,13 @@ import openga.applications.data.OASInstances;
  * We obtain the instance from OASLIB.
  * Reference "A tabu search algorithm for order acceptance and scheduling", http://home.ku.edu.tr/~coguz/Research/Dataset_OAS.zip
  */
-public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends TSP {
+public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends mTSPSGATwoPart {
 
-  int numberOfSalesmen = 2;
-  int type = 0; //type = 0 : mtsp,  type = 2 : OA,  type = 3 : TCX
-  int maxNeighborhood = 3;  //A default value of the maximum neighbors to search.
-  int TournamentSize = 7;
+  int numberOfSalesmen;
+  int type; //type = 0 : mtsp,  type = 2 : OA,  type = 3 : TCX
+  int maxNeighborhood;  //A default value of the maximum neighbors to search.
+  int TournamentSize;
+  double alpha;
 
   singleThreadGA GaMain;
   SelectI Selection;
@@ -36,7 +37,7 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends TSP {
   ObjectiveFunctionOASI[] ObjectiveFunction;
   String instanceName = "";
 
-  boolean applyLocalSearch = false;
+  boolean applyLocalSearch;
 
   double[] r;       //  release date.
   double[] p;       //  processing time
@@ -49,8 +50,8 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends TSP {
   public mTSPSGATwoPartChromosome_forSingleMachineOAS() {
   }
 
-  public void setParameter(double crossoverRate, double mutationRate, int counter, double elitism, int generation,
-          int type, int numberOfSalesmen, int cities, String instanceName,
+  public void setParameter(double crossoverRate, double mutationRate, int counter, double elitism,
+          int generation, int type, int numberOfSalesmen, int cities, String instanceName,
           double[] r, double[] p, double[] d, double[] d_bar, double[] e, double[] w, double[][] s) {
     this.DEFAULT_crossoverRate = crossoverRate;
     this.DEFAULT_mutationRate = mutationRate;
@@ -102,7 +103,7 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends TSP {
     for (int i = 0; i < DEFAULT_PopSize; i++) {
       Population.getSingleChromosome(i).generateTwoPartPop(length + numberOfSalesmen, numberOfSalesmen);
     }
-
+//    Population.
     Selection.setTournamentSize(7);
     Crossover.setNumberofSalesmen(numberOfSalesmen);
     Mutation.setNumberofSalesmen(numberOfSalesmen);
@@ -125,7 +126,7 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends TSP {
     GaMain.startGA();
     timeClock1.end();
 
-    String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + type + "\t" + numberOfSalesmen
+    String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + numberOfSalesmen + "\t" + alpha
             + "\t" + GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
             + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
     writeFile("mTSPSGATwoPartChromosome_forSingleMachineOAS20160718MinimumCostFull", implementResult);
@@ -147,22 +148,24 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends TSP {
     double elitism[] = new double[]{0.1};
     int[] numberOfSalesmen = new int[]{2};//3, 5, 10, 20, 30
     int type = 0;//0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
-    int repeat = 30;
-    int[] maxNeighborhood = new int[]{3};  //A default value of the maximum neighbors to search.
 
+    //A default value of the maximum neighbors to search.
     //Test Parameter
-    int generations[] = new int[]{1000};//1000
-    int[] orders = new int[]{10};
-    int[] Tao = new int[]{1};
-    int[] R = new int[]{1};
-    int instanceReplications = 1;
+//    int repeat = 1;
+//    int generations[] = new int[]{10};//1000
+//    int[] orders = new int[]{10};
+//    int[] Tao = new int[]{1};
+//    int[] R = new int[]{1};
+//    int instanceReplications = 1;
 //    double[] 
     //Real Parameter
-//    int generations[] = new int[]{1000};
-//    int[] orders = new int[]{10,15,20,25,50,100};
-//    int[] Tao = new int[]{1,3,5,7,9};
-//    int[] R = new int[]{1,3,5,7,9};
-//    int instanceReplications = 10;
+    int repeat = 3;
+    int generations[] = new int[]{1000};
+    int[] orders = new int[]{10, 15, 20, 25, 50, 100};//10, 15, 20, 25, 50, 100}
+    int[] Tao = new int[]{1, 3, 5, 7, 9};//1, 3, 5, 7, 9
+    int[] R = new int[]{1, 3, 5, 7, 9};//1, 3, 5, 7, 9
+    double[] alpha = new double[]{0.2, 0.1, 0.05};
+    int instanceReplications = 10;
     for (int i = 0; i < orders.length; i++) {
       for (int j = 0; j < Tao.length; j++) {
         for (int k = 0; k < R.length; k++) {
@@ -170,7 +173,6 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends TSP {
 
             OASInstances OASInstances1 = new OASInstances();
             String instanceName = new String(".\\instances\\SingleMachineOAS\\" + orders[i] + "orders\\Tao" + Tao[j] + "\\R" + R[k] + "\\Dataslack_" + orders[i] + "orders_Tao" + Tao[j] + "R" + R[k] + "_" + (l + 1) + ".txt");
-
 //            System.out.println(instanceName);
             OASInstances1.setData(instanceName, orders[i]);
             OASInstances1.getDataFromFile();
@@ -179,15 +181,17 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends TSP {
               for (int n = 0; n < mutationRate.length; n++) {
                 for (int o = 0; o < elitism.length; o++) {
                   for (int p = 0; p < numberOfSalesmen.length; p++) {
-                    for (int q = 0; q < maxNeighborhood.length; q++) {
+                    for (int q = 0; q < alpha.length; q++) {
                       for (int r = 0; r < repeat; r++) {
+                        
+                        int _alpha = (int) Math.round(((double) orders[i] * alpha[q]));
 //                        System.out.print("counter "+counter+" ");
                         mTSPSGATwoPartChromosome_forSingleMachineOAS TSP1 = new mTSPSGATwoPartChromosome_forSingleMachineOAS();
-
+                        TSP1.alpha = alpha[q];
                         TSP1.setParameter(crossoverRate[m], mutationRate[n], counter, elitism[o], generations[0],
                                 type, numberOfSalesmen[p], OASInstances1.getSize(), instanceName,
                                 OASInstances1.getR(), OASInstances1.getP(), OASInstances1.getD(), OASInstances1.getD_bar(), OASInstances1.getE(), OASInstances1.getW(), OASInstances1.getS());
-                        TSP1.setLocalSearchData(applyLocalSearch, maxNeighborhood[q]);
+                        TSP1.setLocalSearchData(applyLocalSearch, _alpha);
                         TSP1.initiateVars();
                         TSP1.start();
                         TSP1.printResults();
