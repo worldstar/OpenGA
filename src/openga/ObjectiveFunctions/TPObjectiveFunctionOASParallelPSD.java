@@ -1,20 +1,21 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package openga.ObjectiveFunctions;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  *
- * @author YU-TANG CHANG
+ * @author Administrator
  */
-public class TPObjectiveFunctionOASParallel extends TPObjectiveFunctionforOAS {
+public class TPObjectiveFunctionOASParallelPSD extends TPObjectiveFunctionOASParallel {
 
-  public double[] revenues;
-  public double[] time;
-  List<List<Double>> completionTimes = new ArrayList<>();
-  
-  @Override
+  double[] PSD;
+
   public void calcMaximumRevenue() {
     revenues = new double[numberOfSalesmen - 1];
     time = new double[numberOfSalesmen - 1];
@@ -51,13 +52,13 @@ public class TPObjectiveFunctionOASParallel extends TPObjectiveFunctionforOAS {
       index = _chromosome1.get(i);
       _time = time[0];
       copyGene(_chromosome1, accept.get(0), i);
-      _time = calccompletionTime(_time, index, accept.get(0).get(accept.get(0).size() - 2));//after Comparison time[0] will update
+      _time = calccompletionTime(_time, index, accept.get(0).get(accept.get(0).size() - 2),i);//after Comparison time[0] will update
       revenue = calcRevenue(_time, index);
 
       for (int m = 1; m < numberOfSalesmen - 1; m++) {
         _time2 = time[m];
         copyGene(_chromosome1, _accept.get(m), i);
-        _time2 = calccompletionTime(_time2, index, _accept.get(m).get(_accept.get(m).size() - 2));
+        _time2 = calccompletionTime(_time2, index, _accept.get(m).get(_accept.get(m).size() - 2),i);
         _revenue = calcRevenue(_time2, index);
 //        System.out.println("accept:" + accept.toString() + "\t" + "revenue:" + revenue + "\t" + "mb" + " " + _time + "\t");
 //        System.out.println("_accept:" + _accept.toString() + "\t" + "_revenue:" + _revenue + "\t" + "m" + (m + 1) + " " + _time2 + "\t");
@@ -135,55 +136,16 @@ public class TPObjectiveFunctionOASParallel extends TPObjectiveFunctionforOAS {
 //    System.out.println();
   }
 
-  public double calctotaltotalTime() {
-    double totalTime = 0;
-    for (int i = 0; i < revenues.length; i++) {
-      totalTime += time[i];
-    }
-    return totalTime;
-  }
-
-  public double calctotalRevenue() {
-    double totalRevenue = 0;
-    for (int i = 0; i < revenues.length; i++) {
-      totalRevenue += revenues[i];
-    }
-    return totalRevenue;
-  }
-
-  public double calcRevenue(double completionTime, int index) {
-    double revenue = Math.max(0, Math.min((d_bar[index] - d[index]), (d_bar[index] - completionTime))) * w[index];
-    return revenue;
-  }
-
-  public double calccompletionTime(double time, int index, int lastindex) {
+  public double calccompletionTime(double time, int index, int lastindex, int i) {
     if (lastindex != -1) {
-      time += s[index][lastindex];
+      for (int k = 0; k < i; k++) {
+        time += p[chromosome1.genes[k]];
+      }
     }
     if (time < r[index]) {
       time = r[index];
     }
     time += p[index];
     return time;
-  }
-
-  public void moveGene(List<Integer> _chromosome, List<List<Integer>> _chromosomes, int index) {
-    List<Integer> genes = new ArrayList<>();
-    genes.add(_chromosome.get(index));
-    _chromosomes.add(genes);
-    _chromosome.remove(index);
-  }
-
-  public void copyGene(List<Integer> _chromosome1, List<Integer> _chromosome2, int index) {
-    _chromosome2.add(_chromosome1.get(index));
-  }
-
-  public void copyGenes(List<List<Integer>> _chromosomes1, List<List<Integer>> _chromosomes2) {
-    _chromosomes2.clear();
-    for (int i = 0; i < _chromosomes1.size(); i++) {
-      List<Integer> genes = new ArrayList<>();
-      genes.addAll(_chromosomes1.get(i));
-      _chromosomes2.add(genes);
-    }
   }
 }

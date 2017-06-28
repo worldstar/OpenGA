@@ -74,10 +74,10 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
             currentPosition = 0, stopPosition = 0,
             index, lastindex = 0;
     double time = 0, Revenue, dayGap;
-    List<Integer> _chromosome1 = new ArrayList<Integer>();
-    List<Integer> accept = new ArrayList<Integer>();
-    List<Integer> reject = new ArrayList<Integer>();
-    List<Integer> salesmen = new ArrayList<Integer>();
+    List<Integer> _chromosome1 = new ArrayList<>();
+    List<Integer> accept = new ArrayList<>();
+    List<Integer> reject = new ArrayList<>();
+    List<Integer> salesmen = new ArrayList<>();
     _chromosome1.addAll(chromosometoList(chromosome1));
 
     for (int i = 0; i < numberOfSalesmen; i++) {

@@ -1,6 +1,7 @@
 package openga.MainProgram;
 
 import openga.chromosomes.*;
+
 /**
  * <p>
  * Title: The OpenGA project which is to build general framework of Genetic
@@ -16,7 +17,7 @@ import openga.chromosomes.*;
  * @version 1.0
  */
 public class singleThreadGAwithInitialPop extends singleThreadGA {
-  double maxNeighborhood;
+
   public singleThreadGAwithInitialPop() {
   }
 
@@ -25,6 +26,7 @@ public class singleThreadGAwithInitialPop extends singleThreadGA {
    * done.
    */
   public void startGA() {
+
     //evaluate the objective values and calculate fitness values
     //clone
     if (applyClone == true) {
@@ -40,6 +42,7 @@ public class singleThreadGAwithInitialPop extends singleThreadGA {
       currentGeneration = i;
 
       //selection
+//      System.out.println("selection");
       Population = selectionStage(Population);
 
       //collect gene information
@@ -51,7 +54,7 @@ public class singleThreadGAwithInitialPop extends singleThreadGA {
       Population = crossoverStage(Population);
 
       //Mutation
-      //System.out.println("mutationStage");
+//      System.out.println("mutationStage");
       Population = mutationStage(Population);
 
       //clone
@@ -67,12 +70,13 @@ public class singleThreadGAwithInitialPop extends singleThreadGA {
       //additionalStage();
 
       currentUsedSolution += fixPopSize;//Solutions used in genetic search//???
-      
+
       //local search
 //      System.out.println("LocalSearch");
       if (applyLocalSearch == true && i % 10 == 0) {
         localSearchStage(1);
       }
+      
 
       i++;
 

@@ -7,8 +7,10 @@ import java.util.List;
  *
  * @author YU-TANG CHANG
  */
-public class TPObjectiveFunctionOASPSD extends TPObjectiveFunctionforOAS{
-  double[] PSD;
+public class TPObjectiveFunctionOASPSD extends TPObjectiveFunctionforOAS {
+
+  double[] PSD; 
+
   @Override
   public void calcMaximumRevenue() {
     maximumRevenue = 0;
@@ -26,21 +28,18 @@ public class TPObjectiveFunctionOASPSD extends TPObjectiveFunctionforOAS{
       stopPosition += _chromosome1.get(numberOfCities + i);
       for (int j = currentPosition; j < stopPosition; j++) {
         index = chromosome1.genes[j];
-        
-        
-        
-        
-        if (time < r[index]) {
-          time = r[index];
-        }
-        for (int k = 0; k < j; k++) {
-          ;
-        }
+
         if (j != 0) {
           time = Math.max(C[lastindex], r[index]);
+          for (int k = 0; k < j; k++) {
+            time += p[chromosome1.genes[k]];
+          }
+        } else {
+          time = r[index];
         }
+
         time += p[index];
-        
+
         C[index] = time;
 
         dayGap = Math.max(0, Math.min((d_bar[index] - d[index]), (d_bar[index] - C[index])));
@@ -48,15 +47,15 @@ public class TPObjectiveFunctionOASPSD extends TPObjectiveFunctionforOAS{
         maximumRevenue += Revenue;
 //        System.out.println("currentPosition: " + currentPosition);
 //        System.out.println("stopPocurrentPositionsition: " + stopPosition);
-//        System.out.println("obj: " + (index));
-//        System.out.println("release date: " + r[index]);
-//        System.out.println("processing time: " + p[index]);
+        System.out.println("obj: " + (index));
+        System.out.println("release date: " + r[index]);
+        System.out.println("processing time: " + p[index]);
 //        System.out.println("setup times: " + s[index][lastindex]);
-//        System.out.println("time: " + time);
-//        System.out.println("dayGap = " + dayGap);
+        System.out.println("time: " + time);
+        System.out.println("dayGap = " + dayGap);
 //        System.out.println("weight = " + w[index]);
-//        System.out.println("Revenue = " + Revenue);
-//        System.out.println("maximumRevenue = " + maximumRevenue);
+        System.out.println("Revenue = " + Revenue);
+        System.out.println("maximumRevenue = " + maximumRevenue);
 
         if (Revenue == 0) {
           reject.add(_chromosome1.get(j));
@@ -69,7 +68,7 @@ public class TPObjectiveFunctionOASPSD extends TPObjectiveFunctionforOAS{
     }
 
     for (int i = 0; i < numberOfSalesmen - 1; i++) {
-      int cities = (int) Math.round((double) accept.size() / (numberOfSalesmen - 1));
+      int cities = accept.size();
       salesmen.add(cities);
     }
     salesmen.add(reject.size());
@@ -100,6 +99,7 @@ public class TPObjectiveFunctionOASPSD extends TPObjectiveFunctionforOAS{
     }
     System.out.println("End");//*/
   }
+
   public void setOASData(double[] r, double[] p, double[] d, double[] d_bar, double[] e, double[] w, double[][] s, int numberOfSalesmen) {
     this.r = r;
     this.p = p;
