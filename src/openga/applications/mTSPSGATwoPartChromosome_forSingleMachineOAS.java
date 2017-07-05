@@ -85,7 +85,11 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends mTSPSGATwoPart
     Mutation = new swapMutationTwoPart();//TwoPartMTSPMutation
     localSearch1 = new localSearchByIG();
     ObjectiveFunction = new ObjectiveFunctionOASI[numberOfObjs];
-    ObjectiveFunction[0] = new TPObjectiveFunctionOASParallel();//the first objective
+    if (numberOfSalesmen < 2) {
+      ObjectiveFunction[0] = new TPObjectiveFunctionforOAS();
+    } else {
+      ObjectiveFunction[0] = new TPObjectiveFunctionOASParallel();
+    }
     Fitness = new singleObjectiveFitness();//singleObjectiveFitness singleObjectiveFitnessByNormalize
     objectiveMinimization = new boolean[numberOfObjs];
     objectiveMinimization[0] = false;
@@ -158,18 +162,17 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends mTSPSGATwoPart
 //    int[] R = new int[]{1};
 //    double[] alpha = new double[]{0.2};
 //    int instanceReplications = 1;
-
     //Real Parameter
     int repeat = 3;
     int generations[] = new int[]{1000};
-    int[] numberOfSalesmen = new int[]{2,3,4};
+    int[] numberOfSalesmen = new int[]{2, 3, 4};
     double[] alpha = new double[]{0.2, 0.1, 0.05};
-    
-    int[] orders = new int[]{15, 20, 25, 50, 100};//10, 15, 20, 25, 50, 100}
+
+    int[] orders = new int[]{100};//10, 15, 20, 25, 50, 100}
     int[] Tao = new int[]{1, 3, 5, 7, 9};//1, 3, 5, 7, 9
     int[] R = new int[]{1, 3, 5, 7, 9};//1, 3, 5, 7, 9
     int instanceReplications = 10;
-    
+
     for (int i = 0; i < orders.length; i++) {
       for (int j = 0; j < Tao.length; j++) {
         for (int k = 0; k < R.length; k++) {
@@ -180,7 +183,7 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends mTSPSGATwoPart
 //            System.out.println(instanceName);
             OASInstances1.setData(instanceName, orders[i]);
             OASInstances1.getDataFromFile();
-            
+
             for (int m = 0; m < crossoverRate.length; m++) {
               for (int n = 0; n < mutationRate.length; n++) {
                 for (int o = 0; o < elitism.length; o++) {
@@ -197,9 +200,8 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends mTSPSGATwoPart
                         TSP1.setLocalSearchData(applyLocalSearch, _alpha);
                         TSP1.initiateVars();
                         TSP1.start();
-                        TSP1.printResults();
+//                        TSP1.printResults();
                         counter++;
-                        
                       }
                     }
                   }
@@ -211,7 +213,6 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends mTSPSGATwoPart
         }
       }
     }
-
     System.exit(0);
   }
 

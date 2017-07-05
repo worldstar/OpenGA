@@ -76,7 +76,6 @@ public class singleThreadGAwithInitialPop extends singleThreadGA {
       if (applyLocalSearch == true && i % 10 == 0) {
         localSearchStage(1);
       }
-      
 
       i++;
 

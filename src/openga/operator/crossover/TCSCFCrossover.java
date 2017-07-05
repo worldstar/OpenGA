@@ -26,11 +26,11 @@ public class TCSCFCrossover extends TPCrossOver implements CrossoverMTSPI {
 
 //  /*
   public static void main(String[] args) {
-    int[] dad = {2, 3, 1, 5, 8, 4, 9, 6, 7, 0, 3, 2, 2, 3},
-            mom = {8, 6, 3, 9, 7, 2, 5, 4, 0, 1, 3, 3, 3, 1};
+    int[] mom = {8, 6, 3, 9, 7, 2, 5, 4, 0, 1, 3, 3, 3, 1},
+            dad = {2, 3, 1, 5, 8, 4, 9, 6, 7, 0, 3, 2, 2, 3};
     TCSCFCrossover TCSCFX = new TCSCFCrossover(0);
     TCSCFX.numberofSalesmen = 4;
-    TCSCFX.CrossOver(mom, dad);
+    TCSCFX.CrossOver(mom, dad, 1);
   }
 //  */
 
@@ -62,35 +62,101 @@ public class TCSCFCrossover extends TPCrossOver implements CrossoverMTSPI {
   chromosomeLength = 14
   
    */
-  public int[] CrossOver(int[] mom, int[] dad, int x) {
-    int[] Child = new int[chromosomeLength];
+  public List<Integer> CrossOver(int[] mom, int[] dad, int x) {
     chromosomeLength = mom.length;
     int numberofCities = chromosomeLength - numberofSalesmen;
-    List<List<Integer>> genesofMom = new ArrayList<List<Integer>>();
-    List<List<Integer>> genesofDad = new ArrayList<List<Integer>>();
-    List<List<Integer>> genesofSamesite = new ArrayList<List<Integer>>();
+    List<Integer> child = new ArrayList<>();
+    List<List<Integer>> childGenes = new ArrayList<>(numberofSalesmen);
+    List<List<Integer>> momGenes = new ArrayList<>();
+    List<List<Integer>> dadGenes = new ArrayList<>();
+    List<List<Integer>> sameGenes = new ArrayList<>();
+    int length = 0;
+    momGenes.addAll(genestoList(mom));
+    dadGenes.addAll(genestoList(dad));
 
-//    System.out.print("mom: ");
-//    for (int i = 0; i < chromosomeLength; i++) {
-//      System.out.print(mom[i] + " ");
-//    }
-//    System.out.println("End");
-    //Same-site copy first
-//    for (int i = type; i < numberofSalesmen; i++) {
-//      Samesite = new ArrayList<Integer>();
-//      for (int j = 0; j < segmentofMom[i].length; j++) {
-//        for (int k = 0; k < segmentofDad[i].length; k++) {
-//          if (segmentofMom[i][j] == segmentofDad[i][k] && segmentofMom[i][j] != -1) {
-//            Samesite.add(segmentofMom[i][j]);
-//            segmentofMom[i][j] = -1;
-//            segmentofDad[i][k] = -1;
-//          }
-//        }
-//      }
-//      segmentofSamesite.add(Samesite);
-//      sizeofSamesite[i] = Samesite.size();
-//    }
-    return Child;
+    if (type == 2) {
+      type = numberofSalesmen;
+    }
+    for (int s = 0; s < numberofSalesmen - type; s++) {
+      List<Integer> genes = new ArrayList<>();
+      for (int m = 0; m < momGenes.get(s).size(); m++) {
+        for (int d = 0; d < dadGenes.get(s).size(); d++) {
+          if (momGenes.get(s).get(m) == dadGenes.get(s).get(d)) {
+            genes.add(momGenes.get(s).get(m));
+            momGenes.get(s).set(m, -1);
+            dadGenes.get(s).set(d, -1);
+          }
+        }
+      }
+      sameGenes.add(genes);
+    }
+    System.out.println("momGenes: " + momGenes.toString());
+    System.out.println("dadGenes: " + dadGenes.toString());
+    System.out.println("sameGenes: " + sameGenes.toString());
+
+    List<Integer> selectGenes = new ArrayList<>();
+    for (int s = 0; s < numberofSalesmen; s++) {
+      setCutpoint(momGenes, s);
+      System.out.println("cutPoint1: " + cutPoint1);
+      System.out.println("cutPoint2: " + cutPoint2);
+
+      for (int m = cutPoint1; m < cutPoint2; m++) {
+        if (momGenes.get(s).get(m) != -1) {
+          selectGenes.add(momGenes.get(s).get(m));
+          childGenes.get(s).add(momGenes.get(s).get(m));
+          System.out.print("selectGene" + momGenes.get(s).get(m));
+        }
+      }
+
+      for (int m = 0; m < momGenes.get(s).size(); m++) {
+        if (m >= cutPoint1 && m < cutPoint2 && momGenes.get(s).get(m) != -1) {
+          selectGenes.add(momGenes.get(s).get(m));
+          childGenes.get(s).add(momGenes.get(s).get(m));
+          momGenes.get(s).set(m, -1);
+          System.out.print("selectGene" + momGenes.get(s).get(m));
+        } else if (segmentofMom[i][j] != -1) {
+          tmpSelection.add(segmentofMom[i][j]);
+//          System.out.print("dad"+segmentofMom[i][j]);
+          segmentofMom[i][j] = -2;
+        }
+      }
+
+//      System.out.println();
+      segmentofmomSelection.add(momSelection);
+      sizeofmomSelection[i] = momSelection.size();
+    }
+
+    return child;
+  }
+
+  public void setCutpoint(List<List<Integer>> genes, int i) {
+    do {
+      cutPoint1 = new Random().nextInt(genes.get(i).size() + 1);
+      cutPoint2 = new Random().nextInt(genes.get(i).size() + 1);
+      if (genes.get(i).size() == 0) {
+        break;
+      }
+    } while (cutPoint1 == cutPoint2);
+    if (cutPoint1 > cutPoint2) {
+      int tmp = cutPoint1;
+      cutPoint1 = cutPoint2;
+      cutPoint2 = tmp;
+    }
+  }
+
+  public List<List<Integer>> genestoList(int[] genes) {
+    int numberofCities = chromosomeLength - numberofSalesmen;
+    int length = 0;
+    List<List<Integer>> geneList = new ArrayList<>();
+    for (int i = 0; i < numberofSalesmen; i++) {
+      List<Integer> gene = new ArrayList<>();
+      for (int j = 0; j < genes[numberofCities + i]; j++) {
+        gene.add(genes[length]);
+        length++;
+      }
+      geneList.add(gene);
+    }
+    return geneList;
   }
 
   //type = 0 : mtsp,  type = 2 : OA,  type = 3 : TCX
@@ -188,17 +254,17 @@ public class TCSCFCrossover extends TPCrossOver implements CrossoverMTSPI {
       do {
         cutPoint1 = new Random().nextInt(segmentofMom[i].length + 1);
         cutPoint2 = new Random().nextInt(segmentofMom[i].length + 1);
-        if(segmentofMom[i].length == 0){
+        if (segmentofMom[i].length == 0) {
           break;
         }
       } while (cutPoint1 == cutPoint2);
-      
+
       if (cutPoint1 > cutPoint2) {
         int tmp = cutPoint1;
         cutPoint1 = cutPoint2;
         cutPoint2 = tmp;
       }
-      
+
 //      System.out.println("cutPoint1 = " + cutPoint1);
 //      System.out.println("cutPoint2 = " + cutPoint2);
       momSelection = new ArrayList<Integer>();
@@ -242,7 +308,6 @@ public class TCSCFCrossover extends TPCrossOver implements CrossoverMTSPI {
       System.out.println();
     }
 //    */
-
 //print tmpSelection
     /*
     System.out.println("tmpSelection = ");
@@ -251,7 +316,6 @@ public class TCSCFCrossover extends TPCrossOver implements CrossoverMTSPI {
     }
     System.out.println();
 //    */
-
 //print dadSelection
     /*
     System.out.println("dadSelection = ");
@@ -262,7 +326,6 @@ public class TCSCFCrossover extends TPCrossOver implements CrossoverMTSPI {
       System.out.println();
     }
 //    */
-
 //print segmentofMom
     /*
     System.out.println("segmentofMom = ");
@@ -273,7 +336,6 @@ public class TCSCFCrossover extends TPCrossOver implements CrossoverMTSPI {
       System.out.println();
     }
 //    */
-
 //print segmentofDad
     /*
     System.out.println("segmentofDad = ");
@@ -328,12 +390,17 @@ public class TCSCFCrossover extends TPCrossOver implements CrossoverMTSPI {
       System.out.println();
     }
     //    */
-
+//    int L = 0;
+//    for (int i = 0; i < segmentofChild.length; i++) {
+//      L += segmentofChild[i].length;
+//    }
+//    L+=segmentofChild.length;
+//    System.out.println("L: "+L);
+//    System.out.println("Child length: "+Child.length);
     Length = 0;
     for (int i = 0; i < segmentofChild.length; i++) {
       for (int j = 0; j < segmentofChild[i].length; j++) {
         Child[Length] = segmentofChild[i][j];
-//        System.out.print(Length+" ");
         Length++;
       }
     }
@@ -341,9 +408,6 @@ public class TCSCFCrossover extends TPCrossOver implements CrossoverMTSPI {
       Child[Length] = segmentofChild[i].length;
       Length++;
     }
-    //print Child
-//    System.out.println("Child:"+Arrays.toString(Child));
-
     return Child;
   }
 

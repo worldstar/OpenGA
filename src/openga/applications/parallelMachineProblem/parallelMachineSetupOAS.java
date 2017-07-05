@@ -146,8 +146,8 @@ public class parallelMachineSetupOAS extends mTSPSGATwoPartChromosome_forSingleM
     double elitism[] = new double[]{0.1};//3, 5, 10, 20, 30
     int type = 0;//0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
     //Test Parameter
-    int repeat = 2;
-    int generations[] = new int[]{10};
+    int repeat = 3;
+    int generations[] = new int[]{1000};
     double[] alpha = new double[]{0.1};//Parameter of IG algrithm
     int[] numberOfSalesmen = new int[]{3, 6, 9};
 //    int[] numberOfMachines = new int[]{2};//2, 6, 12

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import openga.ObjectiveFunctions.ObjectiveFunctionI;
 import openga.chromosomes.chromosome;
 import openga.chromosomes.population;
 import openga.chromosomes.populationI;
@@ -19,7 +18,6 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
 
   @Override
   public void startLocalSearch() {
-//    System.out.print("startLocalSearch\n");
     selectedIndex = getBestIndex(archive);
     populationI _pop = new population();//to store the temp chromosome
     _pop.setGenotypeSizeAndLength(pop.getEncodedType(), 1, pop.getLengthOfChromosome(),
@@ -36,7 +34,6 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
       _pop.setObjectiveValue(0, _pop.getSingleChromosome(0).getObjValue());
       updateArchive(_pop.getSingleChromosome(0)); //update the solution in the elite set.
     }
-
   }
 
   public final double IG_ls(populationI _sp) {
@@ -57,8 +54,9 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
       salesmenPart.add(_sp.getSingleChromosome(0).genes[i]);
     }
     setdestructedPart(reservePart, destructedPart, salesmenPart);
-//insertPoint : number of insert position
+//  insertPoint : number of insert position
     int insertPoint = reservePart.size() + 1;
+
     List<Integer> tmpPart = new ArrayList<>();
     tmpPart.addAll(reservePart);
     tmpPart.addAll(salesmenPart);
@@ -68,7 +66,7 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
     lsPart.addAll(salesmenPart);
     double lsObjValue = 0;
     for (int i = 0; i < maxNeighborhood; i++) {
-//    add destructedPart gene and initialize Chromosome then calculate objectivefunction
+//    add destructedPart gene and initialize Chromosome then calculate objectivefunction    
       lsPart.add(0, destructedPart.get(i));
       lsPart.set(lsPart.size() - salesmenPart.size(), lsPart.get(lsPart.size() - salesmenPart.size()) + 1);
       chromosome lsChromosome = new chromosome();
@@ -110,19 +108,15 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
       _sp.getSingleChromosome(0).setSolution(lsPart);
       evaluateNewSoln(_sp.getSingleChromosome(0));
       localsearchObj = _sp.getSingleChromosome(0).getObjValue()[0];
+      currentUsedSolution += UsedSolution;
+//      System.out.println("resetGenes");
+//      System.out.println("reservePart: " + reservePart.toString() + "\ndestructedPart: " + destructedPart.toString() + "\nsalesmenPart: " + salesmenPart.toString());
+//      System.out.println("lsPart: " + lsPart.toString() + "\nlocalsearchObj: " + localsearchObj);
+//      System.out.println("UsedSolution(F): " + UsedSolution + "\ncurrentUsedSolution(total): " + currentUsedSolution);
     } else {
       UsedSolution = 0;
       localsearchObj = originalObjValue;
     }
-    currentUsedSolution += UsedSolution;
-//    System.out.println("UsedSolution(F): " + UsedSolution);    
-//    System.out.println("reservePart: " + reservePart.toString());
-//    System.out.println("destructedPart: " + destructedPart.toString());
-//    System.out.println("reservePart: " + reservePart.toString());
-//    System.out.println("lsPart: " + lsPart.toString());
-//    System.out.println("localsearchObj: " + localsearchObj);
-//    System.out.println("currentUsedSolution(total): " + currentUsedSolution);
-//    System.out.println("LS_End\n");
     return localsearchObj;
   }
 
@@ -130,11 +124,30 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
     int cities = chromosomeLength - salesmenPart.size();
     int[] Destructgenes = new int[numberofSalesmen];
     int numberofDestructgenes = maxNeighborhood;
+
     for (int i = 0; i < numberofSalesmen - 1; i++) {
-      Destructgenes[i] = (int) Math.ceil(((double) (numberofDestructgenes * salesmenPart.get(i)) / cities));
+      if (numberofDestructgenes == 0) {
+        break;
+      }
+      Destructgenes[i] = (int) Math.round(((double) maxNeighborhood * salesmenPart.get(i)) / cities);
       numberofDestructgenes -= Destructgenes[i];
+//      System.out.println("Destructgenes"+i+": "+ Destructgenes[i]);
     }
-    Destructgenes[Destructgenes.length-1] = numberofDestructgenes;
+//    System.out.println("salesmenPart: " + salesmenPart.toString());
+//      System.out.println("maxNeighborhood: " + maxNeighborhood);
+//      System.out.println("Destructgenes: "+ Arrays.toString(Destructgenes));
+    if (salesmenPart.get(numberofSalesmen - 1) == 0 && numberofDestructgenes > 0) {
+//      System.out.println("Last numberofDestructgenes To Destructgenes[0]: "+ numberofDestructgenes);
+      Destructgenes[0] += numberofDestructgenes;
+      numberofDestructgenes = 0;
+    } else {
+      Destructgenes[numberofSalesmen - 1] = numberofDestructgenes;
+      numberofDestructgenes = 0;
+    }
+    if (numberofDestructgenes < 0) {
+      System.out.println("numberofDestructgenes Error: " + numberofDestructgenes);
+    }
+
     int currentPosition = 0;
     for (int i = 0; i < Destructgenes.length; i++) {
       int frequency = Destructgenes[i];
@@ -145,6 +158,7 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
         reservePart.remove(reservePart.get(tmp));
         salesmenPart.set(i, (salesmenPart.get(i) - 1));
         Destructgenes[i]--;
+//        System.out.println("tmp:"+tmp);
       }
       currentPosition += salesmenPart.get(i);
     }
@@ -153,7 +167,6 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
   public int getBestIndex(populationI arch1) {
     int index = 0;
     double bestobj = 0;
-
     for (int k = 0; k < arch1.getPopulationSize(); k++) {
       if (arch1.getObjectiveValues(k)[0] > bestobj) {
         bestobj = arch1.getObjectiveValues(k)[0];
