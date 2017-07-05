@@ -129,8 +129,14 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
       if (numberofDestructgenes == 0) {
         break;
       }
-      Destructgenes[i] = (int) Math.round(((double) maxNeighborhood * salesmenPart.get(i)) / cities);
-      numberofDestructgenes -= Destructgenes[i];
+      int random = (int) Math.round(((double) maxNeighborhood * salesmenPart.get(i)) / cities);
+      for (int j = 0; j < random; j++) {
+        if (numberofDestructgenes == 0) {
+          break;
+        }
+        Destructgenes[i] += 1;
+        numberofDestructgenes -= 1;
+      }
 //      System.out.println("Destructgenes"+i+": "+ Destructgenes[i]);
     }
 //    System.out.println("salesmenPart: " + salesmenPart.toString());
@@ -140,12 +146,9 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
 //      System.out.println("Last numberofDestructgenes To Destructgenes[0]: "+ numberofDestructgenes);
       Destructgenes[0] += numberofDestructgenes;
       numberofDestructgenes = 0;
-    } else {
+    } else if (numberofDestructgenes > 0) {
       Destructgenes[numberofSalesmen - 1] = numberofDestructgenes;
       numberofDestructgenes = 0;
-    }
-    if (numberofDestructgenes < 0) {
-      System.out.println("numberofDestructgenes Error: " + numberofDestructgenes);
     }
 
     int currentPosition = 0;
