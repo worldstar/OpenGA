@@ -20,7 +20,7 @@ import openga.applications.data.OASInstances;
  * We obtain the instance from OASLIB.
  * Reference "A tabu search algorithm for order acceptance and scheduling", http://home.ku.edu.tr/~coguz/Research/Dataset_OAS.zip
  */
-public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends mTSPSGATwoPart {
+public class singleMachineOAS_SGA extends mTSPSGATwoPart {
 
   public int numberOfSalesmen;
   public int type; //type = 0 : mtsp,  type = 2 : OA,  type = 3 : TCX
@@ -47,7 +47,7 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends mTSPSGATwoPart
   double[] w;       //  weight
   double[][] s;     //  setup times
 
-  public mTSPSGATwoPartChromosome_forSingleMachineOAS() {
+  public singleMachineOAS_SGA() {
   }
 
   public void setParameter(double crossoverRate, double mutationRate, int counter, double elitism,
@@ -85,11 +85,7 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends mTSPSGATwoPart
     Mutation = new swapMutationTwoPart();//TwoPartMTSPMutation
     localSearch1 = new localSearchByIG();
     ObjectiveFunction = new ObjectiveFunctionOASI[numberOfObjs];
-    if (numberOfSalesmen < 2) {
-      ObjectiveFunction[0] = new TPObjectiveFunctionforOAS();
-    } else {
-      ObjectiveFunction[0] = new TPObjectiveFunctionOASParallel();
-    }
+    ObjectiveFunction[0] = new TPObjectiveFunctionforOAS();
     Fitness = new singleObjectiveFitness();//singleObjectiveFitness singleObjectiveFitnessByNormalize
     objectiveMinimization = new boolean[numberOfObjs];
     objectiveMinimization[0] = false;
@@ -133,7 +129,7 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends mTSPSGATwoPart
     String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + numberOfSalesmen + "\t" + alpha
             + "\t" + GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
             + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
-    writeFile("mTSPSGATwoPartChromosome_forSingleMachineOAS20160718MinimumCostFull", implementResult);
+    writeFile("OASforSMSPwithLS_20170705" + "MaxRevenueFull", implementResult);
     System.out.print(implementResult);
     //System.out.print("\n");
     //System.out.print(GaMain.getArchieve().getSingleChromosome(0).toString1());
@@ -142,36 +138,23 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends mTSPSGATwoPart
 
   public static void main(String[] args) {
 
-    System.out.println("mTSPSGATwoPartChromosome_forSingleMachineOAS20170612MaxRevenueFull");
+    System.out.println("OASforSMSPwithLS_20170705" + "MaxRevenueFull");
 
     int counter = 0;
     boolean applyLocalSearch = true;
     double[] crossoverRate = new double[]{0.5};//1, 0.5 [0.5]
     double[] mutationRate = new double[]{0.5};//0.1, 0.5 [0.1]
-
     double elitism[] = new double[]{0.1};
     int type = 0;//0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
+    int repeat = 2;//30
+    int generations[] = new int[]{1000};//1000
+    int[] numberOfSalesmen = new int[]{2};
+    double[] alpha = new double[]{0.2, 0.1, 0.05};//0.2, 0.1, 0.05
 
-    //A default value of the maximum neighbors to search.
-    //Test Parameter
-//    int repeat = 1;
-//    int[] numberOfSalesmen = new int[]{3};
-//    int generations[] = new int[]{10};
-//    int[] orders = new int[]{10};
-//    int[] Tao = new int[]{1};
-//    int[] R = new int[]{1};
-//    double[] alpha = new double[]{0.2};
-//    int instanceReplications = 1;
-    //Real Parameter
-    int repeat = 3;
-    int generations[] = new int[]{1000};
-    int[] numberOfSalesmen = new int[]{2, 3, 4};
-    double[] alpha = new double[]{0.2, 0.1, 0.05};
-
-    int[] orders = new int[]{100};//10, 15, 20, 25, 50, 100}
+    int[] orders = new int[]{10, 15, 20, 25, 50, 100};//10, 15, 20, 25, 50, 100
     int[] Tao = new int[]{1, 3, 5, 7, 9};//1, 3, 5, 7, 9
     int[] R = new int[]{1, 3, 5, 7, 9};//1, 3, 5, 7, 9
-    int instanceReplications = 10;
+    int instanceReplications = 1;
 
     for (int i = 0; i < orders.length; i++) {
       for (int j = 0; j < Tao.length; j++) {
@@ -191,8 +174,7 @@ public class mTSPSGATwoPartChromosome_forSingleMachineOAS extends mTSPSGATwoPart
                     for (int q = 0; q < alpha.length; q++) {
                       for (int r = 0; r < repeat; r++) {
                         int _alpha = (int) Math.round(((double) orders[i] * alpha[q]));
-//                        System.out.print("counter "+counter+" ");
-                        mTSPSGATwoPartChromosome_forSingleMachineOAS TSP1 = new mTSPSGATwoPartChromosome_forSingleMachineOAS();
+                        singleMachineOAS_SGA TSP1 = new singleMachineOAS_SGA();
                         TSP1.alpha = alpha[q];
                         TSP1.setParameter(crossoverRate[m], mutationRate[n], counter, elitism[o], generations[0],
                                 type, numberOfSalesmen[p], OASInstances1.getSize(), instanceName,

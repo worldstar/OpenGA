@@ -47,15 +47,15 @@ public class TPObjectiveFunctionOASPSD extends TPObjectiveFunctionforOAS {
         maximumRevenue += Revenue;
 //        System.out.println("currentPosition: " + currentPosition);
 //        System.out.println("stopPocurrentPositionsition: " + stopPosition);
-        System.out.println("obj: " + (index));
-        System.out.println("release date: " + r[index]);
-        System.out.println("processing time: " + p[index]);
+//        System.out.println("obj: " + (index));
+//        System.out.println("release date: " + r[index]);
+//        System.out.println("processing time: " + p[index]);
 //        System.out.println("setup times: " + s[index][lastindex]);
-        System.out.println("time: " + time);
-        System.out.println("dayGap = " + dayGap);
+//        System.out.println("time: " + time);
+//        System.out.println("dayGap = " + dayGap);
 //        System.out.println("weight = " + w[index]);
-        System.out.println("Revenue = " + Revenue);
-        System.out.println("maximumRevenue = " + maximumRevenue);
+//        System.out.println("Revenue = " + Revenue);
+//        System.out.println("maximumRevenue = " + maximumRevenue);
 
         if (Revenue == 0) {
           reject.add(_chromosome1.get(j));

@@ -7,7 +7,6 @@ import openga.operator.mutation.*;
 import openga.operator.clone.*;
 import openga.ObjectiveFunctions.*;
 import openga.Fitness.*;
-import openga.util.printClass;
 /**
  * <p>Title: The OpenGA project</p>
  * <p>Description: To control GA entire processes.

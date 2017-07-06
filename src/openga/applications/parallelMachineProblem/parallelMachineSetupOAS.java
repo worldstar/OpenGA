@@ -15,14 +15,14 @@ import openga.ObjectiveFunctions.*;
 import openga.MainProgram.*;
 import openga.Fitness.*;
 import openga.applications.data.readParalleMachineOAS;
-import openga.applications.mTSPSGATwoPartChromosome_forSingleMachineOAS;
+import openga.applications.singleMachineOAS_SGA;
 import openga.util.fileWrite1;
 
 /**
  *
  * @author Administrator
  */
-public class parallelMachineSetupOAS extends mTSPSGATwoPartChromosome_forSingleMachineOAS {
+public class parallelMachineSetupOAS extends singleMachineOAS_SGA {
 
   int maxNeighborhood;  //A default value of the maximum neighbors to search.
   int TournamentSize;
@@ -130,7 +130,7 @@ public class parallelMachineSetupOAS extends mTSPSGATwoPartChromosome_forSingleM
     String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + numberOfSalesmen + "\t" + alpha
             + "\t" + GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
             + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
-    writeFile("parallelMachineSetupOAS20170627MaxRevenueFull", implementResult);
+    writeFile("parallelMachineSetupOAS_20170706" + "MaxRevenueFull", implementResult);
     System.out.print(implementResult);
     //System.out.print("\n");
     //System.out.print(GaMain.getArchieve().getSingleChromosome(0).toString1());
@@ -138,22 +138,20 @@ public class parallelMachineSetupOAS extends mTSPSGATwoPartChromosome_forSingleM
   }
 
   public static void main(String[] args) {
-    System.out.println("parallelMachineSetupOAS20170627MaxRevenueFull");
+    System.out.println("parallelMachineSetupOAS_20170706" + "MaxRevenueFull");
     int counter = 0;
     boolean applyLocalSearch = true;
     double[] crossoverRate = new double[]{0.5};//1, 0.5
     double[] mutationRate = new double[]{0.5};//0.1, 0.5
     double elitism[] = new double[]{0.1};//3, 5, 10, 20, 30
     int type = 0;//0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
-    //Test Parameter
-    int repeat = 3;
-    int generations[] = new int[]{1000};
-    double[] alpha = new double[]{0.1};//Parameter of IG algrithm
-    int[] numberOfSalesmen = new int[]{3, 6, 9};
-//    int[] numberOfMachines = new int[]{2};//2, 6, 12
+    int repeat = 30;
+    int generations[] = new int[]{1000};//1000
+    double[] alpha = new double[]{0.2, 0.1, 0.05};//0.2, 0.1, 0.05 Parameter of IG algrithm
+    int[] numberOfSalesmen = new int[]{2, 4, 6};//3,4,6
     int[] numberOfJobs = new int[]{20, 40, 60, 80, 100, 120};//20, 40, 60, 80, 100, 120
-    int startInstanceID = 1;
-    int endStartInstanceID = 15;
+    int startInstanceID = 1;//1
+    int endStartInstanceID = 1;//15
 
     for (int j = 0; j < numberOfJobs.length; j++) {
       for (int i = startInstanceID; i <= endStartInstanceID; i++) {
@@ -167,6 +165,7 @@ public class parallelMachineSetupOAS extends mTSPSGATwoPartChromosome_forSingleM
           RT.SaveValueOfTxt(RT.TxtLength);
         } catch (IOException ex) {
         }
+
         for (int s = 0; s < numberOfSalesmen.length; s++) {
           for (int cr = 0; cr < crossoverRate.length; cr++) {
             for (int mr = 0; mr < mutationRate.length; mr++) {
@@ -179,11 +178,10 @@ public class parallelMachineSetupOAS extends mTSPSGATwoPartChromosome_forSingleM
                     OAS1.setParameter(crossoverRate[cr], mutationRate[mr], counter, elitism[e], generations[0],
                             type, numberOfSalesmen[s], RT.getReadTxtSize(), instanceName,
                             RT.getReleaseDate(), RT.getProcessingTime(), RT.getDueDate(), RT.getDeadline(), RT.getProfit(), RT.getWeight(), OAS1.s);
-
                     OAS1.setLocalSearchData(applyLocalSearch, _alpha);
                     OAS1.initiateVars();
                     OAS1.start();
-                    OAS1.printResults();
+//                    OAS1.printResults();
                     counter++;
                   }
                 }
@@ -191,6 +189,7 @@ public class parallelMachineSetupOAS extends mTSPSGATwoPartChromosome_forSingleM
             }
           }
         }
+
       }
     }
     System.exit(0);

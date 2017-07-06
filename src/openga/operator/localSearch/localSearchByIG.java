@@ -125,23 +125,55 @@ public class localSearchByIG extends localSearchBy2Opt implements localSearchMTS
     int[] Destructgenes = new int[numberofSalesmen];
     int numberofDestructgenes = maxNeighborhood;
 
-    for (int i = 0; i < numberofSalesmen - 1; i++) {
+    for (int i = 0; i < numberofSalesmen; i++) {
       if (numberofDestructgenes == 0) {
         break;
       }
-      int random = (int) Math.round(((double) maxNeighborhood * salesmenPart.get(i)) / cities);
-      for (int j = 0; j < random; j++) {
+      int raitoNumber = (int) Math.round(((double) maxNeighborhood * salesmenPart.get(i)) / cities);
+      for (int j = 0; j < raitoNumber; j++) {
         if (numberofDestructgenes == 0) {
           break;
         }
         Destructgenes[i] += 1;
         numberofDestructgenes -= 1;
       }
-//      System.out.println("Destructgenes"+i+": "+ Destructgenes[i]);
     }
-//    System.out.println("salesmenPart: " + salesmenPart.toString());
-//      System.out.println("maxNeighborhood: " + maxNeighborhood);
-//      System.out.println("Destructgenes: "+ Arrays.toString(Destructgenes));
+    
+    if (numberofDestructgenes > 0) {
+      System.out.println("numberofDestructgenes: " + numberofDestructgenes);
+      int _numberofcities = salesmenPart.get(0), index = 0;
+      for (int i = 0; i < numberofDestructgenes; i++) {
+        for (int j = 1; j < salesmenPart.size(); j++) {
+          if (numberofDestructgenes == 0 || salesmenPart.get(j) == 0) {
+            break;
+          }
+          if (_numberofcities < salesmenPart.get(j)) {
+            index = j;
+            _numberofcities = salesmenPart.get(j);
+          }
+        }
+        Destructgenes[index] += 1;
+        numberofDestructgenes -= 1;
+      }
+    }
+
+
+    for (int i = 0; i < salesmenPart.size(); i++) {
+      if (numberofDestructgenes > 0 && salesmenPart.get(i) == 0) {
+        int _numberofcities = salesmenPart.get(0), index = 0;
+        for (int j = 1; j < salesmenPart.size(); j++) {
+          if (numberofDestructgenes == 0) {
+            break;
+          }
+          if (_numberofcities < salesmenPart.get(j)) {
+            index = j;
+            _numberofcities = salesmenPart.get(j);
+          }
+        }
+        Destructgenes[index] += 1;
+        numberofDestructgenes -= 1;
+      }
+    }
     if (salesmenPart.get(numberofSalesmen - 1) == 0 && numberofDestructgenes > 0) {
 //      System.out.println("Last numberofDestructgenes To Destructgenes[0]: "+ numberofDestructgenes);
       Destructgenes[0] += numberofDestructgenes;
