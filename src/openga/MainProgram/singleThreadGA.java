@@ -218,7 +218,7 @@ public class singleThreadGA implements MainI{
         localSearch1.setData(Population, archieve, currentUsedSolution, iteration);
         localSearch1.setObjectives(ObjectiveFunction);
         localSearch1.startLocalSearch();
-        currentUsedSolution += localSearch1.getCurrentUsedSolution();
+        currentUsedSolution = localSearch1.getCurrentUsedSolution();
     } 
 
   public populationI initialStage(){

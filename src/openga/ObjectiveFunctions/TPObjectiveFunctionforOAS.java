@@ -27,6 +27,47 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
   double[][] s;     //  setup times
   double[] C;       //completion Time
 
+  public static void main(String[] args) {
+    TPObjectiveFunctionforOAS TPOAS = new TPObjectiveFunctionforOAS();
+    TPOAS.r = new double[]{3, 29, 22, 14, 24, 8, 16, 46, 39, 43};
+    TPOAS.p = new double[]{15, 14, 11, 3, 14, 2, 11, 7, 10, 6};
+    TPOAS.d = new double[]{86, 63, 98, 59, 75, 60, 101, 78, 66, 109};
+    TPOAS.d_bar = new double[]{97, 73, 106, 62, 85, 62, 109, 83, 73, 114};
+    TPOAS.e = new double[]{15, 8, 6, 18, 17, 10, 6, 17, 20, 15};
+    TPOAS.w = new double[]{1.3636, 0.8, 0.75, 6, 1.7, 5, 0.75, 3.4, 2.8571, 3};
+    TPOAS.s = new double[][]{
+      {10, 9, 6, 3, 5, 4, 8, 5, 4, 2},
+      {0, 5, 9, 9, 4, 8, 9, 7, 6, 10},
+      {4, 0, 5, 5, 3, 7, 6, 6, 10, 3},
+      {5, 9, 0, 9, 6, 3, 5, 4, 5, 4},
+      {3, 4, 9, 0, 10, 8, 7, 7, 4, 10},
+      {9, 8, 6, 4, 0, 5, 3, 5, 5, 6},
+      {5, 7, 3, 4, 10, 0, 9, 4, 7, 9},
+      {5, 9, 9, 5, 9, 9, 0, 10, 5, 9},
+      {10, 10, 5, 10, 3, 10, 9, 0, 9, 7},
+      {9, 10, 7, 5, 6, 8, 4, 4, 0, 10}};
+    TPOAS.C = new double[TPOAS.r.length];
+
+    chromosome _chromosome1 = new chromosome();
+    chromosome _chromosome2 = new chromosome();
+    _chromosome1.setGenotypeAndLength(true, 12, 2);
+    _chromosome2.setGenotypeAndLength(true, 12, 2);
+    _chromosome1.generateTwoPartPop(12, 2);
+    _chromosome2.generateTwoPartPop(12, 2);
+    
+    int[] soln = new int[]{0, 4, 3, 8, 7, 2, 9, 1, 6, 5, 8, 2};
+    _chromosome1.setSolution(soln);
+    TPOAS.evaluateAll(_chromosome1, 2);
+//    System.out.println("ObjValue1" + _chromosome1.getObjValue()[0]);
+//    System.out.println("ObjValue1" + TPOAS.maximumRevenue);
+//    TPOAS.maximumRevenue = 0;
+//    int[] soln2 = new int[]{0, 4, 3, 8, 7, 2, 9, 1, 6, 5, 7, 3};
+//    _chromosome2.setSolution(soln2);
+//    TPOAS.evaluateAll(_chromosome2, 2);
+//    System.out.println("ObjValue2" + _chromosome2.getObjValue()[0]);
+//    System.out.println("ObjValue2" + TPOAS.maximumRevenue);
+  }
+
   @Override
   public void calcObjective() {
 //    System.out.print("calcObjective");
@@ -92,7 +133,13 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
         }
         time += p[index];
         C[index] = time;
-
+        
+//        if(C[index] < d[index]){
+//          Revenue = e[index];
+//        }else{
+//          Revenue = 0;
+//        }
+        
         dayGap = Math.max(0, Math.min((d_bar[index] - d[index]), (d_bar[index] - C[index])));
         Revenue = dayGap * w[index];
         maximumRevenue += Revenue;
@@ -122,7 +169,7 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
       int cities = accept.size();
       salesmen.add(cities);
     }
-    
+
     salesmen.add(reject.size());
     _chromosome1.clear();
     _chromosome1.addAll(accept);
@@ -150,6 +197,9 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
       System.out.print(_chromosome1.get(i) + " ");
     }
     System.out.println("End");//*/
+
+//    System.out.println("_chromosome1 : " + _chromosome1.toString());
+//    System.out.println("maximumRevenue = " + maximumRevenue);
   }
 
   public void calcMinimumCost() {

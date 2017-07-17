@@ -78,6 +78,8 @@ public class singleThreadGAwithInitialPop extends singleThreadGA {
       }
 
       i++;
+//System.out.println("i : "+i);
+//System.out.println("currentUsedSolution : "+currentUsedSolution);
 
       /*
             if (i == 500) {
@@ -100,7 +102,19 @@ public class singleThreadGAwithInitialPop extends singleThreadGA {
             }
        */
     } while (i < generations && currentUsedSolution < this.fixPopSize * this.generations);
+//        } while (i < generations);
+
     //printResults();
   }
-
+  
+  @Override
+    public void localSearchStage(int iteration) {      
+        localSearch1.setData(Population, totalExaminedSolution, maxNeighborhood);
+        localSearch1.setData(Population, archieve, currentUsedSolution, iteration);
+        localSearch1.setObjectives(ObjectiveFunction);
+        localSearch1.startLocalSearch();
+//        System.out.println("getCurrentUsedSolution"+localSearch1.getCurrentUsedSolution());
+        currentUsedSolution = localSearch1.getCurrentUsedSolution();
+//        System.out.println("currentUsedSolution"+currentUsedSolution);
+    } 
 }
