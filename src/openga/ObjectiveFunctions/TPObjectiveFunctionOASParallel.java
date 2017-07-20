@@ -13,7 +13,26 @@ public class TPObjectiveFunctionOASParallel extends TPObjectiveFunctionforOAS {
   public double[] revenues;
   public double[] time;
   List<List<Double>> completionTimes = new ArrayList<>();
-  
+
+  public void calcMaximumRevenue(int x) {
+    int numberofMachines = numberOfSalesmen - 1,
+            numberofjobs = chromosome1.genes.length - numberOfSalesmen,
+            index = 0;
+
+    List<List<Integer>> revenue = new ArrayList<>(numberofMachines);
+    List<List<Integer>> time = new ArrayList<>(numberofMachines);
+    List<List<Double>> completionTimes = new ArrayList<>(numberofMachines);
+    List<List<Integer>> accept = new ArrayList<>(numberofMachines);
+    List<Integer> reject = new ArrayList<>(1);
+    List<Integer> salesmen = new ArrayList<>(numberofMachines);
+    List<Integer> _chromosome1 = new ArrayList<>();
+    _chromosome1.addAll(chromosometoList(chromosome1));
+
+    for (int m = 0; m < numberofMachines; m++) {//m : machine number
+
+    }
+  }
+
   @Override
   public void calcMaximumRevenue() {
     revenues = new double[numberOfSalesmen - 1];

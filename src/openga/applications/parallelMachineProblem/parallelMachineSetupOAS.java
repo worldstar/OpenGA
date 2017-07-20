@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package openga.applications.parallelMachineProblem;
 
 import java.io.IOException;
@@ -126,11 +121,17 @@ public class parallelMachineSetupOAS extends singleMachineOAS_SGA {
     timeClock1.start();
     GaMain.startGA();
     timeClock1.end();
-
-    String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + numberOfSalesmen + "\t" + alpha
+    if (type == 3) {
+      type = 1;
+    } else if (type == 2) {
+      type = 2;
+    } else if (type == 0) {
+      type = 3;
+    }
+    String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + type + "\t" + applyLocalSearch + "\t" + numberOfSalesmen + "\t" + alpha
             + "\t" + GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
             + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
-    writeFile("parallelMachineSetupOAS_20170706" + "MaxRevenueFull", implementResult);
+    writeFile("parallelMachineSetupOASPSD_20170720" + "MaxRevenueFull", implementResult);
     System.out.print(implementResult);
     //System.out.print("\n");
     //System.out.print(GaMain.getArchieve().getSingleChromosome(0).toString1());
@@ -138,15 +139,16 @@ public class parallelMachineSetupOAS extends singleMachineOAS_SGA {
   }
 
   public static void main(String[] args) {
-    System.out.println("parallelMachineSetupOAS_20170706" + "MaxRevenueFull");
+    System.out.println("parallelMachineSetupOASPSD_20170720" + "MaxRevenueFull");
     int counter = 0;
     boolean applyLocalSearch = true;
-    double[] crossoverRate = new double[]{0.5};//1, 0.5
-    double[] mutationRate = new double[]{0.5};//0.1, 0.5
+    double[] crossoverRate = new double[]{1, 0.5};//1, 0.5
+    double[] mutationRate = new double[]{0.1, 0.5};//0.1, 0.5
     double elitism[] = new double[]{0.1};//3, 5, 10, 20, 30
-    int type = 0;//0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
-    int repeat = 30;
-    int generations[] = new int[]{1000};//1000
+    int[] crossoverType = new int[]{3, 2, 0};//0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
+    int repeat = 10;
+    int generations[] = new int[]{0};//1000
+    int populationsSize = 100;
     double[] alpha = new double[]{0.2, 0.1, 0.05};//0.2, 0.1, 0.05 Parameter of IG algrithm
     int[] numberOfSalesmen = new int[]{2, 4, 6};//3,4,6
     int[] numberOfJobs = new int[]{20, 40, 60, 80, 100, 120};//20, 40, 60, 80, 100, 120
@@ -166,23 +168,34 @@ public class parallelMachineSetupOAS extends singleMachineOAS_SGA {
         } catch (IOException ex) {
         }
 
-        for (int s = 0; s < numberOfSalesmen.length; s++) {
-          for (int cr = 0; cr < crossoverRate.length; cr++) {
-            for (int mr = 0; mr < mutationRate.length; mr++) {
-              for (int e = 0; e < elitism.length; e++) {
-                for (int a = 0; a < alpha.length; a++) {
-                  for (int r = 0; r < repeat; r++) {
-                    int _alpha = (int) Math.round(((double) numberOfJobs[j] * alpha[a]));
-                    parallelMachineSetupOAS OAS1 = new parallelMachineSetupOAS();
-                    OAS1.alpha = alpha[a];
-                    OAS1.setParameter(crossoverRate[cr], mutationRate[mr], counter, elitism[e], generations[0],
-                            type, numberOfSalesmen[s], RT.getReadTxtSize(), instanceName,
-                            RT.getReleaseDate(), RT.getProcessingTime(), RT.getDueDate(), RT.getDeadline(), RT.getProfit(), RT.getWeight(), OAS1.s);
-                    OAS1.setLocalSearchData(applyLocalSearch, _alpha);
-                    OAS1.initiateVars();
-                    OAS1.start();
+        for (int ls = 0; ls < 2; ls++) {
+          if (ls == 0) {
+            applyLocalSearch = false;
+          } else {
+            applyLocalSearch = true;
+          }
+
+          for (int s = 0; s < numberOfSalesmen.length; s++) {
+            for (int cr = 0; cr < crossoverRate.length; cr++) {
+              for (int t = 0; t < crossoverType.length; t++) {
+                for (int mr = 0; mr < mutationRate.length; mr++) {
+                  for (int e = 0; e < elitism.length; e++) {
+                    for (int a = 0; a < alpha.length; a++) {
+                      for (int r = 0; r < repeat; r++) {
+                        int _alpha = (int) Math.round(((double) numberOfJobs[j] * alpha[a]));
+                        generations[0] = numberOfJobs[j] * (numberOfSalesmen[s] - 1) * 2000 / populationsSize;
+                        parallelMachineSetupOAS OAS1 = new parallelMachineSetupOAS();
+                        OAS1.alpha = alpha[a];
+                        OAS1.setParameter(crossoverRate[cr], mutationRate[mr], counter, elitism[e], generations[0],
+                                crossoverType[t], numberOfSalesmen[s], RT.getReadTxtSize(), instanceName,
+                                RT.getReleaseDate(), RT.getProcessingTime(), RT.getDueDate(), RT.getDeadline(), RT.getProfit(), RT.getWeight(), OAS1.s);
+                        OAS1.setLocalSearchData(applyLocalSearch, _alpha);
+                        OAS1.initiateVars();
+                        OAS1.start();
 //                    OAS1.printResults();
-                    counter++;
+                        counter++;
+                      }
+                    }
                   }
                 }
               }
