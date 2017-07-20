@@ -1,6 +1,7 @@
 package openga.applications.data;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 /*
@@ -30,11 +31,22 @@ public class OASInstances {
   }
 
 //  Testing for read files.
-  /*
+//  /*
     public static void main(String[] args) {
         OASInstances OAS = new OASInstances();
-        OAS.setData(".\\instances\\SingleMachineOAS\\10orders\\Tao1\\R1\\Dataslack_10orders_Tao1R1_1.txt",10);
+        OAS.setData(".\\instances\\SingleMachineOAS\\10orders\\Tao5\\R7\\Dataslack_10orders_Tao5R7_10.txt",10);
         OAS.getDataFromFile();
+        System.out.println("r: " + Arrays.toString(OAS.r));
+        System.out.println("p: " + Arrays.toString(OAS.p));
+        System.out.println("d: " + Arrays.toString(OAS.d));
+        System.out.println("d_bar: " + Arrays.toString(OAS.d_bar));
+        System.out.println("e: " + Arrays.toString(OAS.e));
+        System.out.println("w: " + Arrays.toString(OAS.w));
+        System.out.println("s: ");
+        for(int i=0; i<OAS.s.length; i++){
+          System.out.println(Arrays.toString(OAS.s[i]));
+        }
+
     }
 //    */
   public void getDataFromFile() {
@@ -49,7 +61,7 @@ public class OASInstances {
       d_bar = new double[size];
       e = new double[size];
       w = new double[size];
-      s = new double[size][size];
+      s = new double[size+1][size];
 
       tmp = br.readLine().split(",");//split 0,10,10,2,4,6,4,5,7,3,5,0
       for (int i = 0; i < size; i++) {  //i = orders,test 10
@@ -81,11 +93,10 @@ public class OASInstances {
         w[i] = Double.parseDouble(tmp[i + 1]);
       }
 
-      br.readLine();
-      for (int i = 0; i < size; i++) {
+      for (int i = 0; i < size+1; i++) {
         tmp = br.readLine().split(",");
         for (int j = 0; j < size; j++) {
-          s[j][i] = Double.parseDouble(tmp[j + 1]);
+          s[i][j] = Double.parseDouble(tmp[j+1]);
         }
       }
     } catch (Exception e) {

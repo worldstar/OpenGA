@@ -26,7 +26,8 @@ public class singleThreadGAwithInitialPop extends singleThreadGA {
    * done.
    */
   public void startGA() {
-
+    double bestObjValue = 0;
+    int nonimproveTime = 0;
     //evaluate the objective values and calculate fitness values
     //clone
     if (applyClone == true) {
@@ -69,8 +70,9 @@ public class singleThreadGAwithInitialPop extends singleThreadGA {
       archieve = updateParetoSet(archieve, tempFront);
       //additionalStage();
 
-      currentUsedSolution += fixPopSize;//Solutions used in genetic search//???
+      currentUsedSolution += fixPopSize;//Solutions used in genetic search
 
+      
       //local search
 //      System.out.println("LocalSearch");
       if (applyLocalSearch == true && i % 10 == 0) {
@@ -101,20 +103,29 @@ public class singleThreadGAwithInitialPop extends singleThreadGA {
                 writeFile("eda2_" + i, generationResults);
             }
        */
+      /*
+      double _ObjValue = archieve.getSingleChromosome(0).getObjValue()[0];
+      if(_ObjValue <= bestObjValue){
+        nonimproveTime++;
+      } else{
+        bestObjValue = _ObjValue;
+      }
+      */
     } while (i < generations && currentUsedSolution < this.fixPopSize * this.generations);
-//        } while (i < generations);
-
+//        } while (nonimproveTime <= 500);
+//    System.out.println("i : "+i);
+    
     //printResults();
   }
-  
+
   @Override
-    public void localSearchStage(int iteration) {      
-        localSearch1.setData(Population, totalExaminedSolution, maxNeighborhood);
-        localSearch1.setData(Population, archieve, currentUsedSolution, iteration);
-        localSearch1.setObjectives(ObjectiveFunction);
-        localSearch1.startLocalSearch();
+  public void localSearchStage(int iteration) {
+    localSearch1.setData(Population, totalExaminedSolution, maxNeighborhood);
+    localSearch1.setData(Population, archieve, currentUsedSolution, iteration);
+    localSearch1.setObjectives(ObjectiveFunction);
+    localSearch1.startLocalSearch();
 //        System.out.println("getCurrentUsedSolution"+localSearch1.getCurrentUsedSolution());
-        currentUsedSolution = localSearch1.getCurrentUsedSolution();
+    currentUsedSolution = localSearch1.getCurrentUsedSolution();
 //        System.out.println("currentUsedSolution"+currentUsedSolution);
-    } 
+  }
 }

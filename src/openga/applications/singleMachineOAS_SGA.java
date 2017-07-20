@@ -125,11 +125,17 @@ public class singleMachineOAS_SGA extends mTSPSGATwoPart {
     timeClock1.start();
     GaMain.startGA();
     timeClock1.end();
-
-    String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + numberOfSalesmen + "\t" + alpha
+    if (type == 3) {
+      type = 1;
+    } else if (type == 2) {
+      type = 2;
+    } else if (type == 0) {
+      type = 3;
+    }
+    String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + type + "\t" + applyLocalSearch + "\t" + alpha
             + "\t" + GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
             + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
-    writeFile("OASforSMSPwithLS_20170705" + "MaxRevenueFull", implementResult);
+    writeFile("OASforSMSP_20170720" + "MaxRevenueFull", implementResult);
     System.out.print(implementResult);
     //System.out.print("\n");
     //System.out.print(GaMain.getArchieve().getSingleChromosome(0).toString1());
@@ -138,52 +144,68 @@ public class singleMachineOAS_SGA extends mTSPSGATwoPart {
 
   public static void main(String[] args) {
 
-    System.out.println("OASforSMSPwithLS_20170705" + "MaxRevenueFull");
+    System.out.println("OASforSMSP_20170720" + "MaxRevenueFull");
 
     int counter = 0;
-    boolean applyLocalSearch = true;
-    double[] crossoverRate = new double[]{0.5};//1, 0.5 [0.5]
-    double[] mutationRate = new double[]{0.5};//0.1, 0.5 [0.1]
+    boolean applyLocalSearch;
+    
+    double[] crossoverRate = new double[]{1, 0.5};//1, 0.5 [0.5]
+    double[] mutationRate = new double[]{0.1, 0.5};//0.1, 0.5 [0.5]
     double elitism[] = new double[]{0.1};
-    int type = 0;//0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
-    int repeat = 2;//30
-    int generations[] = new int[]{1000};//1000
+    int[] crossoverType = new int[]{3, 2, 0};//0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
+    int repeat = 10;//30
+    int generations[] = new int[]{0};//1000
+    int populationsSize = 100;
     int[] numberOfSalesmen = new int[]{2};
     double[] alpha = new double[]{0.2, 0.1, 0.05};//0.2, 0.1, 0.05
 
     int[] orders = new int[]{10, 15, 20, 25, 50, 100};//10, 15, 20, 25, 50, 100
-    int[] Tao = new int[]{1, 3, 5, 7, 9};//1, 3, 5, 7, 9
-    int[] R = new int[]{1, 3, 5, 7, 9};//1, 3, 5, 7, 9
+    int[] Tao = new int[]{5};//1, 3, 5, 7, 9
+    int[] R = new int[]{5};//1, 3, 5, 7, 9
     int instanceReplications = 1;
 
     for (int i = 0; i < orders.length; i++) {
       for (int j = 0; j < Tao.length; j++) {
         for (int k = 0; k < R.length; k++) {
+          if (Tao[j] != R[k]) {
+            continue;
+          }
           for (int l = 0; l < instanceReplications; l++) {
+//            for (int l = 9; l < 10; l++) {//test
 
             OASInstances OASInstances1 = new OASInstances();
             String instanceName = new String(".\\instances\\SingleMachineOAS\\" + orders[i] + "orders\\Tao" + Tao[j] + "\\R" + R[k] + "\\Dataslack_" + orders[i] + "orders_Tao" + Tao[j] + "R" + R[k] + "_" + (l + 1) + ".txt");
 //            System.out.println(instanceName);
             OASInstances1.setData(instanceName, orders[i]);
             OASInstances1.getDataFromFile();
-
+            
             for (int m = 0; m < crossoverRate.length; m++) {
-              for (int n = 0; n < mutationRate.length; n++) {
-                for (int o = 0; o < elitism.length; o++) {
-                  for (int p = 0; p < numberOfSalesmen.length; p++) {
-                    for (int q = 0; q < alpha.length; q++) {
-                      for (int r = 0; r < repeat; r++) {
-                        int _alpha = (int) Math.round(((double) orders[i] * alpha[q]));
-                        singleMachineOAS_SGA TSP1 = new singleMachineOAS_SGA();
-                        TSP1.alpha = alpha[q];
-                        TSP1.setParameter(crossoverRate[m], mutationRate[n], counter, elitism[o], generations[0],
-                                type, numberOfSalesmen[p], OASInstances1.getSize(), instanceName,
-                                OASInstances1.getR(), OASInstances1.getP(), OASInstances1.getD(), OASInstances1.getD_bar(), OASInstances1.getE(), OASInstances1.getW(), OASInstances1.getS());
-                        TSP1.setLocalSearchData(applyLocalSearch, _alpha);
-                        TSP1.initiateVars();
-                        TSP1.start();
+              for (int t = 0; t < crossoverType.length; t++) {
+                for (int n = 0; n < mutationRate.length; n++) {
+                  for (int o = 0; o < elitism.length; o++) {
+                    for (int p = 0; p < numberOfSalesmen.length; p++) {
+                      for (int ls = 0; ls < 2; ls++) {
+                        if (ls == 0) {
+                          applyLocalSearch = false;
+                        } else {
+                          applyLocalSearch = true;
+                        }
+                        for (int q = 0; q < alpha.length; q++) {
+                          for (int r = 0; r < repeat; r++) {
+                            int _alpha = (int) Math.round(((double) orders[i] * alpha[q]));
+                            generations[0] = orders[i] * (numberOfSalesmen[p] - 1)*2000/populationsSize;
+                            singleMachineOAS_SGA TSP1 = new singleMachineOAS_SGA();
+                            TSP1.alpha = alpha[q];
+                            TSP1.setParameter(crossoverRate[m], mutationRate[n], counter, elitism[o], generations[0],
+                                    crossoverType[t], numberOfSalesmen[p], OASInstances1.getSize(), instanceName,
+                                    OASInstances1.getR(), OASInstances1.getP(), OASInstances1.getD(), OASInstances1.getD_bar(), OASInstances1.getE(), OASInstances1.getW(), OASInstances1.getS());
+                            TSP1.setLocalSearchData(applyLocalSearch, _alpha);
+                            TSP1.initiateVars();
+                            TSP1.start();
 //                        TSP1.printResults();
-                        counter++;
+                            counter++;
+                          }
+                        }
                       }
                     }
                   }
