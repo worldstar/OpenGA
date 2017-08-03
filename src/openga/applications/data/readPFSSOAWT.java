@@ -29,8 +29,8 @@ public class readPFSSOAWT {
   private int diStart = 3;
   private Double[] wi;
   private int wiStart = 4;
-  private int[][] setup;
-  private int setupStart = 302;
+  private int[][] processingTime;
+  private int processingTimeStart = 302;
 
   public void setData(String fileName) {
     this.fileName = fileName;
@@ -53,7 +53,7 @@ public class readPFSSOAWT {
     pi = new int[piTotal];
     di = new int[piTotal];
     wi = new Double[piTotal];
-    setup = new int[piTotal][Integer.parseInt(STxt[1])];
+    processingTime = new int[piTotal][Integer.parseInt(STxt[1])];
     for (int i = 0; i < piTotal; i++) {
       pi[i] = Integer.parseInt(STxt[piStart]);
       piStart += 3;
@@ -63,8 +63,8 @@ public class readPFSSOAWT {
       wiStart += 3;
 
       for (int j = 0; j < Integer.parseInt(STxt[1]); j++) {
-        setup[i][j] = Integer.parseInt(STxt[setupStart]);
-        setupStart += 1;
+        processingTime[i][j] = Integer.parseInt(STxt[processingTimeStart]);
+        processingTimeStart += 1;
 //                System.out.print(setup[i][j] + ",");
       }
 //            System.out.println();
@@ -91,7 +91,7 @@ public class readPFSSOAWT {
   }
 
   private int[][] getSetup() {
-    return this.setup;
+    return this.processingTime;
   }
 
   public static void main(String[] args) throws IOException {
