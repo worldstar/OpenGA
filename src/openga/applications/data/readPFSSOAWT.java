@@ -30,7 +30,7 @@ public class readPFSSOAWT {
   private Double[] wi;
   private int wiStart = 4;
   private int[][] processingTime;
-  private int processingTimeStart = 302;
+  private int processingTimeStart;
 
   public void setData(String fileName) {
     this.fileName = fileName;
@@ -54,6 +54,7 @@ public class readPFSSOAWT {
     di = new int[piTotal];
     wi = new Double[piTotal];
     processingTime = new int[piTotal][Integer.parseInt(STxt[1])];
+    processingTimeStart = (wiStart + 1) + 3 * (piTotal - 1);
     for (int i = 0; i < piTotal; i++) {
       pi[i] = Integer.parseInt(STxt[piStart]);
       piStart += 3;
