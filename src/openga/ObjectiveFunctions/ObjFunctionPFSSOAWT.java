@@ -27,18 +27,19 @@ public class ObjFunctionPFSSOAWT implements ObjFunctionPFSSOAWTI{
   chromosome chromosome1;
   int length, indexOfObjective;
   
+  private static int piTotal;
+  private static int machineTotal;
+  private static int[] fristProfit;
+  private static int[] di;
+  private static Double[] wi;
+  private static int[][] processingTime;
+  
   private String fileName;
   private String writeFileName;
   private String[] STxt;
-  private int machineTotal;
-  private int piTotal;
-  private int[] pi;
   private int piStart = 2;
-  private int[] di;
   private int diStart = 3;
-  private Double[] wi;
   private int wiStart = 4;
-  private int[][] processingTime;
   private int processingTimeStart;
   private int[] Sequence = new int[]{5,3,8,1,9,6,0,2};
   private int[][] completeTime;
@@ -62,67 +63,55 @@ public class ObjFunctionPFSSOAWT implements ObjFunctionPFSSOAWTI{
     }
   }
 
-  private void readTxt() throws FileNotFoundException, IOException {
-    FileReader fr = new FileReader(fileName);
-    BufferedReader br = new BufferedReader(fr);
-    String TxtAll = "", eachLine = "";
-    while ((eachLine = br.readLine()) != null) {
-      TxtAll += eachLine + "\n";
-    }
-    STxt = TxtAll.split("\t|\n");
+//  private void readTxt() throws FileNotFoundException, IOException {
+//    FileReader fr = new FileReader(fileName);
+//    BufferedReader br = new BufferedReader(fr);
+//    String TxtAll = "", eachLine = "";
+//    while ((eachLine = br.readLine()) != null) {
+//      TxtAll += eachLine + "\n";
+//    }
+//    STxt = TxtAll.split("\t|\n");
+//
+//    piTotal = Integer.parseInt(STxt[0]);
+//    fristProfit = new int[piTotal];
+//    di = new int[piTotal];
+//    wi = new Double[piTotal];
+//    pal = new Double[piTotal];
+//    profit = new Double[piTotal];
+//    machineTotal = Integer.parseInt(STxt[1]);
+//    processingTime = new int[piTotal][machineTotal];
+//    processingTimeStart = (wiStart + 1) + 3 * (piTotal - 1);
+//    
+//    for (int i = 0; i < piTotal; i++) {
+//      fristProfit[i] = Integer.parseInt(STxt[piStart]);
+//      piStart += 3;
+//      di[i] = Integer.parseInt(STxt[diStart]);
+//      diStart += 3;
+//      wi[i] = Double.parseDouble(STxt[wiStart]);
+//      wiStart += 3;
+//
+//      for (int j = 0; j < Integer.parseInt(STxt[1]); j++) {
+//        processingTime[i][j] = Integer.parseInt(STxt[processingTimeStart]);
+//        processingTimeStart += 1;
+////                System.out.print(processingTime[i][j] + ",");
+//      }
+////            System.out.println();
+//
+////      System.out.println(pi[i] + "," + di[i] + "," + wi[i]);
+//    }
+//
+////        for(int i = 0 ;  i < STxt.length ; i ++) 
+////        {
+////            System.out.println(STxt[i]);
+////        }
+//  }
 
-    piTotal = Integer.parseInt(STxt[0]);
-    pi = new int[piTotal];
-    di = new int[piTotal];
-    wi = new Double[piTotal];
-    pal = new Double[piTotal];
-    profit = new Double[piTotal];
-    machineTotal = Integer.parseInt(STxt[1]);
-    processingTime = new int[piTotal][machineTotal];
-    processingTimeStart = (wiStart + 1) + 3 * (piTotal - 1);
-    
-    for (int i = 0; i < piTotal; i++) {
-      pi[i] = Integer.parseInt(STxt[piStart]);
-      piStart += 3;
-      di[i] = Integer.parseInt(STxt[diStart]);
-      diStart += 3;
-      wi[i] = Double.parseDouble(STxt[wiStart]);
-      wiStart += 3;
-
-      for (int j = 0; j < Integer.parseInt(STxt[1]); j++) {
-        processingTime[i][j] = Integer.parseInt(STxt[processingTimeStart]);
-        processingTimeStart += 1;
-//                System.out.print(processingTime[i][j] + ",");
-      }
-//            System.out.println();
-
-//      System.out.println(pi[i] + "," + di[i] + "," + wi[i]);
-    }
-
-//        for(int i = 0 ;  i < STxt.length ; i ++) 
-//        {
-//            System.out.println(STxt[i]);
-//        }
-  }
-
-  private int[] getPi() {
-    return this.pi;
-  }
-
-  private int[] getDi() {
-    return this.di;
-  }
-
-  private Double[] getWi() {
-    return this.wi;
-  }
-
-  private int[][] getSetup() {
-    return this.processingTime;
-  }
-  
   public void calcObjective()
   {
+      pal = new Double[piTotal];
+      profit = new Double[piTotal];
+      processingTimeStart = (wiStart + 1) + 3 * (piTotal - 1);
+    
       completeTime = new int[Sequence.length][machineTotal];
       machineCompleteTime = new int[machineTotal];
       for(int i = 0 ; i < Sequence.length; i++)
@@ -160,7 +149,7 @@ public class ObjFunctionPFSSOAWT implements ObjFunctionPFSSOAWTI{
               pal[i] = 0.0;
           }
           
-          profit[i] = pi[Sequence[i]] - pal[i];
+          profit[i] = fristProfit[Sequence[i]] - pal[i];
 //          System.out.println(profit[i]);
 //          System.out.println();
       }
@@ -188,14 +177,14 @@ private void WriteFile() throws IOException
                 accepted = false;
                 if(completeTime[temp][machineTotal - 1] > di[i])
                 {
-                    sw.write(i + "\t" + pi[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "1" + "\t" + completeTime[temp][machineTotal - 1] + "\t" + "1" + "\t" + Double.parseDouble(df.format(profit[temp])) + "\n");
+                    sw.write(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "1" + "\t" + completeTime[temp][machineTotal - 1] + "\t" + "1" + "\t" + Double.parseDouble(df.format(profit[temp])) + "\n");
                 }else
                 {
-                    sw.write(i + "\t" + pi[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "1" + "\t" + completeTime[temp][machineTotal - 1] + "\t" + "0" + "\t" + Double.parseDouble(df.format(profit[temp])) + "\n");
+                    sw.write(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "1" + "\t" + completeTime[temp][machineTotal - 1] + "\t" + "0" + "\t" + Double.parseDouble(df.format(profit[temp])) + "\n");
                 }
                 }else
          {
-             sw.write(i + "\t" + pi[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "0" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\n");
+             sw.write(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "0" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\n");
          }
      }
      sw.write("------Order Sequence(ID)-------------------------------\n");
@@ -216,7 +205,7 @@ private void WriteFile() throws IOException
          {
             sw.write("(" + Sequence[i] + ",\t" + processingTime[Sequence[i]][j] + ",\t" + completeTime[i][j] +  ")" + "\t");
          }
-         sw.write("pi=\t" + pi[i] + "\tdi=\t" + di[i] + "\twi=\t" + wi[i] + "\tpal=\t" + Double.parseDouble(df.format(pal[i])) + "\tprofit=\t" + Double.parseDouble(df.format(profit[i])) );
+         sw.write("pi=\t" + fristProfit[i] + "\tdi=\t" + di[i] + "\twi=\t" + wi[i] + "\tpal=\t" + Double.parseDouble(df.format(pal[i])) + "\tprofit=\t" + Double.parseDouble(df.format(profit[i])) );
          sw.write("\n");
          maxProfit += profit[i];
      }
@@ -226,17 +215,27 @@ private void WriteFile() throws IOException
   public static void main(String[] args) throws IOException {
     // TODO code application logic here
     ObjFunctionPFSSOAWT PF = new ObjFunctionPFSSOAWT();
-    PF.setData("@../../instances/PFSS-OAWT-Data/p/p10x3_0.txt");
-    PF.readTxt();
+//    PF.setData("@../../instances/PFSS-OAWT-Data/p/p10x3_0.txt");
+//    PF.readTxt();
+    readPFSSOAWT rP = new readPFSSOAWT();
+    rP.setData("@../../instances/PFSS-OAWT-Data/p/p10x3_0.txt");
+    rP.readTxt();
+    
+    piTotal = rP.getPiTotal();
+    machineTotal = rP.getMachineTotal();
+    fristProfit = rP.getPi();
+    di = rP.getDi();
+    wi = rP.getWi();
+    processingTime = rP.getSetup();
+    
     PF.calcObjective();
     PF.setWriteData("@../../File/o100x10_0.txt");
     PF.WriteFile();
   }
 
   @Override
-  public void setOASData(int[] pi , int[] di , Double[] wi , Double[] pal , Double[] profit) {
-    this.pi = pi;
-    this.di = di;
+  public void setOASData(int[] fristProfit , Double[] wi , Double[] pal , Double[] profit) {
+    this.fristProfit = fristProfit;
     this.wi = wi;
     this.pal = pal;
     this.profit = profit;

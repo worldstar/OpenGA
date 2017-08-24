@@ -6,6 +6,8 @@
  */
 package openga.applications.data;
 
+import openga.ObjectiveFunctions.*;
+import openga.applications.data.*;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -23,7 +25,8 @@ public class readPFSSOAWT {
   private String fileName;
   private String[] STxt;
   private int piTotal;
-  private int[] pi;
+  private int machineTotal;
+  private int[] fristProfit;
   private int piStart = 2;
   private int[] di;
   private int diStart = 3;
@@ -40,7 +43,7 @@ public class readPFSSOAWT {
     }
   }
 
-  private void readTxt() throws FileNotFoundException, IOException {
+  public void readTxt() throws FileNotFoundException, IOException {
     FileReader fr = new FileReader(fileName);
     BufferedReader br = new BufferedReader(fr);
     String TxtAll = "", eachLine = "";
@@ -50,13 +53,14 @@ public class readPFSSOAWT {
     STxt = TxtAll.split("\t|\n");
 
     piTotal = Integer.parseInt(STxt[0]);
-    pi = new int[piTotal];
+    machineTotal = Integer.parseInt(STxt[1]);
+    fristProfit = new int[piTotal];
     di = new int[piTotal];
     wi = new Double[piTotal];
     processingTime = new int[piTotal][Integer.parseInt(STxt[1])];
     processingTimeStart = (wiStart + 1) + 3 * (piTotal - 1);
     for (int i = 0; i < piTotal; i++) {
-      pi[i] = Integer.parseInt(STxt[piStart]);
+      fristProfit[i] = Integer.parseInt(STxt[piStart]);
       piStart += 3;
       di[i] = Integer.parseInt(STxt[diStart]);
       diStart += 3;
@@ -70,7 +74,7 @@ public class readPFSSOAWT {
       }
 //            System.out.println();
 
-      System.out.println(pi[i] + "," + di[i] + "," + wi[i]);
+//      System.out.println(fristProfit[i] + "," + di[i] + "," + wi[i]);
     }
 
 //        for(int i = 0 ;  i < STxt.length ; i ++) 
@@ -79,26 +83,34 @@ public class readPFSSOAWT {
 //        }
   }
 
-  private int[] getPi() {
-    return this.pi;
+  public int getPiTotal() {
+    return this.piTotal;
+  }
+  
+  public int getMachineTotal() {
+    return this.machineTotal;
+  }
+  
+  public int[] getPi() {
+    return this.fristProfit;
   }
 
-  private int[] getDi() {
+  public int[] getDi() {
     return this.di;
   }
 
-  private Double[] getWi() {
+  public Double[] getWi() {
     return this.wi;
   }
 
-  private int[][] getSetup() {
+  public int[][] getSetup() {
     return this.processingTime;
   }
 
   public static void main(String[] args) throws IOException {
     // TODO code application logic here
     readPFSSOAWT PF = new readPFSSOAWT();
-    PF.setData("@../../instances/PFSS-OAWT-Data/p/p100x10_0.txt");
+    PF.setData("@../../instances/PFSS-OAWT-Data/p/p10x3_0.txt");
     PF.readTxt();
 
   }
