@@ -11,6 +11,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import openga.applications.data.readPFSSOAWT;
 import openga.chromosomes.chromosome;
 import openga.chromosomes.populationI;
 
