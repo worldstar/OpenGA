@@ -32,7 +32,7 @@ public class ObjFunctionPFSSOAWT implements ObjFunctionPFSSOAWTI{
   private static int machineTotal;
   private static int[] fristProfit;
   private static int[] di;
-  private static Double[] wi;
+  private static double[] wi;
   private static int[][] processingTime;
   
   private String fileName;
@@ -63,50 +63,6 @@ public class ObjFunctionPFSSOAWT implements ObjFunctionPFSSOAWTI{
       System.exit(1);
     }
   }
-
-//  private void readTxt() throws FileNotFoundException, IOException {
-//    FileReader fr = new FileReader(fileName);
-//    BufferedReader br = new BufferedReader(fr);
-//    String TxtAll = "", eachLine = "";
-//    while ((eachLine = br.readLine()) != null) {
-//      TxtAll += eachLine + "\n";
-//    }
-//    STxt = TxtAll.split("\t|\n");
-//
-//    piTotal = Integer.parseInt(STxt[0]);
-//    fristProfit = new int[piTotal];
-//    di = new int[piTotal];
-//    wi = new Double[piTotal];
-//    pal = new Double[piTotal];
-//    profit = new Double[piTotal];
-//    machineTotal = Integer.parseInt(STxt[1]);
-//    processingTime = new int[piTotal][machineTotal];
-//    processingTimeStart = (wiStart + 1) + 3 * (piTotal - 1);
-//    
-//    for (int i = 0; i < piTotal; i++) {
-//      fristProfit[i] = Integer.parseInt(STxt[piStart]);
-//      piStart += 3;
-//      di[i] = Integer.parseInt(STxt[diStart]);
-//      diStart += 3;
-//      wi[i] = Double.parseDouble(STxt[wiStart]);
-//      wiStart += 3;
-//
-//      for (int j = 0; j < Integer.parseInt(STxt[1]); j++) {
-//        processingTime[i][j] = Integer.parseInt(STxt[processingTimeStart]);
-//        processingTimeStart += 1;
-////                System.out.print(processingTime[i][j] + ",");
-//      }
-////            System.out.println();
-//
-////      System.out.println(pi[i] + "," + di[i] + "," + wi[i]);
-//    }
-//
-////        for(int i = 0 ;  i < STxt.length ; i ++) 
-////        {
-////            System.out.println(STxt[i]);
-////        }
-//  }
-
   public void calcObjective()
   {
       pal = new Double[piTotal];
@@ -156,7 +112,64 @@ public class ObjFunctionPFSSOAWT implements ObjFunctionPFSSOAWTI{
       }
         
   }
-private void WriteFile() throws IOException
+  
+public void outPut()
+{
+  DecimalFormat df = new DecimalFormat("#.00");
+     System.out.print("OrderID" + "\t" + "Pi" + "\t" + "di" + "\t" + "wi" + "\t" + "accepted" + "\t" + "devery" + "\t" + "delayed" + "\t" + "Profit\n");
+     boolean accepted = false;
+     int temp = 0;
+     for(int i = 0 ; i < piTotal; i++)
+     {
+         for(int j = 0 ; j < Sequence.length; j++)
+         {
+            if( i == Sequence[j])
+            {
+                temp = j;
+                accepted = true;
+            } 
+         }
+         if(accepted)
+            {
+                accepted = false;
+                if(completeTime[temp][machineTotal - 1] > di[i])
+                {
+                    System.out.print(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "1" + "\t" + completeTime[temp][machineTotal - 1] + "\t" + "1" + "\t" + Double.parseDouble(df.format(profit[temp])) + "\n");
+                }else
+                {
+                    System.out.print(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "1" + "\t" + completeTime[temp][machineTotal - 1] + "\t" + "0" + "\t" + Double.parseDouble(df.format(profit[temp])) + "\n");
+                }
+                }else
+         {
+             System.out.print(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "0" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\n");
+         }
+     }
+     System.out.print("------Order Sequence(ID)-------------------------------\n");
+     for(int i = 0 ; i < Sequence.length; i++)
+     {
+         for(int j = 0 ; j < machineTotal ; j++)
+         {
+             System.out.print(Sequence[i] + "\t");
+         }
+         System.out.print("\n");
+     }
+     System.out.print("------Finished time(ID)-------------------------------\n");
+     
+     Double maxProfit = 0.0;
+     for(int i = 0 ; i < Sequence.length; i++)
+     {
+         for(int j = 0 ; j < machineTotal ; j++)
+         {
+            System.out.print("(" + Sequence[i] + ",\t" + processingTime[Sequence[i]][j] + ",\t" + completeTime[i][j] +  ")" + "\t");
+         }
+         System.out.print("pi=\t" + fristProfit[i] + "\tdi=\t" + di[i] + "\twi=\t" + wi[i] + "\tpal=\t" + Double.parseDouble(df.format(pal[i])) + "\tprofit=\t" + Double.parseDouble(df.format(profit[i])) );
+         System.out.print("\n");
+         maxProfit += profit[i];
+     }
+     System.out.print("maxProfit=\t" + maxProfit + "\n");
+}
+  
+public void WriteFile() throws IOException
 {
      FileWriter sw = new FileWriter(writeFileName, false);
      DecimalFormat df = new DecimalFormat("#.00");
@@ -221,25 +234,70 @@ private void WriteFile() throws IOException
     readPFSSOAWT rP = new readPFSSOAWT();
     rP.setData("@../../instances/PFSS-OAWT-Data/p/p10x3_0.txt");
     rP.readTxt();
-    
-    piTotal = rP.getPiTotal();
-    machineTotal = rP.getMachineTotal();
-    fristProfit = rP.getPi();
-    di = rP.getDi();
-    wi = rP.getWi();
-    processingTime = rP.getSetup();
-    
+    PF.setOASData(rP.getPiTotal(), rP.getMachineTotal(), rP.getPi(), rP.getDi(), rP.getWi(), rP.getSetup());
     PF.calcObjective();
     PF.setWriteData("@../../File/o100x10_0.txt");
     PF.WriteFile();
+    PF.outPut();
+  }
+  
+  public int getSequence(int index)
+  {
+    return Sequence[index];
+  }
+  
+  public int getSequenceLength()
+  {
+    return Sequence.length;
+  }
+  
+  public int getMachineTotal()
+  {
+    return machineTotal;
+  }
+  
+  public int getPiTotal()
+  {
+    return piTotal;
+  }
+  
+  public int getFristProfit(int index)
+  {
+    return fristProfit[index];
+  }
+  
+  public int getDi(int index)
+  {
+    return di[index];
+  }
+  
+  public double getWi(int index)
+  {
+    return wi[index];
+  }
+  
+  public int[][] getCompleteTime()
+  {
+    return completeTime;
   }
 
+  public int getProcessingTime(int i , int j)
+  {
+    return processingTime[i][j];
+  }
+  public double getProfit(int index)
+  {
+    return profit[index];
+  }
+  
   @Override
-  public void setOASData(int[] fristProfit , Double[] wi , Double[] pal , Double[] profit) {
+  public void setOASData(int piTotal , int machineTotal , int[] fristProfit , int[] di , double[] wi , int[][] processingTime) {
+    this.piTotal = piTotal;
+    this.machineTotal = machineTotal;
     this.fristProfit = fristProfit;
+    this.di = di;
     this.wi = wi;
-    this.pal = pal;
-    this.profit = profit;
+    this.processingTime = processingTime;
   }
 
   @Override

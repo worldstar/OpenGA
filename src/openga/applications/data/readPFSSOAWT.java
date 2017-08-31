@@ -30,7 +30,7 @@ public class readPFSSOAWT {
   private int piStart = 2;
   private int[] di;
   private int diStart = 3;
-  private Double[] wi;
+  private double[] wi;
   private int wiStart = 4;
   private int[][] processingTime;
   private int processingTimeStart;
@@ -56,7 +56,7 @@ public class readPFSSOAWT {
     machineTotal = Integer.parseInt(STxt[1]);
     fristProfit = new int[piTotal];
     di = new int[piTotal];
-    wi = new Double[piTotal];
+    wi = new double[piTotal];
     processingTime = new int[piTotal][Integer.parseInt(STxt[1])];
     processingTimeStart = (wiStart + 1) + 3 * (piTotal - 1);
     for (int i = 0; i < piTotal; i++) {
@@ -99,7 +99,7 @@ public class readPFSSOAWT {
     return this.di;
   }
 
-  public Double[] getWi() {
+  public double[] getWi() {
     return this.wi;
   }
 

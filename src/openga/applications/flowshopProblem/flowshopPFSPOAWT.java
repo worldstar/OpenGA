@@ -1,4 +1,7 @@
 package openga.applications.flowshopProblem;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.Date;
 import openga.applications.*;
 import openga.chromosomes.*;
 import openga.operator.selection.*;
@@ -8,6 +11,7 @@ import openga.ObjectiveFunctions.*;
 import openga.MainProgram.*;
 import openga.ObjectiveFunctions.*;
 import openga.Fitness.*;
+import openga.applications.data.readPFSSOAWT;
 //import openga.util.printClass;
 import openga.util.fileWrite1;
 
@@ -34,6 +38,7 @@ public class flowshopPFSPOAWT {
   DistanceCalculationI[] ObjectiveFunction;
   FitnessI Fitness;
   MainI GaMain;
+  ObjFunctionPFSSOAWTI OFPFSSOAWT;
 
   /**
    * Parameters of the GA
@@ -85,8 +90,9 @@ public class flowshopPFSPOAWT {
    this.instanceName = instanceName;
  }
 
-  public void initiateVars(){
+  public void initiateVars() throws IOException{
     GaMain     = new singleThreadGA();//singleThreadGAwithMultipleCrossover singleThreadGA adaptiveGA
+    OFPFSSOAWT = new ObjFunctionPFSSOAWT();
     Population = new population();
     Selection  = new binaryTournament();
     Crossover  = new CyclingCrossoverP(); //twoPointCrossover2()  CyclingCrossoverP multiParentsCrossover()
@@ -109,19 +115,30 @@ public class flowshopPFSPOAWT {
                    numberOfObjs, encodeType, elitism);
     GaMain.setSecondaryCrossoverOperator(Crossover2, false);
     GaMain.setSecondaryMutationOperator(Mutation2, true);
+    
+    //set the data to the ObjFunctionPFSSOAWT  program
+
+    ObjFunctionPFSSOAWT PF = new ObjFunctionPFSSOAWT();
+    readPFSSOAWT rP = new readPFSSOAWT();
+        rP.setData("@../../instances/PFSS-OAWT-Data/p/p10x3_0.txt");
+        rP.readTxt();
+        PF.setOASData(rP.getPiTotal(), rP.getMachineTotal(), rP.getPi(), rP.getDi(), rP.getWi(), rP.getSetup());
+        PF.calcObjective();
+    //    PF.setWriteData("@../../File/o100x10_0.txt");
+    //    PF.WriteFile();
+        PF.outPut();
   }
 
   public void start(){
     openga.util.timeClock timeClock1 = new openga.util.timeClock();
     timeClock1.start();
-    GaMain.startGA();
+//    GaMain.startGA();
     timeClock1.end();
 
-    String implementResult = instanceName+"\t"+DEFAULT_crossoverRate+"\t"+DEFAULT_mutationRate+"\t"+
-            elitism+"\t"+GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
-        +"\t"+timeClock1.getExecutionTime()/1000.0+"\n";
+    String implementResult = "";
     writeFile("TSP_SGA1010DOE", implementResult);
     System.out.print(implementResult);
+    
   }
 
   /**
@@ -134,8 +151,9 @@ public class flowshopPFSPOAWT {
     thread1.run();
   }
 
-  public static void main(String[] args) {
-    System.out.print("TSP SGA 1010 DOE");
+  public static void main(String[] args) throws IOException {
+    Date date = new Date();
+    System.out.println("DistanceCalculation  "  + date.toString());
     flowshopPFSPOAWT TSP1 = new flowshopPFSPOAWT();
     double crossoverRate[], mutationRate[];
     crossoverRate = new double[]{1.0};//1, 0.5
@@ -144,7 +162,7 @@ public class flowshopPFSPOAWT {
     double elitism[] = new double[]{0.2};
     int generations[] = new int[]{1000};
     int numInstances = 1;
-    int repeat = 30;
+    int repeat = 1;
 
     //to test different kinds of combinations.
       for(int i = 1 ; i < 2 ; i ++ ){//numInstances
@@ -156,6 +174,9 @@ public class flowshopPFSPOAWT {
         TSPInstances1.calcEuclideanDistanceMatrix();
         int length = TSPInstances1.getSize();
         
+        TSP1.initiateVars();
+        TSP1.start();
+        
         for(int j = 0 ; j < crossoverRate.length ; j ++ ){
           for(int k = 0 ; k < mutationRate.length ; k ++ ){
             for(int n = 0 ; n < elitism.length ; n ++ ){
@@ -163,14 +184,15 @@ public class flowshopPFSPOAWT {
                   System.out.println(counter);
                   TSP1.setParameter(i, crossoverRate[j], mutationRate[k], counter, elitism[n], generations[0],
                           TSPInstances1.getOriginalPoint(), TSPInstances1.getCoordinates(),
-                          TSPInstances1.getDistanceMatrix(), TSPInstances1.getSize(), instanceName);
-                  TSP1.initiateVars();
-                  TSP1.start();
+                          TSPInstances1.getDistanceMatrix(), TSPInstances1.getSize(), instanceName);//將流水線的資料丟入這裡進行輸出
+//                  TSP1.initiateVars();
+//                  TSP1.start();
                   counter ++;
                 }             
             }
           }
         }
+        
       }//end for   
     System.exit(0);
   }
