@@ -12,14 +12,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import openga.applications.data.readPFSSOAWT;
-import openga.chromosomes.chromosome;
 import openga.chromosomes.populationI;
+import openga.chromosomes.*;
 
 /**
  *
  * @author Kuo Yu-Cheng
  */
-public class ObjFunctionPFSSOAWT implements ObjFunctionPFSSOAWTI{
+public class ObjFunctionPFSSOAWT extends ObjectiveFunctionTSP implements ObjFunctionPFSSOAWTI {
 
   /**
    * @param args the command line arguments
@@ -42,7 +42,7 @@ public class ObjFunctionPFSSOAWT implements ObjFunctionPFSSOAWTI{
   private int diStart = 3;
   private int wiStart = 4;
   private int processingTimeStart;
-  private int[] Sequence = new int[]{5,3,8,1,9,6,0,2};
+  private int[] Sequence ;
   private int[][] completeTime;
   private int[] machineCompleteTime;
   private Double[] pal;
@@ -63,8 +63,38 @@ public class ObjFunctionPFSSOAWT implements ObjFunctionPFSSOAWTI{
       System.exit(1);
     }
   }
+  
+  public double evaluateAll(chromosome _chromosome1){
+    return 0;
+  }
+  
   public void calcObjective()
   {
+    Sequence = new int[]{5,3,8,1,9,6,0,2};
+    
+//    double obj;
+//    double objectives[];
+//    
+//    for(int i = 0 ; i < population.getPopulationSize() ; i ++ ){
+//      objectives = population.getObjectiveValues(i);
+//      obj = evaluateAll(population.getSingleChromosome(i));
+//      objectives[indexOfObjective] = obj;
+//      population.setObjectiveValue(i, objectives);
+//    }
+    
+    
+    
+//    population population1 = new population();
+//    Sequence = new int[length];
+//    
+//    for(int i = 0 ; i < size ; i ++ ){
+//    chromosome1 = population1.getSingleChromosome(i);
+//    }
+//    
+//    for(int i = 0 ; i < length ; i ++ ){
+//      Sequence[i] = chromosome1.genes[i];
+//    }
+    
       pal = new Double[piTotal];
       profit = new Double[piTotal];
       processingTimeStart = (wiStart + 1) + 3 * (piTotal - 1);
@@ -236,8 +266,8 @@ public void WriteFile() throws IOException
     rP.readTxt();
     PF.setOASData(rP.getPiTotal(), rP.getMachineTotal(), rP.getPi(), rP.getDi(), rP.getWi(), rP.getSetup());
     PF.calcObjective();
-    PF.setWriteData("@../../File/o100x10_0.txt");
-    PF.WriteFile();
+//    PF.setWriteData("@../../File/o100x10_0.txt");
+//    PF.WriteFile();
     PF.outPut();
   }
   
