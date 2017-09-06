@@ -38,7 +38,7 @@ public class flowshopPFSPOAWT {
   double[] wi;
   int[][] processingTime;
     
-  int numberOfObjs = 1;//it's a bi-objective program.
+  int numberOfObjs = 1;
   populationI Population;
   SelectI Selection;
   CrossoverI Crossover, Crossover2;
@@ -80,8 +80,8 @@ public class flowshopPFSPOAWT {
  /**
   * The method is to modify the default value.
   */
- public void setParameter(int instance, double crossoverRate, double mutationRate, int counter,
-                          double elitism, int generation,int length , String instanceName ,  int piTotal , int machineTotal , int[] fristProfit , int[] di , double[] wi , int[][] processingTime){
+ public void setParameter(int instance, double crossoverRate, double mutationRate, int counter,double elitism, int generation,
+                          int length ,  int piTotal , int machineTotal , int[] fristProfit , int[] di , double[] wi , int[][] processingTime){
     this.instance = instance;
    this.DEFAULT_crossoverRate = crossoverRate;
    this.DEFAULT_mutationRate = mutationRate;
@@ -117,7 +117,7 @@ public class flowshopPFSPOAWT {
     encodeType = true;
 
     ObjectiveFunction[0].setOASData(this.piTotal , this.machineTotal , this.fristProfit , this.di , this.wi , this.processingTime);
-
+    
     //set the data to the GA main program.
     GaMain.setData(Population, Selection, Crossover, Mutation, ObjectiveFunction,
                   Fitness, DEFAULT_generations, DEFAULT_initPopSize,DEFAULT_PopSize,
@@ -134,12 +134,13 @@ public class flowshopPFSPOAWT {
     GaMain.startGA();
     timeClock1.end();
 
-//    String implementResult = instanceName+"\t"+DEFAULT_crossoverRate+"\t"+DEFAULT_mutationRate+"\t"+
-//            elitism+"\t"+GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
-//        +"\t"+timeClock1.getExecutionTime()/1000.0+"\n";
-//    writeFile("TSP_SGA1010DOE", implementResult);
-//    System.out.print(implementResult);
     
+    String implementResult = instanceName+"\t"+DEFAULT_crossoverRate+"\t"+DEFAULT_mutationRate+"\t"+
+            elitism+"\t"+GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
+        +"\t"+timeClock1.getExecutionTime()/1000.0+"\n";
+    writeFile("TSP_SGA1010DOE", implementResult);
+    System.out.print(implementResult);
+//    ObjectiveFunction[0].output();
   }
 
   /**
@@ -161,7 +162,7 @@ public class flowshopPFSPOAWT {
     mutationRate  = new double[]{0.5};
     int counter = 0;
     double elitism[] = new double[]{0.2};
-    int generations[] = new int[]{1000};
+    int generations[] = new int[]{100};
     int numInstances = 0;
     int repeat = 30;
 
@@ -177,17 +178,16 @@ public class flowshopPFSPOAWT {
 //        PF.calcObjective();
 //        PF.outPut();
 
-        String instanceName = "";
-        int length = 1;
-        
+        int length = rP.getPiTotal();
+                
         for(int j = 0 ; j < crossoverRate.length ; j ++ ){
           for(int k = 0 ; k < mutationRate.length ; k ++ ){
             for(int n = 0 ; n < elitism.length ; n ++ ){
                 for(int m = 0 ; m < repeat ; m ++ ){
                   System.out.println("�ССССССССССССССССССС�");
-                  System.out.println(counter);
+                  System.out.println("repeat counter : " + counter);
 
-                  flowshop1.setParameter(i, crossoverRate[j], mutationRate[k], counter, elitism[n], generations[0], length , instanceName ,
+                  flowshop1.setParameter(i, crossoverRate[j], mutationRate[k], counter, elitism[n], generations[0],length,
                            rP.getPiTotal(), rP.getMachineTotal(), rP.getPi(), rP.getDi(), rP.getWi(), rP.getSetup());
                   flowshop1.initiateVars();
                   flowshop1.start();

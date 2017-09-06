@@ -14,5 +14,6 @@ import openga.ObjectiveFunctions.ObjectiveFunctionFlowShopScheduleI;
  */
 public interface ObjFunctionPFSSOAWTI extends ObjectiveFunctionFlowShopScheduleI {
   void setOASData(int piTotal , int machineTotal , int[] fristProfit , int[] di , double[] wi , int[][] processingTime);
-  public void setWriteData(String fileo100x10_0txt);
+  void setWriteData(String fileo100x10_0txt);
+  void output();
 }

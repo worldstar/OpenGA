@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package openga.ObjectiveFunctions;
+
 import openga.applications.flowshopProblem.*;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -25,16 +26,16 @@ public class ObjFunctionPFSSOAWT extends ObjectiveFunctionTSP implements ObjFunc
    * @param args the command line arguments
    */
   populationI population;// Part-one chromosomes
-  chromosome chromosome1;
+  chromosome chromosome1 = new chromosome();
   int length, indexOfObjective;
-  
+
   private static int piTotal;
   private static int machineTotal;
   private static int[] fristProfit;
   private static int[] di;
   private static double[] wi;
   private static int[][] processingTime;
-  
+
   private String fileName;
   private String writeFileName;
   private String[] STxt;
@@ -42,12 +43,11 @@ public class ObjFunctionPFSSOAWT extends ObjectiveFunctionTSP implements ObjFunc
   private int diStart = 3;
   private int wiStart = 4;
   private int processingTimeStart;
-  private int[] Sequence ;
+  private int[] Sequence;
   private int[][] completeTime;
   private int[] machineCompleteTime;
   private Double[] pal;
   private Double[] profit;
-  
 
   public void setData(String fileName) {
     this.fileName = fileName;
@@ -56,6 +56,14 @@ public class ObjFunctionPFSSOAWT extends ObjectiveFunctionTSP implements ObjFunc
       System.exit(1);
     }
   }
+
+  @Override
+  public void setData(populationI population, int indexOfObjective) {
+    this.population = population;
+    this.length = population.getLengthOfChromosome();
+    this.indexOfObjective = indexOfObjective;
+  }
+
   public void setWriteData(String writeFileName) {
     this.writeFileName = writeFileName;
     if (writeFileName == null) {
@@ -63,199 +71,179 @@ public class ObjFunctionPFSSOAWT extends ObjectiveFunctionTSP implements ObjFunc
       System.exit(1);
     }
   }
-  
-  public double evaluateAll(chromosome _chromosome1){
-    return 0;
-  }
-  
-  public void calcObjective()
-  {
-    Sequence = new int[]{5,3,8,1,9,6,0,2};
-    
-//    double obj;
-//    double objectives[];
-//    
-//    for(int i = 0 ; i < population.getPopulationSize() ; i ++ ){
-//      objectives = population.getObjectiveValues(i);
-//      obj = evaluateAll(population.getSingleChromosome(i));
-//      objectives[indexOfObjective] = obj;
-//      population.setObjectiveValue(i, objectives);
-//    }
+
+  public double evaluateAll(int[] Sequence) {
+    this.Sequence = Sequence;
+
+    Double totalProfit = 0.0;
+    pal = new Double[piTotal];
+    profit = new Double[piTotal];
+    completeTime = new int[Sequence.length][machineTotal];
+    machineCompleteTime = new int[machineTotal];
+    processingTimeStart = (wiStart + 1) + 3 * (piTotal - 1);
     
     
-    
-//    population population1 = new population();
-//    Sequence = new int[length];
-//    
-//    for(int i = 0 ; i < size ; i ++ ){
-//    chromosome1 = population1.getSingleChromosome(i);
-//    }
-//    
-//    for(int i = 0 ; i < length ; i ++ ){
-//      Sequence[i] = chromosome1.genes[i];
-//    }
-    
-      pal = new Double[piTotal];
-      profit = new Double[piTotal];
-      processingTimeStart = (wiStart + 1) + 3 * (piTotal - 1);
-    
-      completeTime = new int[Sequence.length][machineTotal];
-      machineCompleteTime = new int[machineTotal];
-      for(int i = 0 ; i < Sequence.length; i++)
-      {
-          for(int j = 0 ; j < machineTotal ; j++)
-          {
-              if(j>0)
-              {
-                  if(machineCompleteTime[j] == 0)
-                  {
-                    machineCompleteTime[j] += machineCompleteTime[j-1] +processingTime[Sequence[i]][j];
-                  }else if(machineCompleteTime[j - 1] > machineCompleteTime[j])
-                  {
-                      machineCompleteTime[j] = machineCompleteTime[j - 1] + processingTime[Sequence[i]][j];
-                  }
-                  else
-                  {
-                    machineCompleteTime[j] += processingTime[Sequence[i]][j] ;
-                  }
-              }
-              else
-              {
-              machineCompleteTime[j] += processingTime[Sequence[i]][j] ;
-              }
-              
-                  completeTime[i][j] = machineCompleteTime[j];
-              
-//       System.out.println(completeTime[i][0]);
-//              System.out.print(processingTime[Sequence[i]][j] + ",");
+    for (int i = 0; i < Sequence.length; i++) {
+      for (int j = 0; j < machineTotal; j++) {
+        if (j > 0) {
+          if (machineCompleteTime[j] == 0) {
+            machineCompleteTime[j] += machineCompleteTime[j - 1] + processingTime[Sequence[i]][j];
+          } else if (machineCompleteTime[j - 1] > machineCompleteTime[j]) {
+            machineCompleteTime[j] = machineCompleteTime[j - 1] + processingTime[Sequence[i]][j];
+          } else {
+            machineCompleteTime[j] += processingTime[Sequence[i]][j];
           }
-          pal[i] = ((completeTime[i][machineTotal - 1] - di[Sequence[i]]) * wi[Sequence[i]]);
-          
-          if(pal[i] < 0)
-          {
-              pal[i] = 0.0;
-          }
-          
-          profit[i] = fristProfit[Sequence[i]] - pal[i];
-//          System.out.println(profit[i]);
-//          System.out.println();
+        } else {
+          machineCompleteTime[j] += processingTime[Sequence[i]][j];
+        }
+
+        completeTime[i][j] = machineCompleteTime[j];
+
       }
-        
+      
+      //pal
+      pal[i] = ((completeTime[i][machineTotal - 1] - di[Sequence[i]]) * wi[Sequence[i]]);
+      
+      if (pal[i] < 0) {
+        pal[i] = 0.0;
+      }
+      
+      if(fristProfit[Sequence[i]] - pal[i] > 0)
+      {
+        profit[i] = fristProfit[Sequence[i]] - pal[i];  
+      }else
+      {
+        profit[i] = 0.0 ;
+      for (int j = 0; j < machineTotal; j++) 
+        {
+          if(i > 0){
+
+              completeTime[i][j] = completeTime[i - 1][j];
+
+          }else
+          {
+              completeTime[i][j] = 0;
+          }
+          machineCompleteTime[j] = completeTime[i][j];
+        }
+      }
+      
+    }
+    
+    
+    for (int i = 0; i < Sequence.length; i++) {
+      totalProfit += profit[i];
+    }
+
+    return totalProfit;
   }
-  
-public void outPut()
-{
-  DecimalFormat df = new DecimalFormat("#.00");
-     System.out.print("OrderID" + "\t" + "Pi" + "\t" + "di" + "\t" + "wi" + "\t" + "accepted" + "\t" + "devery" + "\t" + "delayed" + "\t" + "Profit\n");
-     boolean accepted = false;
-     int temp = 0;
-     for(int i = 0 ; i < piTotal; i++)
-     {
-         for(int j = 0 ; j < Sequence.length; j++)
-         {
-            if( i == Sequence[j])
-            {
-                temp = j;
-                accepted = true;
-            } 
-         }
-         if(accepted)
-            {
-                accepted = false;
-                if(completeTime[temp][machineTotal - 1] > di[i])
-                {
-                    System.out.print(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "1" + "\t" + completeTime[temp][machineTotal - 1] + "\t" + "1" + "\t" + Double.parseDouble(df.format(profit[temp])) + "\n");
-                }else
-                {
-                    System.out.print(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "1" + "\t" + completeTime[temp][machineTotal - 1] + "\t" + "0" + "\t" + Double.parseDouble(df.format(profit[temp])) + "\n");
-                }
-                }else
-         {
-             System.out.print(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "0" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\n");
-         }
-     }
-     System.out.print("------Order Sequence(ID)-------------------------------\n");
-     for(int i = 0 ; i < Sequence.length; i++)
-     {
-         for(int j = 0 ; j < machineTotal ; j++)
-         {
-             System.out.print(Sequence[i] + "\t");
-         }
-         System.out.print("\n");
-     }
-     System.out.print("------Finished time(ID)-------------------------------\n");
-     
-     Double maxProfit = 0.0;
-     for(int i = 0 ; i < Sequence.length; i++)
-     {
-         for(int j = 0 ; j < machineTotal ; j++)
-         {
-            System.out.print("(" + Sequence[i] + ",\t" + processingTime[Sequence[i]][j] + ",\t" + completeTime[i][j] +  ")" + "\t");
-         }
-         System.out.print("pi=\t" + fristProfit[i] + "\tdi=\t" + di[i] + "\twi=\t" + wi[i] + "\tpal=\t" + Double.parseDouble(df.format(pal[i])) + "\tprofit=\t" + Double.parseDouble(df.format(profit[i])) );
-         System.out.print("\n");
-         maxProfit += profit[i];
-     }
-     System.out.print("maxProfit=\t" + maxProfit + "\n");
-}
-  
-public void WriteFile() throws IOException
-{
-     FileWriter sw = new FileWriter(writeFileName, false);
-     DecimalFormat df = new DecimalFormat("#.00");
-     sw.write("OrderID" + "\t" + "Pi" + "\t" + "di" + "\t" + "wi" + "\t" + "accepted" + "\t" + "devery" + "\t" + "delayed" + "\t" + "Profit\n");
-     boolean accepted = false;
-     int temp = 0;
-     for(int i = 0 ; i < piTotal; i++)
-     {
-         for(int j = 0 ; j < Sequence.length; j++)
-         {
-            if( i == Sequence[j])
-            {
-                temp = j;
-                accepted = true;
-            } 
-         }
-         if(accepted)
-            {
-                accepted = false;
-                if(completeTime[temp][machineTotal - 1] > di[i])
-                {
-                    sw.write(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "1" + "\t" + completeTime[temp][machineTotal - 1] + "\t" + "1" + "\t" + Double.parseDouble(df.format(profit[temp])) + "\n");
-                }else
-                {
-                    sw.write(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "1" + "\t" + completeTime[temp][machineTotal - 1] + "\t" + "0" + "\t" + Double.parseDouble(df.format(profit[temp])) + "\n");
-                }
-                }else
-         {
-             sw.write(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "0" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\n");
-         }
-     }
-     sw.write("------Order Sequence(ID)-------------------------------\n");
-     for(int i = 0 ; i < Sequence.length; i++)
-     {
-         for(int j = 0 ; j < machineTotal ; j++)
-         {
-             sw.write(Sequence[i] + "\t");
-         }
-         sw.write("\n");
-     }
-     sw.write("------Finished time(ID)-------------------------------\n");
-     
-     Double maxProfit = 0.0;
-     for(int i = 0 ; i < Sequence.length; i++)
-     {
-         for(int j = 0 ; j < machineTotal ; j++)
-         {
-            sw.write("(" + Sequence[i] + ",\t" + processingTime[Sequence[i]][j] + ",\t" + completeTime[i][j] +  ")" + "\t");
-         }
-         sw.write("pi=\t" + fristProfit[i] + "\tdi=\t" + di[i] + "\twi=\t" + wi[i] + "\tpal=\t" + Double.parseDouble(df.format(pal[i])) + "\tprofit=\t" + Double.parseDouble(df.format(profit[i])) );
-         sw.write("\n");
-         maxProfit += profit[i];
-     }
-     sw.write("maxProfit=\t" + maxProfit + "\n");
-     sw.close();
-}
+
+  public void calcObjective() {
+//    Sequence = new int[]{5,3,8,1,9,6,0,2};
+    double obj;
+    double objectives[];
+//    evaluateAll(Sequence);
+//    System.out.println(population.getPopulationSize());
+
+    for (int i = 0; i < population.getPopulationSize(); i++) {
+      objectives = population.getObjectiveValues(i);
+      obj = evaluateAll(population.getSingleChromosome(i).genes);
+      objectives[indexOfObjective] = obj;
+      population.setObjectiveValue(i, objectives);
+    }
+  }
+
+  @Override
+  public void output() {
+    DecimalFormat df = new DecimalFormat("#.00");
+    System.out.print("OrderID" + "\t" + "Pi" + "\t" + "di" + "\t" + "wi" + "\t" + "accepted" + "\t" + "devery" + "\t" + "delayed" + "\t" + "Profit\n");
+    boolean accepted = false;
+    int temp = 0;
+    for (int i = 0; i < piTotal; i++) {
+      for (int j = 0; j < Sequence.length; j++) {
+        if (i == Sequence[j]) {
+          temp = j;
+          accepted = true;
+        }
+      }
+      if (accepted) {
+        accepted = false;
+        if (completeTime[temp][machineTotal - 1] > di[i]) {
+          System.out.print(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "1" + "\t" + completeTime[temp][machineTotal - 1] + "\t" + "1" + "\t" + Double.parseDouble(df.format(profit[temp])) + "\n");
+        } else {
+          System.out.print(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "1" + "\t" + completeTime[temp][machineTotal - 1] + "\t" + "0" + "\t" + Double.parseDouble(df.format(profit[temp])) + "\n");
+        }
+      } else {
+        System.out.print(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "0" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\n");
+      }
+    }
+    System.out.print("------Order Sequence(ID)-------------------------------\n");
+    for (int i = 0; i < Sequence.length; i++) {
+      for (int j = 0; j < machineTotal; j++) {
+        System.out.print(Sequence[i] + "\t");
+      }
+      System.out.print("\n");
+    }
+    System.out.print("------Finished time(ID)-------------------------------\n");
+
+    Double maxProfit = 0.0;
+    for (int i = 0; i < Sequence.length; i++) {
+      for (int j = 0; j < machineTotal; j++) {
+        System.out.print("(" + Sequence[i] + ",\t" + processingTime[Sequence[i]][j] + ",\t" + completeTime[i][j] + ")" + "\t");
+      }
+      System.out.print("pi=\t" + fristProfit[i] + "\tdi=\t" + di[i] + "\twi=\t" + wi[i] + "\tpal=\t" + Double.parseDouble(df.format(pal[i])) + "\tprofit=\t" + Double.parseDouble(df.format(profit[i])));
+      System.out.print("\n");
+      maxProfit += profit[i];
+    }
+    System.out.print("maxProfit=\t" + maxProfit + "\n");
+  }
+
+  public void WriteFile() throws IOException {
+    FileWriter sw = new FileWriter(writeFileName, false);
+    DecimalFormat df = new DecimalFormat("#.00");
+    sw.write("OrderID" + "\t" + "Pi" + "\t" + "di" + "\t" + "wi" + "\t" + "accepted" + "\t" + "devery" + "\t" + "delayed" + "\t" + "Profit\n");
+    boolean accepted = false;
+    int temp = 0;
+    for (int i = 0; i < piTotal; i++) {
+      for (int j = 0; j < Sequence.length; j++) {
+        if (i == Sequence[j]) {
+          temp = j;
+          accepted = true;
+        }
+      }
+      if (accepted) {
+        accepted = false;
+        if (completeTime[temp][machineTotal - 1] > di[i]) {
+          sw.write(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "1" + "\t" + completeTime[temp][machineTotal - 1] + "\t" + "1" + "\t" + Double.parseDouble(df.format(profit[temp])) + "\n");
+        } else {
+          sw.write(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "1" + "\t" + completeTime[temp][machineTotal - 1] + "\t" + "0" + "\t" + Double.parseDouble(df.format(profit[temp])) + "\n");
+        }
+      } else {
+        sw.write(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "0" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\n");
+      }
+    }
+    sw.write("------Order Sequence(ID)-------------------------------\n");
+    for (int i = 0; i < Sequence.length; i++) {
+      for (int j = 0; j < machineTotal; j++) {
+        sw.write(Sequence[i] + "\t");
+      }
+      sw.write("\n");
+    }
+    sw.write("------Finished time(ID)-------------------------------\n");
+
+    Double maxProfit = 0.0;
+    for (int i = 0; i < Sequence.length; i++) {
+      for (int j = 0; j < machineTotal; j++) {
+        sw.write("(" + Sequence[i] + ",\t" + processingTime[Sequence[i]][j] + ",\t" + completeTime[i][j] + ")" + "\t");
+      }
+      sw.write("pi=\t" + fristProfit[i] + "\tdi=\t" + di[i] + "\twi=\t" + wi[i] + "\tpal=\t" + Double.parseDouble(df.format(pal[i])) + "\tprofit=\t" + Double.parseDouble(df.format(profit[i])));
+      sw.write("\n");
+      maxProfit += profit[i];
+    }
+    sw.write("maxProfit=\t" + maxProfit + "\n");
+    sw.close();
+  }
+
   public static void main(String[] args) throws IOException {
     // TODO code application logic here
     ObjFunctionPFSSOAWT PF = new ObjFunctionPFSSOAWT();
@@ -268,60 +256,51 @@ public void WriteFile() throws IOException
     PF.calcObjective();
 //    PF.setWriteData("@../../File/o100x10_0.txt");
 //    PF.WriteFile();
-    PF.outPut();
+    PF.output();
   }
-  
-  public int getSequence(int index)
-  {
+
+  public int getSequence(int index) {
     return Sequence[index];
   }
-  
-  public int getSequenceLength()
-  {
+
+  public int getSequenceLength() {
     return Sequence.length;
   }
-  
-  public int getMachineTotal()
-  {
+
+  public int getMachineTotal() {
     return machineTotal;
   }
-  
-  public int getPiTotal()
-  {
+
+  public int getPiTotal() {
     return piTotal;
   }
-  
-  public int getFristProfit(int index)
-  {
+
+  public int getFristProfit(int index) {
     return fristProfit[index];
   }
-  
-  public int getDi(int index)
-  {
+
+  public int getDi(int index) {
     return di[index];
   }
-  
-  public double getWi(int index)
-  {
+
+  public double getWi(int index) {
     return wi[index];
   }
-  
-  public int[][] getCompleteTime()
-  {
+
+  public int[][] getCompleteTime() {
     return completeTime;
   }
 
-  public int getProcessingTime(int i , int j)
-  {
+  public int getProcessingTime(int i, int j) {
     return processingTime[i][j];
   }
-  public double getProfit(int index)
-  {
+
+  public double getProfit(int index) {
     return profit[index];
   }
-  
+
   @Override
-  public void setOASData(int piTotal , int machineTotal , int[] fristProfit , int[] di , double[] wi , int[][] processingTime) {
+  public void setOASData(int piTotal, int machineTotal, int[] fristProfit, int[] di, double[] wi, int[][] processingTime) {
     this.piTotal = piTotal;
     this.machineTotal = machineTotal;
     this.fristProfit = fristProfit;
@@ -334,7 +313,7 @@ public void WriteFile() throws IOException
   public void setScheduleData(int[][] processingTime, int numberOfMachine) {
     this.processingTime = processingTime;
     this.machineTotal = numberOfMachine;
-    }
+  }
 
   @Override
   public void setScheduleData(int[] dueDay, int[][] processingTime, int numberOfMachine) {
@@ -344,20 +323,12 @@ public void WriteFile() throws IOException
   }
 
   @Override
-  public void setData(populationI population, int indexOfObjective) {
-    this.population = population;
-    this.length = population.getLengthOfChromosome();
-    this.indexOfObjective = indexOfObjective;
-  }
-
-  @Override
   public void setData(chromosome chromosome1, int indexOfObjective) {
     this.chromosome1 = chromosome1;
     this.indexOfObjective = indexOfObjective;
     length = chromosome1.getLength();
   }
-  
-  
+
   @Override
   public populationI getPopulation() {
     return population;
@@ -366,6 +337,6 @@ public void WriteFile() throws IOException
   @Override
   public double[] getObjectiveValues(int index) {
     return population.getObjectiveValues(index);
-  }  
+  }
 
 }
