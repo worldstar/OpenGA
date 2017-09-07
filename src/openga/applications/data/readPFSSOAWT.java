@@ -23,6 +23,7 @@ public class readPFSSOAWT {
    * @param args the command line arguments
    */
   private String fileName;
+  private String data;
   private String[] STxt;
   private int piTotal;
   private int machineTotal;
@@ -35,7 +36,8 @@ public class readPFSSOAWT {
   private int[][] processingTime;
   private int processingTimeStart;
 
-  public void setData(String fileName) {
+  public void setData(String data,String fileName) {
+    this.data = data;
     this.fileName = fileName;
     if (fileName == null) {
       System.out.println("Specify the file name please.");
@@ -44,7 +46,7 @@ public class readPFSSOAWT {
   }
 
   public void readTxt() throws FileNotFoundException, IOException {
-    FileReader fr = new FileReader(fileName);
+    FileReader fr = new FileReader(data + fileName);
     BufferedReader br = new BufferedReader(fr);
     String TxtAll = "", eachLine = "";
     while ((eachLine = br.readLine()) != null) {
@@ -106,11 +108,15 @@ public class readPFSSOAWT {
   public int[][] getSetup() {
     return this.processingTime;
   }
+  public String getFileName()
+  {
+    return this.fileName;
+  }
 
   public static void main(String[] args) throws IOException {
     // TODO code application logic here
     readPFSSOAWT PF = new readPFSSOAWT();
-    PF.setData("@../../instances/PFSS-OAWT-Data/p/p10x3_0.txt");
+    PF.setData("@../../instances/PFSS-OAWT-Data/p/","p10x3_0.txt");
     PF.readTxt();
 
   }

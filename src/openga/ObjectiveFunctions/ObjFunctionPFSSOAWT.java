@@ -36,7 +36,6 @@ public class ObjFunctionPFSSOAWT extends ObjectiveFunctionTSP implements ObjFunc
   private static double[] wi;
   private static int[][] processingTime;
 
-  private String fileName;
   private String writeFileName;
   private String[] STxt;
   private int piStart = 2;
@@ -48,14 +47,6 @@ public class ObjFunctionPFSSOAWT extends ObjectiveFunctionTSP implements ObjFunc
   private int[] machineCompleteTime;
   private Double[] pal;
   private Double[] profit;
-
-  public void setData(String fileName) {
-    this.fileName = fileName;
-    if (fileName == null) {
-      System.out.println("Specify the file name please.");
-      System.exit(1);
-    }
-  }
 
   @Override
   public void setData(populationI population, int indexOfObjective) {
@@ -169,10 +160,22 @@ public class ObjFunctionPFSSOAWT extends ObjectiveFunctionTSP implements ObjFunc
       if (accepted) {
         accepted = false;
         if (completeTime[temp][machineTotal - 1] > di[i]) {
-          System.out.print(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "1" + "\t" + completeTime[temp][machineTotal - 1] + "\t" + "1" + "\t" + Double.parseDouble(df.format(profit[temp])) + "\n");
-        } else {
-          System.out.print(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "1" + "\t" + completeTime[temp][machineTotal - 1] + "\t" + "0" + "\t" + Double.parseDouble(df.format(profit[temp])) + "\n");
-        }
+            if(profit[temp] == 0)
+            {
+              System.out.print(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "0" + "\t" + completeTime[temp][machineTotal - 1] + "\t" + "1" + "\t" + Double.parseDouble(df.format(profit[temp])) + "\n");
+            }else
+            {
+              System.out.print(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "1" + "\t" + completeTime[temp][machineTotal - 1] + "\t" + "1" + "\t" + Double.parseDouble(df.format(profit[temp])) + "\n");
+            }
+          } else {
+            if(profit[temp] == 0)
+            {
+             System.out.print(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "0" + "\t" + completeTime[temp][machineTotal - 1] + "\t" + "0" + "\t" + Double.parseDouble(df.format(profit[temp])) + "\n");
+            }else
+            {
+             System.out.print(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "1" + "\t" + completeTime[temp][machineTotal - 1] + "\t" + "0" + "\t" + Double.parseDouble(df.format(profit[temp])) + "\n");
+            }
+         }
       } else {
         System.out.print(i + "\t" + fristProfit[i] + "\t" + di[i] + "\t" + wi[i] + "\t" + "0" + "\t" + "\t" + "\t" + "\t" + "\t" + "\t" + "\n");
       }
@@ -250,7 +253,7 @@ public class ObjFunctionPFSSOAWT extends ObjectiveFunctionTSP implements ObjFunc
 //    PF.setData("@../../instances/PFSS-OAWT-Data/p/p10x3_0.txt");
 //    PF.readTxt();
     readPFSSOAWT rP = new readPFSSOAWT();
-    rP.setData("@../../instances/PFSS-OAWT-Data/p/p10x3_0.txt");
+    rP.setData("@../../instances/PFSS-OAWT-Data/p/","p10x3_0.txt");
     rP.readTxt();
     PF.setOASData(rP.getPiTotal(), rP.getMachineTotal(), rP.getPi(), rP.getDi(), rP.getWi(), rP.getSetup());
     PF.calcObjective();
