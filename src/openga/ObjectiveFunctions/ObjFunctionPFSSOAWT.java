@@ -29,24 +29,25 @@ public class ObjFunctionPFSSOAWT extends ObjectiveFunctionTSP implements ObjFunc
   chromosome chromosome1 = new chromosome();
   int length, indexOfObjective;
 
-  private static int piTotal;
-  private static int machineTotal;
-  private static int[] fristProfit;
-  private static int[] di;
-  private static double[] wi;
-  private static int[][] processingTime;
+  public static int piTotal;
+  public static int machineTotal;
+  public static int[] fristProfit;
+  public static int[] di;
+  public static double[] wi;
+  public static int[][] processingTime;
 
-  private String writeFileName;
-  private String[] STxt;
-  private int piStart = 2;
-  private int diStart = 3;
-  private int wiStart = 4;
-  private int processingTimeStart;
-  private int[] Sequence;
-  private int[][] completeTime;
-  private int[] machineCompleteTime;
-  private Double[] pal;
-  private Double[] profit;
+  public String writeFileName;
+  public String[] STxt;
+  public int piStart = 2;
+  public int diStart = 3;
+  public int wiStart = 4;
+  public int processingTimeStart;
+  public int[] Sequence;
+  public int[][] completeTime;
+  public int[] machineCompleteTime;
+  public Double[] pal;
+  public Double[] profit;
+  public boolean[] accept;
 
   @Override
   public void setData(populationI population, int indexOfObjective) {
@@ -64,12 +65,14 @@ public class ObjFunctionPFSSOAWT extends ObjectiveFunctionTSP implements ObjFunc
   }
 
   public double evaluateAll(int[] Sequence) {
+    
     this.Sequence = Sequence;
 
     Double totalProfit = 0.0;
     pal = new Double[piTotal];
     profit = new Double[piTotal];
     completeTime = new int[Sequence.length][machineTotal];
+    accept = new boolean[Sequence.length];
     machineCompleteTime = new int[machineTotal];
     processingTimeStart = (wiStart + 1) + 3 * (piTotal - 1);
     
@@ -79,10 +82,9 @@ public class ObjFunctionPFSSOAWT extends ObjectiveFunctionTSP implements ObjFunc
         if (j > 0) {
           if (machineCompleteTime[j] == 0) {
             machineCompleteTime[j] += machineCompleteTime[j - 1] + processingTime[Sequence[i]][j];
-          } else if (machineCompleteTime[j - 1] > machineCompleteTime[j]) {
-            machineCompleteTime[j] = machineCompleteTime[j - 1] + processingTime[Sequence[i]][j];
-          } else {
-            machineCompleteTime[j] += processingTime[Sequence[i]][j];
+          } else
+          {
+            machineCompleteTime[j] = Math.max(machineCompleteTime[j - 1], machineCompleteTime[j]) + processingTime[Sequence[i]][j];
           }
         } else {
           machineCompleteTime[j] += processingTime[Sequence[i]][j];
@@ -102,21 +104,22 @@ public class ObjFunctionPFSSOAWT extends ObjectiveFunctionTSP implements ObjFunc
       if(fristProfit[Sequence[i]] - pal[i] > 0)
       {
         profit[i] = fristProfit[Sequence[i]] - pal[i];  
-      }else
-      {
-        profit[i] = 0.0 ;
-      for (int j = 0; j < machineTotal; j++) 
-        {
-          if(i > 0){
+        accept[i] = true;
+      }else {
+        
+          profit[i] = 0.0;
+          accept[i] = false;
+          for (int j = 0; j < machineTotal; j++) {
+            if (i > 0) {
 
               completeTime[i][j] = completeTime[i - 1][j];
 
-          }else
-          {
+            } else {
               completeTime[i][j] = 0;
+            }
+            machineCompleteTime[j] = completeTime[i][j];
           }
-          machineCompleteTime[j] = completeTime[i][j];
-        }
+        
       }
       
     }
@@ -128,15 +131,16 @@ public class ObjFunctionPFSSOAWT extends ObjectiveFunctionTSP implements ObjFunc
 
     return totalProfit;
   }
-
+  
+@Override
   public void calcObjective() {
-//    Sequence = new int[]{5,3,8,1,9,6,0,2};
     double obj;
     double objectives[];
-//    evaluateAll(Sequence);
-//    System.out.println(population.getPopulationSize());
 
     for (int i = 0; i < population.getPopulationSize(); i++) {
+//      int[] X = new int[]{5,3,8,1,9,4,6,0,2,7};
+//      obj = evaluateAll(X);
+      
       objectives = population.getObjectiveValues(i);
       obj = evaluateAll(population.getSingleChromosome(i).genes);
       objectives[indexOfObjective] = obj;
@@ -247,20 +251,20 @@ public class ObjFunctionPFSSOAWT extends ObjectiveFunctionTSP implements ObjFunc
     sw.close();
   }
 
-  public static void main(String[] args) throws IOException {
-    // TODO code application logic here
-    ObjFunctionPFSSOAWT PF = new ObjFunctionPFSSOAWT();
-//    PF.setData("@../../instances/PFSS-OAWT-Data/p/p10x3_0.txt");
-//    PF.readTxt();
-    readPFSSOAWT rP = new readPFSSOAWT();
-    rP.setData("@../../instances/PFSS-OAWT-Data/p/","p10x3_0.txt");
-    rP.readTxt();
-    PF.setOASData(rP.getPiTotal(), rP.getMachineTotal(), rP.getPi(), rP.getDi(), rP.getWi(), rP.getSetup());
-    PF.calcObjective();
-//    PF.setWriteData("@../../File/o100x10_0.txt");
-//    PF.WriteFile();
-    PF.output();
-  }
+//  public static void main(String[] args) throws IOException {
+//    // TODO code application logic here
+//    ObjFunctionPFSSOAWT PF = new ObjFunctionPFSSOAWT();
+////    PF.setData("@../../instances/PFSS-OAWT-Data/p/p10x3_0.txt");
+////    PF.readTxt();
+//    readPFSSOAWT rP = new readPFSSOAWT();
+//    rP.setData("@../../instances/PFSS-OAWT-Data/p/","p10x3_0.txt");
+//    rP.readTxt();
+//    PF.setOASData(rP.getPiTotal(), rP.getMachineTotal(), rP.getPi(), rP.getDi(), rP.getWi(), rP.getSetup());
+//    PF.calcObjective();
+////    PF.setWriteData("@../../File/o100x10_0.txt");
+////    PF.WriteFile();
+//    PF.output();
+//  }
 
   public int getSequence(int index) {
     return Sequence[index];
@@ -276,6 +280,10 @@ public class ObjFunctionPFSSOAWT extends ObjectiveFunctionTSP implements ObjFunc
 
   public int getPiTotal() {
     return piTotal;
+  }
+  
+  public boolean[] getAccept() {
+    return accept;
   }
 
   public int getFristProfit(int index) {
@@ -301,6 +309,7 @@ public class ObjFunctionPFSSOAWT extends ObjectiveFunctionTSP implements ObjFunc
   public double getProfit(int index) {
     return profit[index];
   }
+  
 
   @Override
   public void setOASData(int piTotal, int machineTotal, int[] fristProfit, int[] di, double[] wi, int[][] processingTime) {

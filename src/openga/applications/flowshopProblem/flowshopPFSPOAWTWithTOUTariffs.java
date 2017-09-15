@@ -31,9 +31,9 @@ import openga.util.fileWrite1;
  * @author Chen, Shih-Hsin
  * @version 1.0
  */
-public class flowshopPFSPOAWT {
+public class flowshopPFSPOAWTWithTOUTariffs {
 
-  public flowshopPFSPOAWT() {
+  public flowshopPFSPOAWTWithTOUTariffs() {
   }
   /**
    * *
@@ -115,7 +115,7 @@ public class flowshopPFSPOAWT {
     Mutation = new swapMutation();//shiftMutation
     Mutation2 = new shiftMutation();//inverseMutation
     ObjectiveFunction = new ObjFunctionPFSSOAWTI[numberOfObjs];
-    ObjectiveFunction[0] = new ObjFunctionPFSSOAWT();//the first objective
+    ObjectiveFunction[0] = new ObjFunctionPFSSOAWTWithTOUTariffs();//the first objective
     Fitness = new singleObjectiveFitness();//singleObjectiveFitness singleObjectiveFitnessByNormalize
     objectiveMinimization = new boolean[numberOfObjs];
     objectiveMinimization[0] = false;
@@ -169,18 +169,18 @@ public class flowshopPFSPOAWT {
     File folder1 = new File(data);
     String[] list1 = folder1.list();
     
-    for (int filelist = 40; filelist < 41; filelist++) {
+    for (int filelist = 1; filelist < 2; filelist++) {//for (int filelist = 40; filelist < 41; filelist++) {5,3,8,1,9,4,6,0,2,7} Max 1937.5
 //        for (int filelist = 0; filelist < list1.length; filelist++) {
           filename = list1[filelist];
           System.out.println(filelist + " : " + filename);
 
-          flowshopPFSPOAWT flowshop1 = new flowshopPFSPOAWT();
+          flowshopPFSPOAWTWithTOUTariffs flowshop1 = new flowshopPFSPOAWTWithTOUTariffs();
           double crossoverRate[], mutationRate[];
           crossoverRate = new double[]{1.0};//1, 0.5
           mutationRate = new double[]{0.5};
           int counter = 0;
           double elitism[] = new double[]{0.2};
-          int generations[] = new int[]{1000};
+          int generations[] = new int[]{10};
 //          int numInstances = 0;
           int repeat = 1;
 
