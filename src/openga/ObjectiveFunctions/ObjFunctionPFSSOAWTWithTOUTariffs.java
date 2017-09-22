@@ -30,12 +30,15 @@ public class ObjFunctionPFSSOAWTWithTOUTariffs extends ObjFunctionPFSSOAWT {
   private double midPeakEnd;
   private double onPeakEnd;
   private double midPeakEnd2;
-  private double TOUcostStartTime = 0.0;
+  private double TOUcostStartTime = 360.0;
+  private double TOUcostStartTimeTemp;
   private double TOUcostProcessingTime;
   private double TOUcostCompleteTime;
   private double[][] TOUcost;
   private String[][] TOUcostStartTimeStr;
   private String[][] TOUcostCompleteTimeStr;
+  private double totalCost;
+  private double totalProfit;
 
   public void setData(int machine, String startTime, String endTime) throws ParseException {
     SimpleDateFormat simple = new SimpleDateFormat();
@@ -106,15 +109,19 @@ public class ObjFunctionPFSSOAWTWithTOUTariffs extends ObjFunctionPFSSOAWT {
   @Override
   public double evaluateAll(int[] Sequence) {
     
+    
     this.Sequence = Sequence;
 
-    Double totalProfit = 0.0;
+    totalProfit = 0.0;
+    totalCost = 0.0;
+    
     pal = new Double[piTotal];
     profit = new Double[piTotal];
     completeTime = new int[Sequence.length][machineTotal];
     accept = new boolean[Sequence.length];
     machineCompleteTime = new int[machineTotal];
     processingTimeStart = (wiStart + 1) + 3 * (piTotal - 1);
+    
     TOUcostStartTimeStr = new String[Sequence.length][machineTotal];
     TOUcostCompleteTimeStr = new String[Sequence.length][machineTotal];
     TOUcost = new double[Sequence.length][machineTotal];
@@ -172,27 +179,102 @@ public class ObjFunctionPFSSOAWTWithTOUTariffs extends ObjFunctionPFSSOAWT {
       totalProfit += profit[i];
     }
 
-    return totalProfit;
+    calculateTOUMachineCost();
+    
+    return (totalProfit - totalCost);
   }
   
   public void calculateTOUMachineCost()
   {
     try {
-      
+        int dayTime = 1440 ;
         for (int i = 0; i < Sequence.length; i++) {
             for (int j = 0; j < machineTotal; j++) {
+              double tempCompleteTime,tempStartTime;
+              tempCompleteTime = 0.0;
+              
 
               if(accept[i])
               {
                 TOUcostProcessingTime = completeTime[i][j] - processingTime[Sequence[i]][j];
-                TOUcostStartTimeStr[i][j] = ((int)((TOUcostStartTime + TOUcostProcessingTime) / 60) + ":" + ((int)((TOUcostStartTime + TOUcostProcessingTime) % 60)));
-                
                 TOUcostCompleteTime = completeTime[i][j] + TOUcostStartTime;
-                TOUcostCompleteTimeStr[i][j] = (((int)(TOUcostCompleteTime / 60)) + ":" + ((int)(TOUcostCompleteTime % 60)));
+                TOUcostStartTimeTemp = (TOUcostStartTime + TOUcostProcessingTime);
+                
+                if(TOUcostCompleteTime > dayTime && TOUcostStartTimeTemp < dayTime)//如果結束 > 24 && 開始 < 24
+                {
+                    tempStartTime = TOUcostStartTimeTemp;
+                    tempCompleteTime = TOUcostCompleteTime - dayTime + TOUcostStartTime;
+
+                    TOUcostCompleteTime = dayTime;//開始 _ 換日
+                    TOUcostStartTimeStr[i][j] = ((int)(TOUcostStartTimeTemp / 60) + ":" + ((int)(TOUcostStartTimeTemp % 60)));
+                    TOUcostCompleteTimeStr[i][j] = (((int)(TOUcostCompleteTime / 60)) + ":" + ((int)(TOUcostCompleteTime % 60)));
+                    setData(j, TOUcostStartTimeStr[i][j] , TOUcostCompleteTimeStr[i][j]);
+                    TOUcost[i][j] = calculateTOUCost();
+
+                    TOUcostStartTimeTemp = TOUcostStartTime;//換日 _ 結束
+                    TOUcostCompleteTime = tempCompleteTime;
+                    TOUcostStartTimeStr[i][j] = ((int)(TOUcostStartTimeTemp / 60) + ":" + ((int)(TOUcostStartTimeTemp % 60)));
+                    TOUcostCompleteTimeStr[i][j] = (((int)(TOUcostCompleteTime / 60)) + ":" + ((int)(TOUcostCompleteTime % 60)));
+                    TOUcost[i][j] += calculateTOUCost();
+                    
+                    TOUcostStartTimeTemp = tempStartTime;
+                    TOUcostCompleteTime = tempCompleteTime;
+                    TOUcostStartTimeStr[i][j] = ((int)(TOUcostStartTimeTemp / 60) + ":" + ((int)(TOUcostStartTimeTemp % 60)));
+                    TOUcostCompleteTimeStr[i][j] = (((int)(TOUcostCompleteTime / 60)) + ":" + ((int)(TOUcostCompleteTime % 60)));
+
+                  
+                }else if(TOUcostCompleteTime > dayTime && TOUcostStartTimeTemp > dayTime)//如果結束 > 24 && 開始 > 24
+                {
+                  while(TOUcostCompleteTime > dayTime && TOUcostStartTimeTemp > dayTime)//則縮減到24小時內
+                  {
+                    TOUcostCompleteTime = (TOUcostCompleteTime - (dayTime - TOUcostStartTime));
+                    TOUcostStartTimeTemp = (TOUcostStartTimeTemp - (dayTime - TOUcostStartTime));
+                  }
+                  
+                  if(TOUcostCompleteTime > dayTime && TOUcostStartTimeTemp < dayTime)//如果結束 > 24 && 開始 < 24
+                  {
+                    tempStartTime = TOUcostStartTimeTemp;
+                    tempCompleteTime = TOUcostCompleteTime - dayTime + TOUcostStartTime;
+                  
+                    TOUcostCompleteTime = dayTime;//開始 _ 換日
+                    TOUcostStartTimeStr[i][j] = ((int)(TOUcostStartTimeTemp / 60) + ":" + ((int)(TOUcostStartTimeTemp % 60)));
+                    TOUcostCompleteTimeStr[i][j] = (((int)(TOUcostCompleteTime / 60)) + ":" + ((int)(TOUcostCompleteTime % 60)));
+                    setData(j, TOUcostStartTimeStr[i][j] , TOUcostCompleteTimeStr[i][j]);
+                    TOUcost[i][j] = calculateTOUCost();
+
+                    TOUcostStartTimeTemp = TOUcostStartTime;//換日 _ 結束
+                    TOUcostCompleteTime = tempCompleteTime;
+                    TOUcostStartTimeStr[i][j] = ((int)(TOUcostStartTimeTemp / 60) + ":" + ((int)(TOUcostStartTimeTemp % 60)));
+                    TOUcostCompleteTimeStr[i][j] = (((int)(TOUcostCompleteTime / 60)) + ":" + ((int)(TOUcostCompleteTime % 60)));
+                    TOUcost[i][j] += calculateTOUCost();
+                    
+                    TOUcostStartTimeTemp = tempStartTime;
+                    TOUcostCompleteTime = tempCompleteTime;
+                    TOUcostStartTimeStr[i][j] = ((int)(TOUcostStartTimeTemp / 60) + ":" + ((int)(TOUcostStartTimeTemp % 60)));
+                    TOUcostCompleteTimeStr[i][j] = (((int)(TOUcostCompleteTime / 60)) + ":" + ((int)(TOUcostCompleteTime % 60)));
+                    
+                  }else
+                  {
+                    TOUcostStartTimeStr[i][j] = ((int)(TOUcostStartTimeTemp / 60) + ":" + ((int)(TOUcostStartTimeTemp % 60)));
+                    TOUcostCompleteTimeStr[i][j] = (((int)(TOUcostCompleteTime / 60)) + ":" + ((int)(TOUcostCompleteTime % 60)));
+
+                    setData(j, TOUcostStartTimeStr[i][j] , TOUcostCompleteTimeStr[i][j]);
+                    TOUcost[i][j] = calculateTOUCost();
+                    
+                  }
+                  
+                }else
+                {
+                  TOUcostStartTimeStr[i][j] = ((int)(TOUcostStartTimeTemp / 60) + ":" + ((int)(TOUcostStartTimeTemp % 60)));
+                  TOUcostCompleteTimeStr[i][j] = (((int)(TOUcostCompleteTime / 60)) + ":" + ((int)(TOUcostCompleteTime % 60)));
+
+                  setData(j, TOUcostStartTimeStr[i][j] , TOUcostCompleteTimeStr[i][j]);
+                  TOUcost[i][j] = calculateTOUCost();
+                  
+                }
                 
                 
-                setData(j, TOUcostStartTimeStr[i][j] , TOUcostCompleteTimeStr[i][j]);
-                TOUcost[i][j] = calculateTOUCost();
+                
                 
 //                System.out.println(" 物件 : " + Sequence[i] + " 機台 : " + j + " 開始時間 : " + TOUcostStartTimeStr[i][j] + " 結束時間 : " + TOUcostCompleteTimeStr[i][j] + " 耗費成本 : " + TOUcost[i][j]);
               }else
@@ -202,6 +284,15 @@ public class ObjFunctionPFSSOAWTWithTOUTariffs extends ObjFunctionPFSSOAWT {
                 TOUcostCompleteTimeStr[i][j] = "0";
 //                System.out.println(" 物件 : " + Sequence[i] + " 機台 : " + j + " 開始時間 : " + TOUcostStartTimeStr[i][j] + " 結束時間 : " + TOUcostCompleteTimeStr[i][j] + " 耗費成本 : " + TOUcost[i][j]);
               }
+              
+              if(TOUcost[i][j] >= 0)
+              {
+              }else
+              {
+                TOUcost[i][j] = 0;
+              }
+              totalCost += TOUcost[i][j];
+//              System.out.println(TOUcost[i][j]);
 
             }
 //          System.out.println();
@@ -215,16 +306,17 @@ public class ObjFunctionPFSSOAWTWithTOUTariffs extends ObjFunctionPFSSOAWT {
   @Override
   public void output()
   {
-    calculateTOUMachineCost();
     
     for (int i = 0; i < Sequence.length; i++) {
       for (int j = 0; j < machineTotal; j++) {
         
-        System.out.println(" 物件 : " + Sequence[i] + " 機台 : " + j + " 開始時間 : " + TOUcostStartTimeStr[i][j] + " 結束時間 : " + TOUcostCompleteTimeStr[i][j] + " 耗費成本 : " + TOUcost[i][j]);
+//        System.out.println(" 物件 : " + Sequence[i] + " 機台 : " + j + " 開始時間 : " + TOUcostStartTimeStr[i][j] + " 結束時間 : " + TOUcostCompleteTimeStr[i][j] + " 耗費成本 : " + TOUcost[i][j]);
             
       }
-      System.out.println();
+//      System.out.println();
     }
+    System.out.println("總利潤 : " + totalProfit);
+    System.out.println("總成本 : " + totalCost);
   }
   
   public static void main(String[] args) throws ParseException, IOException {

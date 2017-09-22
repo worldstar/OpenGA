@@ -48,6 +48,7 @@ public class ObjFunctionPFSSOAWT extends ObjectiveFunctionTSP implements ObjFunc
   public Double[] pal;
   public Double[] profit;
   public boolean[] accept;
+  public double totalProfit;
 
   @Override
   public void setData(populationI population, int indexOfObjective) {
@@ -68,7 +69,8 @@ public class ObjFunctionPFSSOAWT extends ObjectiveFunctionTSP implements ObjFunc
     
     this.Sequence = Sequence;
 
-    Double totalProfit = 0.0;
+    totalProfit = 0.0;
+    
     pal = new Double[piTotal];
     profit = new Double[piTotal];
     completeTime = new int[Sequence.length][machineTotal];

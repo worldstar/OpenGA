@@ -140,12 +140,12 @@ public class flowshopPFSPOAWTWithTOUTariffs {
     timeClock1.end();
 
     Date date = new Date();
-    String Data = ("flowshopPFSPOAWT " + date.toString() + " ");
+    String Data = ("flowshopPFSPOAWTWithTOUTariffs " + date.toString() + " ");
     String implementResult = Data + instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t"
             + elitism + "\t" + GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
             + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
-    writeFile("flowshopPFSPOAWT", implementResult);
-//    System.out.print(implementResult);
+    writeFile("flowshopPFSPOAWTWithTOUTariffs", implementResult);
+    System.out.print(implementResult);
     ObjectiveFunction[0].output();
 
 
@@ -163,14 +163,14 @@ public class flowshopPFSPOAWTWithTOUTariffs {
 
   public static void main(String[] args) throws IOException, ParseException {
     Date date = new Date();
-    System.out.println("flowshopPFSPOAWT  " + date.toString());
+    System.out.println("flowshopPFSPOAWTWithTOUTariffs  " + date.toString());
     
     String data = "@../../instances/PFSS-OAWT-Data/p/", filename;
     File folder1 = new File(data);
     String[] list1 = folder1.list();
     
-    for (int filelist = 1; filelist < 2; filelist++) {//for (int filelist = 40; filelist < 41; filelist++) {5,3,8,1,9,4,6,0,2,7} Max 1937.5
-//        for (int filelist = 0; filelist < list1.length; filelist++) {
+    for (int filelist = 41; filelist < 42; filelist++) {
+//        for (int filelist = 1; filelist < list1.length; filelist++) {
           filename = list1[filelist];
           System.out.println(filelist + " : " + filename);
 
@@ -180,7 +180,7 @@ public class flowshopPFSPOAWTWithTOUTariffs {
           mutationRate = new double[]{0.5};
           int counter = 0;
           double elitism[] = new double[]{0.2};
-          int generations[] = new int[]{10};
+          int generations[] = new int[]{1000};
 //          int numInstances = 0;
           int repeat = 1;
 
