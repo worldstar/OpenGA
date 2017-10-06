@@ -169,7 +169,7 @@ public class flowshopPFSPOAWT {
     File folder1 = new File(data);
     String[] list1 = folder1.list();
     
-    for (int filelist = 41; filelist < 42; filelist++) {
+    for (int filelist = 40; filelist < 41; filelist++) {
 //        for (int filelist = 0; filelist < list1.length; filelist++) {
           filename = list1[filelist];
           System.out.println(filelist + " : " + filename);
