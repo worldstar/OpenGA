@@ -85,7 +85,7 @@ public class singleMachineOAS_SGAWithTOU extends mTSPSGATwoPart {
     Mutation = new swapMutationTwoPart();//TwoPartMTSPMutation
     localSearch1 = new localSearchByIG();
     ObjectiveFunction = new ObjectiveFunctionOASI[numberOfObjs];
-    ObjectiveFunction[0] = new TPObjectiveFunctionforOAS();
+    ObjectiveFunction[0] = new TPObjectiveFunctionforOASWithTOU();
     Fitness = new singleObjectiveFitness();//singleObjectiveFitness singleObjectiveFitnessByNormalize
     objectiveMinimization = new boolean[numberOfObjs];
     objectiveMinimization[0] = false;
@@ -133,6 +133,8 @@ public class singleMachineOAS_SGAWithTOU extends mTSPSGATwoPart {
             + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
     writeFile("OASforSMSP_20170720" + "MaxRevenueFull", implementResult);
     System.out.print(implementResult);
+    
+    
   }
 
   public static void main(String[] args) {

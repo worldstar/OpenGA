@@ -77,9 +77,9 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP im
 
     chromosome _chromosome1 = new chromosome();
 //    chromosome _chromosome2 = new chromosome();
-    _chromosome1.setGenotypeAndLength(true, 10, 2);
+    _chromosome1.setGenotypeAndLength(true, 12, 2);
 //    _chromosome2.setGenotypeAndLength(true, 5, 2);
-    _chromosome1.generateTwoPartPop(10, 2);
+    _chromosome1.generateTwoPartPop(12, 2);
 //    _chromosome2.generateTwoPartPop(5, 2);
 
 //    int[] soln = new int[]{0, 2, 1, 3, 0};
@@ -142,7 +142,6 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP im
     this.setData(_chromosome1, numberOfSalesmen);
     this.calcMaximumRevenue();
     
-    System.out.println();
     return this.getMaximumRevenue() - evaluateAllwithTOUcost(_chromosome1.genes) ;
   }
 
@@ -158,8 +157,6 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP im
     List<Integer> reject = new ArrayList<>();
     List<Integer> salesmen = new ArrayList<>();
     _chromosome1.addAll(chromosometoList(chromosome1));
-    
-
     for (int i = 0; i < numberOfSalesmen; i++) {
       stopPosition += _chromosome1.get(numberOfCities + i);
       for (int j = currentPosition; j < stopPosition; j++) {
@@ -227,18 +224,16 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP im
     _chromosome1.addAll(salesmen);
     chromosome1.setSolution(_chromosome1);
     
-    System.out.print("reject : ");
-    for(int i = 0 ; i < reject.size() ; i++)
-    {
-      System.out.print(reject.get(i) + ",");
-    }
-    
-    System.out.print("\naccept : ");
-    for(int i = 0 ; i < accept.size() ; i++)
-    {
-      System.out.print(accept.get(i) + ",");
-    }
-    
+//    System.out.print("\nreject : ");
+//    for(int i = 0 ; i < reject.size() ; i++)
+//    {
+//      System.out.print(reject.get(i) + ",");
+//    }
+//    System.out.print("\naccept : ");
+//    for(int i = 0 ; i < accept.size() ; i++)
+//    {
+//      System.out.print(accept.get(i) + ",");
+//    }
     
   }
 
@@ -271,15 +266,11 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP im
     try {
         int dayTime = 1440 ;
         int acceptedOrders = Sequence[Sequence.length-2] ; // acceptedOrders =  Sequence[8] ªºªø«×
-        
-        System.out.print(acceptedOrders + " : " );
-        
+//        System.out.println("\n" + (Sequence.length-2));
         for (int i = 0; i < acceptedOrders; i++) {
               double tempCompleteTime,tempStartTime;
               tempCompleteTime = 0.0;
               
-              System.out.print(Sequence[i] + ",");
-
 //              if(accept[i])
 //              if(true)
 //              {
@@ -507,4 +498,5 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP im
     chromosome1.setObjValue(objectives);
     return chromosome1.getObjValue();
   }
+  
 }
