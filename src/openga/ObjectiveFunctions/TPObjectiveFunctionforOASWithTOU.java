@@ -13,7 +13,7 @@ import openga.chromosomes.*;
  *
  * @author Kuo Yu-Cheng
  */
-public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP {
+public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP implements ObjectiveFunctionOASI{
   
   ObjFunctionPFSSOAWTWithTOUTariffs OFPFSSOAWT = new ObjFunctionPFSSOAWTWithTOUTariffs();
   chromosome chromosome1;
@@ -40,7 +40,6 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP {
   private double totalCost;
   
   private int[] Sequence;
-  boolean[] accept;
 
   //Objective Value
   double minimumCost;
@@ -92,7 +91,7 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP {
 //      System.out.println(_chromosome1.genes[i]);
 //    }
 
-    System.out.println(TPOAS.evaluateAll(_chromosome1, 2));
+    System.out.println("\n" + TPOAS.evaluateAll(_chromosome1, 2));
 //    System.out.println("ObjValue1" + _chromosome1.getObjValue()[0]);
 //    System.out.println("ObjValue1" + TPOAS.maximumRevenue);
 //    TPOAS.maximumRevenue = 0;
@@ -143,8 +142,8 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP {
     this.setData(_chromosome1, numberOfSalesmen);
     this.calcMaximumRevenue();
     
-//    System.out.println(evaluateAllwithTOUcost(_chromosome1.genes));
-    return this.getMaximumRevenue() - evaluateAllwithTOUcost(_chromosome1.genes);
+    System.out.println();
+    return this.getMaximumRevenue() - evaluateAllwithTOUcost(_chromosome1.genes) ;
   }
 
   public void calcMaximumRevenue() {
@@ -160,7 +159,6 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP {
     List<Integer> salesmen = new ArrayList<>();
     _chromosome1.addAll(chromosometoList(chromosome1));
     
-    this.accept = new boolean[chromosome1.getLength()];
 
     for (int i = 0; i < numberOfSalesmen; i++) {
       stopPosition += _chromosome1.get(numberOfCities + i);
@@ -181,12 +179,9 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP {
 //        dayGap = Math.max(0, Math.min((d_bar[index] - d[index]), (d_bar[index] - C[index])));
         if (C[index] <= d[index]) {
           Revenue = e[index];
-          this.accept[index] = true;
         } else if (C[index] > d[index] && C[index] <= d_bar[index]) {
           Revenue = e[index] - (C[index] - d[index]) * w[index];
-          this.accept[index] = true;
         } else {
-          this.accept[index] = false;
           Revenue = 0;
         }
 
@@ -217,10 +212,8 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP {
         if (Revenue == 0) {
           
           reject.add(_chromosome1.get(j));
-//          this.accept[j] = true;
         } else {
           accept.add(_chromosome1.get(j));
-//          this.accept[j] = false;
         }
         lastindex = index;
       }
@@ -233,6 +226,20 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP {
     _chromosome1.addAll(reject);
     _chromosome1.addAll(salesmen);
     chromosome1.setSolution(_chromosome1);
+    
+    System.out.print("reject : ");
+    for(int i = 0 ; i < reject.size() ; i++)
+    {
+      System.out.print(reject.get(i) + ",");
+    }
+    
+    System.out.print("\naccept : ");
+    for(int i = 0 ; i < accept.size() ; i++)
+    {
+      System.out.print(accept.get(i) + ",");
+    }
+    
+    
   }
 
   public void calcMinimumCost() {
@@ -246,7 +253,6 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP {
     TOUcostStartTimeStr = new String[Sequence.length];
     TOUcostCompleteTimeStr = new String[Sequence.length];
     TOUcost = new double[Sequence.length];
-//    accept = new boolean[Sequence.length];
     
     calculateTOUMachineCost();
     
@@ -264,14 +270,19 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP {
   {
     try {
         int dayTime = 1440 ;
-        for (int i = 0; i < Sequence.length; i++) {
+        int acceptedOrders = Sequence[Sequence.length-2] ; // acceptedOrders =  Sequence[8] 的長度
+        
+        System.out.print(acceptedOrders + " : " );
+        
+        for (int i = 0; i < acceptedOrders; i++) {
               double tempCompleteTime,tempStartTime;
               tempCompleteTime = 0.0;
               
+              System.out.print(Sequence[i] + ",");
 
-              if(accept[i])
+//              if(accept[i])
 //              if(true)
-              {
+//              {
                 TOUcostProcessingTime = C[i] - p[Sequence[i]];
                 TOUcostCompleteTime = C[i] + TOUcostStartTime;
                 TOUcostStartTimeTemp = (TOUcostStartTime + TOUcostProcessingTime);
@@ -353,13 +364,14 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP {
                 
                 
 //                System.out.println(" 物件 : " + Sequence[i] + " 機台 : " + j + " 開始時間 : " + TOUcostStartTimeStr[i] + " 結束時間 : " + TOUcostCompleteTimeStr[i] + " 耗費成本 : " + TOUcost[i]);
-              }else
-              {
-                TOUcost[i] = 0;
-                TOUcostStartTimeStr[i] = "0";
-                TOUcostCompleteTimeStr[i] = "0";
-//                System.out.println(" 物件 : " + Sequence[i] + " 機台 : " + j + " 開始時間 : " + TOUcostStartTimeStr[i] + " 結束時間 : " + TOUcostCompleteTimeStr[i] + " 耗費成本 : " + TOUcost[i]);
-              }
+//              }
+//              else
+//              {
+//                TOUcost[i] = 0;
+//                TOUcostStartTimeStr[i] = "0";
+//                TOUcostCompleteTimeStr[i] = "0";
+////                System.out.println(" 物件 : " + Sequence[i] + " 機台 : " + j + " 開始時間 : " + TOUcostStartTimeStr[i] + " 結束時間 : " + TOUcostCompleteTimeStr[i] + " 耗費成本 : " + TOUcost[i]);
+//              }
               
               if(TOUcost[i] >= 0)
               {

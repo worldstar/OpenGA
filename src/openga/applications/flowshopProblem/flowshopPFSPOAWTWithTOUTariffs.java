@@ -146,7 +146,7 @@ public class flowshopPFSPOAWTWithTOUTariffs {
             + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
     writeFile("flowshopPFSPOAWTWithTOUTariffs", implementResult);
     System.out.print(implementResult);
-    ObjectiveFunction[0].output();
+//    ObjectiveFunction[0].output();
 
 
   }
@@ -180,7 +180,7 @@ public class flowshopPFSPOAWTWithTOUTariffs {
           mutationRate = new double[]{0.5};
           int counter = 0;
           double elitism[] = new double[]{0.2};
-          int generations[] = new int[]{1000};
+          int generations[] = new int[]{100};
 //          int numInstances = 0;
           int repeat = 1;
 
