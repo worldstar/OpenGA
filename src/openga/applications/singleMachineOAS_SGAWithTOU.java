@@ -15,11 +15,10 @@ import openga.applications.data.OASInstances;
  * <p>Description: </p>
  * <p>Copyright: Copyright (c) 2016</p>
  * <p>Company: Cheng Shiu University</p>
- * @authors Chen, Shih-Hsin ; Guo, Yu-Cheng
+ * @authors Chen, Shih-Hsin ; Chang, Yu-Tang
  * @version 1.0
  * We obtain the instance from OASLIB.
  * Reference "A tabu search algorithm for order acceptance and scheduling", http://home.ku.edu.tr/~coguz/Research/Dataset_OAS.zip
- * We use a electricity data from a paper.
  */
 public class singleMachineOAS_SGAWithTOU extends mTSPSGATwoPart {
 
@@ -97,15 +96,13 @@ public class singleMachineOAS_SGAWithTOU extends mTSPSGATwoPart {
       System.out.println("The program will exit.");
       System.exit(0);
     }
-
     Population.setGenotypeSizeAndLength(encodeType, DEFAULT_PopSize, length + numberOfSalesmen, numberOfObjs);
     Population.createNewPop();
-
     for (int i = 0; i < DEFAULT_PopSize; i++) {
       Population.getSingleChromosome(i).generateTwoPartPop(length + numberOfSalesmen, numberOfSalesmen);
     }
 //    Population.
-    Selection.setTournamentSize(2);//Binary tournament
+    Selection.setTournamentSize(7);
     Crossover.setNumberofSalesmen(numberOfSalesmen);
     Mutation.setNumberofSalesmen(numberOfSalesmen);
     localSearch1.setNumberofSalesmen(numberOfSalesmen);
@@ -124,42 +121,38 @@ public class singleMachineOAS_SGAWithTOU extends mTSPSGATwoPart {
     timeClock1.start();
     GaMain.startGA();
     timeClock1.end();
-
-    if (type == 3) {//3: TCX (Original) The TCX
+    if (type == 3) {
       type = 1;
-    } else if (type == 2) {//2: Last salesmen reserve the same sites
+    } else if (type == 2) {
       type = 2;
-    } else if (type == 0) {//0: All salesmen reserve the same sites
+    } else if (type == 0) {
       type = 3;
     }
-
     String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + type + "\t" + applyLocalSearch + "\t" + alpha
             + "\t" + GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
             + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
-    writeFile("OASforSMSP_TOU_20171027" + "MaxRevenueFull", implementResult);
+    writeFile("OASforSMSP_20170720" + "MaxRevenueFull", implementResult);
     System.out.print(implementResult);
     
     
   }
 
   public static void main(String[] args) {
-    System.out.println("OASforSMSP_TOU_20171027" + "MaxRevenueFull");
+    System.out.println("OASforSMSP_20170720" + "MaxRevenueFull");
     int counter = 0;
     boolean applyLocalSearch;
-    double[] crossoverRate = new double[]{0.5};//1, 0.5 [0.5]
-    double[] mutationRate = new double[]{0.5};//0.1, 0.5 [0.5]
+    double[] crossoverRate = new double[]{1, 0.5};//1, 0.5 [0.5]
+    double[] mutationRate = new double[]{0.1, 0.5};//0.1, 0.5 [0.5]
     double elitism[] = new double[]{0.1};
-
-    //0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
-    int[] crossoverType = new int[]{0};//0, 2, 3 [0] No Obj differences; 3 is a little bit higher. 0 is fatest.
-    int repeat = 3;//30
+    int[] crossoverType = new int[]{3, 2, 0};//0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
+    int repeat = 10;//30
     int generations[] = new int[]{0};//1000
     int populationsSize = 100;
     int[] numberOfSalesmen = new int[]{2};
-    double[] alpha = new double[]{0.1};//0.2, 0.1, 0.05 [0.1] //LocalSearch maxNeighborhood
+    double[] alpha = new double[]{0.2, 0.1, 0.05};//0.2, 0.1, 0.05
     int[] orders = new int[]{10, 15, 20, 25, 50, 100};//10, 15, 20, 25, 50, 100
-    int[] Tao = new int[]{1, 3, 5, 7, 9};//1, 3, 5, 7, 9
-    int[] R = new int[]{1, 3, 5, 7, 9};//1, 3, 5, 7, 9
+    int[] Tao = new int[]{5};//1, 3, 5, 7, 9
+    int[] R = new int[]{5};//1, 3, 5, 7, 9
     int instanceReplications = 1;
 
     for (int i = 0; i < orders.length; i++) {
