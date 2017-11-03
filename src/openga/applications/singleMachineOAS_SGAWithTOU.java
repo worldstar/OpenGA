@@ -8,7 +8,7 @@ import openga.operator.localSearch.*;
 import openga.ObjectiveFunctions.*;
 import openga.MainProgram.*;
 import openga.Fitness.*;
-import openga.applications.data.OASInstances;
+import openga.applications.data.OASInstancesWithTOU;
 
 /*
  * <p>Title: The OpenGA project which is to build general framework of Genetic algorithm.</p>
@@ -35,7 +35,7 @@ public class singleMachineOAS_SGAWithTOU extends mTSPSGATwoPart {
   MutationMTSPI Mutation;
   localSearchMTSPI localSearch1;
   populationI Population;
-  ObjectiveFunctionOASI[] ObjectiveFunction;
+  ObjectiveFunctionOASWithTOUI[] ObjectiveFunction;
   String instanceName = "";
 
   boolean applyLocalSearch;
@@ -46,6 +46,7 @@ public class singleMachineOAS_SGAWithTOU extends mTSPSGATwoPart {
   double[] d_bar;   //  deadline
   double[] e;       //  revenue
   double[] w;       //  weight
+  double[] power;   //  power
   double[][] s;     //  setup times
 
   public singleMachineOAS_SGAWithTOU() {
@@ -53,7 +54,7 @@ public class singleMachineOAS_SGAWithTOU extends mTSPSGATwoPart {
 
   public void setParameter(double crossoverRate, double mutationRate, int counter, double elitism,
           int generation, int type, int numberOfSalesmen, int cities, String instanceName,
-          double[] r, double[] p, double[] d, double[] d_bar, double[] e, double[] w, double[][] s) {
+          double[] r, double[] p, double[] d, double[] d_bar, double[] e, double[] w,double[] power, double[][] s) {
     this.DEFAULT_crossoverRate = crossoverRate;
     this.DEFAULT_mutationRate = mutationRate;
     this.counter = counter;
@@ -69,6 +70,7 @@ public class singleMachineOAS_SGAWithTOU extends mTSPSGATwoPart {
     this.d_bar = d_bar;
     this.e = e;
     this.w = w;
+    this.power = power;
     this.s = s;
   }
 
@@ -85,7 +87,7 @@ public class singleMachineOAS_SGAWithTOU extends mTSPSGATwoPart {
     Crossover = new TCSCFCrossover(type);
     Mutation = new swapMutationTwoPart();//TwoPartMTSPMutation
     localSearch1 = new localSearchByIG();
-    ObjectiveFunction = new ObjectiveFunctionOASI[numberOfObjs];
+    ObjectiveFunction = new ObjectiveFunctionOASWithTOUI[numberOfObjs];
     ObjectiveFunction[0] = new TPObjectiveFunctionforOASWithTOU();
     Fitness = new singleObjectiveFitness();//singleObjectiveFitness singleObjectiveFitnessByNormalize
     objectiveMinimization = new boolean[numberOfObjs];
@@ -108,7 +110,7 @@ public class singleMachineOAS_SGAWithTOU extends mTSPSGATwoPart {
     Crossover.setNumberofSalesmen(numberOfSalesmen);
     Mutation.setNumberofSalesmen(numberOfSalesmen);
     localSearch1.setNumberofSalesmen(numberOfSalesmen);
-    ObjectiveFunction[0].setOASData(r, p, d, d_bar, e, w, s, numberOfSalesmen);
+    ObjectiveFunction[0].setOASData(r, p, d, d_bar, e, w, power, s, numberOfSalesmen);
     //set the data to the GA main program.
     /*Note: the gene length is problem size + numberOfSalesmen*/
     GaMain.setData(Population, Selection, Crossover, Mutation, ObjectiveFunction, Fitness, DEFAULT_generations,
@@ -166,8 +168,8 @@ public class singleMachineOAS_SGAWithTOU extends mTSPSGATwoPart {
             continue;
           }
           for (int l = 0; l < instanceReplications; l++) {
-            OASInstances OASInstances1 = new OASInstances();
-            String instanceName = new String(".\\instances\\SingleMachineOAS\\" + orders[i] + "orders\\Tao" + Tao[j] + "\\R" + R[k] 
+            OASInstancesWithTOU OASInstances1 = new OASInstancesWithTOU();
+            String instanceName = new String(".\\instances\\SingleMachineOASWithTOU\\" + orders[i] + "orders\\Tao" + Tao[j] + "\\R" + R[k] 
                     + "\\Dataslack_" + orders[i] + "orders_Tao" + Tao[j] + "R" + R[k] + "_" + (l + 1) + ".txt");
             OASInstances1.setData(instanceName, orders[i]);
             OASInstances1.getDataFromFile();
@@ -191,7 +193,7 @@ public class singleMachineOAS_SGAWithTOU extends mTSPSGATwoPart {
                             TSP1.alpha = alpha[q];
                             TSP1.setParameter(crossoverRate[m], mutationRate[n], counter, elitism[o], generations[0],
                                     crossoverType[t], numberOfSalesmen[p], OASInstances1.getSize(), instanceName,
-                                    OASInstances1.getR(), OASInstances1.getP(), OASInstances1.getD(), OASInstances1.getD_bar(), OASInstances1.getE(), OASInstances1.getW(), OASInstances1.getS());
+                                    OASInstances1.getR(), OASInstances1.getP(), OASInstances1.getD(), OASInstances1.getD_bar(), OASInstances1.getE(), OASInstances1.getW(),OASInstances1.getPower() , OASInstances1.getS());
                             TSP1.setLocalSearchData(applyLocalSearch, _alpha);
                             TSP1.initiateVars();
                             TSP1.start();

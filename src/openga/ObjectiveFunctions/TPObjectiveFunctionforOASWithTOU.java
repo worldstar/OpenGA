@@ -13,7 +13,7 @@ import openga.chromosomes.*;
  *
  * @author Kuo Yu-Cheng
  */
-public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP implements ObjectiveFunctionOASI{
+public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP implements ObjectiveFunctionOASWithTOUI{
   
   ObjFunctionPFSSOAWTWithTOUTariffs OFPFSSOAWT = new ObjFunctionPFSSOAWTWithTOUTariffs();
   chromosome chromosome1;
@@ -22,7 +22,7 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP im
   private double on_peakPrice = 0.1327;
   private double mid_peakPrice = 0.0750;
   private double off_peakPrice = 0.0422;
-  private int power = 20;
+//  private int power = 20;
   private double startTime;
   private double endTime;
   private double midPeakStart;
@@ -54,6 +54,7 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP im
   double[] d_bar;   //  deadline
   double[] e;       //  revenue
   double[] w;       //  weight
+  double[] power;       //  power
   double[][] s;     //  setup times
   double[] C;       //completion Time
 
@@ -61,8 +62,8 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP im
   
     TPObjectiveFunctionforOASWithTOU TPOAS = new TPObjectiveFunctionforOASWithTOU();
     
-    openga.applications.data.OASInstances OAS = new openga.applications.data.OASInstances();
-    OAS.setData("@../../instances/SingleMachineOAS/10orders/Tao1/R1/Dataslack_10orders_Tao1R1_1.txt", 10);
+    openga.applications.data.OASInstancesWithTOU OAS = new openga.applications.data.OASInstancesWithTOU();
+    OAS.setData("@../../instances/SingleMachineOAS/10orders/Tao5/R7/Dataslack_10orders_Tao5R7_10.txt", 10);
     OAS.getDataFromFile();
     
     TPOAS.r = OAS.getR();
@@ -71,6 +72,7 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP im
     TPOAS.d_bar = OAS.getD_bar();
     TPOAS.e = OAS.getE();
     TPOAS.w = OAS.getW();
+    TPOAS.power = OAS.getPower();
     TPOAS.s = OAS.getS();
 
     TPOAS.C = new double[TPOAS.r.length];
@@ -265,7 +267,7 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP im
   {
     try {
         int dayTime = 1440 ;
-        int acceptedOrders = Sequence[Sequence.length-2] ; // acceptedOrders =  Sequence[8] ªºªø«×
+        int acceptedOrders = Sequence[Sequence.length-2] ; // acceptedOrders =  Sequence[8] ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 //        System.out.println("\n" + (Sequence.length-2));
         for (int i = 0; i < acceptedOrders; i++) {
               double tempCompleteTime,tempStartTime;
@@ -278,22 +280,22 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP im
                 TOUcostCompleteTime = C[i] + TOUcostStartTime;
                 TOUcostStartTimeTemp = (TOUcostStartTime + TOUcostProcessingTime);
                 
-                if(TOUcostCompleteTime > dayTime && TOUcostStartTimeTemp < dayTime)//¦pªGµ²§ô > 24 && ¶}©l < 24
+                if(TOUcostCompleteTime > dayTime && TOUcostStartTimeTemp < dayTime)//ï¿½pï¿½Gï¿½ï¿½ï¿½ï¿½ > 24 && ï¿½}ï¿½l < 24
                 {
                     tempStartTime = TOUcostStartTimeTemp;
                     tempCompleteTime = TOUcostCompleteTime - dayTime + TOUcostStartTime;
 
-                    TOUcostCompleteTime = dayTime;//¶}©l _ ´«¤é
+                    TOUcostCompleteTime = dayTime;//ï¿½}ï¿½l _ ï¿½ï¿½ï¿½ï¿½
                     TOUcostStartTimeStr[i] = ((int)(TOUcostStartTimeTemp / 60) + ":" + ((int)(TOUcostStartTimeTemp % 60)));
                     TOUcostCompleteTimeStr[i] = (((int)(TOUcostCompleteTime / 60)) + ":" + ((int)(TOUcostCompleteTime % 60)));
                     setData(TOUcostStartTimeStr[i] , TOUcostCompleteTimeStr[i]);
-                    TOUcost[i] = calculateTOUCost();
+                    TOUcost[i] = calculateTOUCost(i);
 
-                    TOUcostStartTimeTemp = TOUcostStartTime;//´«¤é _ µ²§ô
+                    TOUcostStartTimeTemp = TOUcostStartTime;//ï¿½ï¿½ï¿½ï¿½ _ ï¿½ï¿½ï¿½ï¿½
                     TOUcostCompleteTime = tempCompleteTime;
                     TOUcostStartTimeStr[i] = ((int)(TOUcostStartTimeTemp / 60) + ":" + ((int)(TOUcostStartTimeTemp % 60)));
                     TOUcostCompleteTimeStr[i] = (((int)(TOUcostCompleteTime / 60)) + ":" + ((int)(TOUcostCompleteTime % 60)));
-                    TOUcost[i] += calculateTOUCost();
+                    TOUcost[i] += calculateTOUCost(i);
                     
                     TOUcostStartTimeTemp = tempStartTime;
                     TOUcostCompleteTime = tempCompleteTime;
@@ -301,30 +303,30 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP im
                     TOUcostCompleteTimeStr[i] = (((int)(TOUcostCompleteTime / 60)) + ":" + ((int)(TOUcostCompleteTime % 60)));
 
                   
-                }else if(TOUcostCompleteTime > dayTime && TOUcostStartTimeTemp > dayTime)//¦pªGµ²§ô > 24 && ¶}©l > 24
+                }else if(TOUcostCompleteTime > dayTime && TOUcostStartTimeTemp > dayTime)//ï¿½pï¿½Gï¿½ï¿½ï¿½ï¿½ > 24 && ï¿½}ï¿½l > 24
                 {
-                  while(TOUcostCompleteTime > dayTime && TOUcostStartTimeTemp > dayTime)//«hÁY´î¨ì24¤p®É¤º
+                  while(TOUcostCompleteTime > dayTime && TOUcostStartTimeTemp > dayTime)//ï¿½hï¿½Yï¿½ï¿½ï¿½24ï¿½pï¿½É¤ï¿½
                   {
                     TOUcostCompleteTime = (TOUcostCompleteTime - (dayTime - TOUcostStartTime));
                     TOUcostStartTimeTemp = (TOUcostStartTimeTemp - (dayTime - TOUcostStartTime));
                   }
                   
-                  if(TOUcostCompleteTime > dayTime && TOUcostStartTimeTemp < dayTime)//¦pªGµ²§ô > 24 && ¶}©l < 24
+                  if(TOUcostCompleteTime > dayTime && TOUcostStartTimeTemp < dayTime)//ï¿½pï¿½Gï¿½ï¿½ï¿½ï¿½ > 24 && ï¿½}ï¿½l < 24
                   {
                     tempStartTime = TOUcostStartTimeTemp;
                     tempCompleteTime = TOUcostCompleteTime - dayTime + TOUcostStartTime;
                   
-                    TOUcostCompleteTime = dayTime;//¶}©l _ ´«¤é
+                    TOUcostCompleteTime = dayTime;//ï¿½}ï¿½l _ ï¿½ï¿½ï¿½ï¿½
                     TOUcostStartTimeStr[i] = ((int)(TOUcostStartTimeTemp / 60) + ":" + ((int)(TOUcostStartTimeTemp % 60)));
                     TOUcostCompleteTimeStr[i] = (((int)(TOUcostCompleteTime / 60)) + ":" + ((int)(TOUcostCompleteTime % 60)));
                     setData(TOUcostStartTimeStr[i] , TOUcostCompleteTimeStr[i]);
-                    TOUcost[i] = calculateTOUCost();
+                    TOUcost[i] = calculateTOUCost(i);
 
-                    TOUcostStartTimeTemp = TOUcostStartTime;//´«¤é _ µ²§ô
+                    TOUcostStartTimeTemp = TOUcostStartTime;//ï¿½ï¿½ï¿½ï¿½ _ ï¿½ï¿½ï¿½ï¿½
                     TOUcostCompleteTime = tempCompleteTime;
                     TOUcostStartTimeStr[i] = ((int)(TOUcostStartTimeTemp / 60) + ":" + ((int)(TOUcostStartTimeTemp % 60)));
                     TOUcostCompleteTimeStr[i] = (((int)(TOUcostCompleteTime / 60)) + ":" + ((int)(TOUcostCompleteTime % 60)));
-                    TOUcost[i] += calculateTOUCost();
+                    TOUcost[i] += calculateTOUCost(i);
                     
                     TOUcostStartTimeTemp = tempStartTime;
                     TOUcostCompleteTime = tempCompleteTime;
@@ -337,7 +339,7 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP im
                     TOUcostCompleteTimeStr[i] = (((int)(TOUcostCompleteTime / 60)) + ":" + ((int)(TOUcostCompleteTime % 60)));
 
                     setData( TOUcostStartTimeStr[i] , TOUcostCompleteTimeStr[i]);
-                    TOUcost[i] = calculateTOUCost();
+                    TOUcost[i] = calculateTOUCost(i);
                     
                   }
                   
@@ -347,21 +349,21 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP im
                   TOUcostCompleteTimeStr[i] = (((int)(TOUcostCompleteTime / 60)) + ":" + ((int)(TOUcostCompleteTime % 60)));
 
                   setData( TOUcostStartTimeStr[i] , TOUcostCompleteTimeStr[i]);
-                  TOUcost[i] = calculateTOUCost();
+                  TOUcost[i] = calculateTOUCost(i);
                   
                 }
                 
                 
                 
                 
-//                System.out.println(" ª«¥ó : " + Sequence[i] + " ¾÷¥x : " + j + " ¶}©l®É¶¡ : " + TOUcostStartTimeStr[i] + " µ²§ô®É¶¡ : " + TOUcostCompleteTimeStr[i] + " ¯Ó¶O¦¨¥» : " + TOUcost[i]);
+//                System.out.println(" ï¿½ï¿½ï¿½ï¿½ : " + Sequence[i] + " ï¿½ï¿½ï¿½x : " + j + " ï¿½}ï¿½lï¿½É¶ï¿½ : " + TOUcostStartTimeStr[i] + " ï¿½ï¿½ï¿½ï¿½ï¿½É¶ï¿½ : " + TOUcostCompleteTimeStr[i] + " ï¿½Ó¶Oï¿½ï¿½ï¿½ï¿½ : " + TOUcost[i]);
 //              }
 //              else
 //              {
 //                TOUcost[i] = 0;
 //                TOUcostStartTimeStr[i] = "0";
 //                TOUcostCompleteTimeStr[i] = "0";
-////                System.out.println(" ª«¥ó : " + Sequence[i] + " ¾÷¥x : " + j + " ¶}©l®É¶¡ : " + TOUcostStartTimeStr[i] + " µ²§ô®É¶¡ : " + TOUcostCompleteTimeStr[i] + " ¯Ó¶O¦¨¥» : " + TOUcost[i]);
+////                System.out.println(" ï¿½ï¿½ï¿½ï¿½ : " + Sequence[i] + " ï¿½ï¿½ï¿½x : " + j + " ï¿½}ï¿½lï¿½É¶ï¿½ : " + TOUcostStartTimeStr[i] + " ï¿½ï¿½ï¿½ï¿½ï¿½É¶ï¿½ : " + TOUcostCompleteTimeStr[i] + " ï¿½Ó¶Oï¿½ï¿½ï¿½ï¿½ : " + TOUcost[i]);
 //              }
               
               if(TOUcost[i] >= 0)
@@ -380,7 +382,7 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP im
             }
   }
   
-  public double calculateTOUCost() throws ParseException {
+  public double calculateTOUCost(int sequenceCount) throws ParseException {
     SimpleDateFormat simple = new SimpleDateFormat();
     simple.applyPattern("HH:mm");
     double totalPrice = 0.0;
@@ -397,42 +399,42 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP im
       if (startTime < midPeakStart)//Off_peak
       {
         if (endTime > midPeakStart) {
-          totalPrice += ((((midPeakStart - startTime) / 60) * off_peakPrice) * (((midPeakStart - startTime)  / totalPeriod) * power));
+          totalPrice += ((((midPeakStart - startTime) / 60) * off_peakPrice) * (((midPeakStart - startTime)  / totalPeriod) * power[sequenceCount]));
           startTime = midPeakStart;
         } else {
-          totalPrice += ((((endTime - startTime) / 60) * off_peakPrice) * (((endTime - startTime) / totalPeriod) * power));
+          totalPrice += ((((endTime - startTime) / 60) * off_peakPrice) * (((endTime - startTime) / totalPeriod) * power[sequenceCount]));
         }
       }
       if (startTime >= midPeakStart && startTime < midPeakEnd)//Mid-peak 07:00 ~ 15:00
       {
         if (endTime > midPeakEnd) {
-          totalPrice += ((((midPeakEnd - startTime) / 60) * mid_peakPrice) * (((midPeakEnd - startTime) / totalPeriod) * power));
+          totalPrice += ((((midPeakEnd - startTime) / 60) * mid_peakPrice) * (((midPeakEnd - startTime) / totalPeriod) * power[sequenceCount]));
           startTime = midPeakEnd;
         } else {
-          totalPrice += ((((endTime - startTime) / 60) * mid_peakPrice) * (((endTime - startTime) / totalPeriod) * power));
+          totalPrice += ((((endTime - startTime) / 60) * mid_peakPrice) * (((endTime - startTime) / totalPeriod) * power[sequenceCount]));
         }
       }
       if (startTime >= midPeakEnd && startTime < onPeakEnd)//On-peak 15:00 ~ 20:00
       {
         if (endTime > onPeakEnd) {
-          totalPrice += ((((onPeakEnd - startTime) / 60) * on_peakPrice) * (((onPeakEnd - startTime) / totalPeriod) * power));
+          totalPrice += ((((onPeakEnd - startTime) / 60) * on_peakPrice) * (((onPeakEnd - startTime) / totalPeriod) * power[sequenceCount]));
           startTime = onPeakEnd;
         } else {
-          totalPrice += ((((endTime - startTime) / 60) * on_peakPrice) * (((endTime - startTime) / totalPeriod) * power));
+          totalPrice += ((((endTime - startTime) / 60) * on_peakPrice) * (((endTime - startTime) / totalPeriod) * power[sequenceCount]));
         }
       }
       if (startTime >= onPeakEnd && startTime < midPeakEnd2)//Mid-peak 20:00 ~ 22:00
       {
         if (endTime > midPeakEnd2) {
-          totalPrice += ((((midPeakEnd2 - startTime) / 60) * mid_peakPrice) * (((midPeakEnd2 - startTime) / totalPeriod) * power));
+          totalPrice += ((((midPeakEnd2 - startTime) / 60) * mid_peakPrice) * (((midPeakEnd2 - startTime) / totalPeriod) * power[sequenceCount]));
           startTime = midPeakEnd2;
         } else {
-          totalPrice += ((((endTime - startTime) / 60) * mid_peakPrice) * (((endTime - startTime) / totalPeriod) * power));
+          totalPrice += ((((endTime - startTime) / 60) * mid_peakPrice) * (((endTime - startTime) / totalPeriod) * power[sequenceCount]));
         }
       }
       if (startTime >= midPeakEnd2)//Off_peak
       {
-        totalPrice += ((((endTime - startTime) / 60) * off_peakPrice) * (((endTime - startTime) / totalPeriod) * power));
+        totalPrice += ((((endTime - startTime) / 60) * off_peakPrice) * (((endTime - startTime) / totalPeriod) * power[sequenceCount]));
       }
       return totalPrice;
     }
@@ -462,13 +464,14 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP im
     
   }
 
-  public void setOASData(double[] r, double[] p, double[] d, double[] d_bar, double[] e, double[] w, double[][] s, int numberOfSalesmen) {
+  public void setOASData(double[] r, double[] p, double[] d, double[] d_bar, double[] e, double[] w, double[] power, double[][] s, int numberOfSalesmen) {
     this.r = r;
     this.p = p;
     this.d = d;
     this.d_bar = d_bar;
     this.e = e;
     this.w = w;
+    this.power = power;
     this.s = s;
     this.numberOfSalesmen = numberOfSalesmen;
     C = new double[p.length];
