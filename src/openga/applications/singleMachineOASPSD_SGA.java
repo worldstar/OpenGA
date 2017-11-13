@@ -63,11 +63,11 @@ public class singleMachineOASPSD_SGA extends singleMachineOAS_SGA {
     timeClock1.start();
     GaMain.startGA();
     timeClock1.end();
-    if (type == 3) {
+    if (type == 3) {//3: TCX (Original) The TCX
       type = 1;
-    } else if (type == 2) {
+    } else if (type == 2) {//2: Last salesmen reserve the same sites
       type = 2;
-    } else if (type == 0) {
+    } else if (type == 0) {//0: All salesmen reserve the same sites
       type = 3;
     }
     String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + type + "\t" + applyLocalSearch + "\t" + alpha
