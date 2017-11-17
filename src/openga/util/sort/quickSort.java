@@ -30,16 +30,38 @@ package openga.util.sort;
  *
  */
 
-public class quickSort {
+public class quickSort extends selectionSort{
+  
+  int numbers_int[];
+  double numbers_double[];
+  int array_size;
+  int indexes[];
+  
   public quickSort() {
   }
-
-  void quickSort(int numbers[], int array_size, int indexes[]){
-    q_sort(numbers, 0, array_size - 1, indexes);
+  
+  public int[] getIndexes(){
+    return indexes;
+  }
+  
+  public void quickSort_int(){
+    q_sort(this.numbers_int, 0, array_size - 1, indexes);
   }
 
-  void quickSort(double numbers[], int array_size, int indexes[]){
-    q_sort(numbers, 0, array_size - 1, indexes);
+  public void quickSort_double(){
+    q_sort(this.numbers_double, 0, array_size - 1, indexes);
+  }
+  
+  public void setData(int numbers[], int array_size, int indexes[]){
+    this.numbers_int = numbers;
+    this.array_size = array_size;
+    this.indexes = indexes;
+  }
+
+  public void setData(double numbers[], int array_size, int indexes[]){
+    this.numbers_double = numbers;
+    this.array_size = array_size;
+    this.indexes = indexes;
   }
       
   void q_sort(int numbers[], int left, int right, int indexes[])
@@ -84,11 +106,6 @@ public class quickSort {
   }
 
   /***********   For double data sorting           ******************/
-  void quickSort(double numbers[], int array_size, int indexes[])
-  {
-    q_sort(numbers, 0, array_size - 1, indexes);
-  }
-
 
   void q_sort(double numbers[], int left, int right, int indexes[])
   {

@@ -502,8 +502,12 @@ public class TPObjectiveFunctionforOASWithTOU extends TPObjectiveFunctionMTSP im
     return chromosome1.getObjValue();
   }
 
-  @Override
   public void setPowerData(double[] power) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void setPowerData(double[] p, double[] power) {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
   

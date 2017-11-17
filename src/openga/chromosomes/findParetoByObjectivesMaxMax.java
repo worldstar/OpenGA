@@ -61,6 +61,11 @@ public class findParetoByObjectivesMaxMax extends findParetoByObjectives {
     selectionSort1.setNomialData(number);
     selectionSort1.selectionSort_withNomial();
     number = selectionSort1.getNomialData();
+    
+//    openga.util.sort.quickSort quickSort1 = new openga.util.sort.quickSort();
+//    quickSort1.setData(singleObjValue,singleObjValue.length,number);
+//    quickSort1.quickSort_double();
+//    number = quickSort1.getIndexes();
 
     //copy solutions of elitism proportions by setting the flag is false.
     for(int i = 0 ; i < flag.length -numberToCopy ; i ++ ){
