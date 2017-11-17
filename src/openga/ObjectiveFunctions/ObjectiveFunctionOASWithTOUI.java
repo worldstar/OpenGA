@@ -10,4 +10,6 @@ package openga.ObjectiveFunctions;
 
 public interface ObjectiveFunctionOASWithTOUI extends ObjectiveFunctionI{
   public void setOASData(double[] r, double[] p, double[] d, double[] d_bar, double[] e, double[] w , double[] power, double[][] s, int numberOfSalesmen);
+  public void setPowerData(double[] power);
+
 }
