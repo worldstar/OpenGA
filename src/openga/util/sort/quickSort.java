@@ -38,6 +38,10 @@ public class quickSort {
     q_sort(numbers, 0, array_size - 1, indexes);
   }
 
+  void quickSort(double numbers[], int array_size, int indexes[]){
+    q_sort(numbers, 0, array_size - 1, indexes);
+  }
+      
   void q_sort(int numbers[], int left, int right, int indexes[])
   {
     int pivot, l_hold, r_hold;
