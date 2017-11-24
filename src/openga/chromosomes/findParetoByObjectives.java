@@ -84,11 +84,17 @@ public class findParetoByObjectives{
     }
 
     //sort these objective values by the ascending manner
-    openga.util.sort.selectionSort selectionSort1 = new openga.util.sort.selectionSort();
-    selectionSort1.setData(singleObjValue);
-    selectionSort1.setNomialData(number);
-    selectionSort1.selectionSort_withNomial();
-    number = selectionSort1.getNomialData();
+//    openga.util.sort.selectionSort selectionSort1 = new openga.util.sort.selectionSort();
+//    selectionSort1.setData(singleObjValue);
+//    selectionSort1.setNomialData(number);
+//    selectionSort1.Sort_withNomial();
+//    number = selectionSort1.getNomialData();
+    
+    //Quick sort algorithm with index seqeunce
+    openga.util.sort.quickSort quickSort1 = new openga.util.sort.quickSort();
+    quickSort1.setData(singleObjValue,singleObjValue.length,number);
+    quickSort1.quickSort_double();
+    number = quickSort1.getIndexes();
 
     //copy solutions of elitism proportions by setting the flag is false.
     for(int i = numberToCopy ; i < flag.length ; i ++ ){
