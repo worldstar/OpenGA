@@ -85,7 +85,7 @@ public class selectionSort {
   }
 
   //the third one is double data type and with nomial variable
-  public void selectionSort_withNomial(){
+  public void Sort_withNomial(){
     int f;//index flag
     double temp;//temp value
     int tempNomial;
@@ -110,7 +110,7 @@ public class selectionSort {
   }
 
   //the fourth one is int data type and with nomial variable
-  public void selectionSort_int_withNomial(){
+  public void Sort_int_withNomial(){
     int f;
     int temp;
     int tempNomial;

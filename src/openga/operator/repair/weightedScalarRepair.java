@@ -183,7 +183,7 @@ public class weightedScalarRepair implements weightedRepairI{
     }
     sort1.setData(ratio);
     sort1.setNomialData(index);
-    sort1.selectionSort_withNomial();
+    sort1.Sort_withNomial();
     return sort1.getNomialData();
   }
 

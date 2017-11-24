@@ -116,7 +116,7 @@ public void startToSelect() {
         openga.util.sort.selectionSort selectionSort1 = new openga.util.sort.selectionSort();
         selectionSort1.setData(fitnessArray);
         selectionSort1.setNomialData(index);
-        selectionSort1.selectionSort_withNomial();
+        selectionSort1.Sort_withNomial();
         return selectionSort1.getNomialData();
     }
 

@@ -38,7 +38,7 @@ public class twoPopReplacement {
     openga.util.sort.selectionSort selectionSort1 = new openga.util.sort.selectionSort();
     selectionSort1.setNomialData(seq);
     selectionSort1.setData(fitnessValue);
-    selectionSort1.selectionSort_withNomial();
+    selectionSort1.Sort_withNomial();
 
     for(int i = 0 ; i < offspring.getPopulationSize() ; i ++ ){
       offspring.setSingleChromosome(i, combinedPop.getSingleChromosome(seq[i]));

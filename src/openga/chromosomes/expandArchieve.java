@@ -92,7 +92,7 @@ public class expandArchieve extends population {
 
     selectionSort1.setData(distance);
     selectionSort1.setNomialData(sequence);
-    selectionSort1.selectionSort_withNomial();
+    selectionSort1.Sort_withNomial();
     sequence = selectionSort1.getNomialData();
 
     return sequence;

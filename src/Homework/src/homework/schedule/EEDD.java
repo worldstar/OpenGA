@@ -44,7 +44,7 @@ public class EEDD {
     selectionSort1.setData(EEDD_index());
     selectionSort1.setNomialData(jobNumber);
 
-    selectionSort1.selectionSort_withNomial();
+    selectionSort1.Sort_withNomial();
     sequence = selectionSort1.getNomialData();
   }
 

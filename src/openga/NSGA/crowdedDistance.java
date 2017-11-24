@@ -45,7 +45,7 @@ public class crowdedDistance {
     //sorting the first objective
     selectionSort selectionSort1 = new selectionSort(firstObjective);
     selectionSort1.setNomialData(sequence);
-    selectionSort1.selectionSort_withNomial();
+    selectionSort1.Sort_withNomial();
     sequence = selectionSort1.getNomialData();
 
 
