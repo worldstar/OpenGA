@@ -53,7 +53,7 @@ public class singleMachineOAS_SGA_Co2_2 extends mTSPSGATwoPart {
   }
 
   public void setParameter(double crossoverRate, double mutationRate, int counter, double elitism,
-          int generation, int type, int numberOfSalesmen, int cities, String instanceName,
+          int generation, int type, int numberOfSalesmen, int cities, String instanceName, int pop_Size,
           double[] p, double[] power) {
     this.DEFAULT_crossoverRate = crossoverRate;
     this.DEFAULT_mutationRate = mutationRate;
@@ -64,7 +64,7 @@ public class singleMachineOAS_SGA_Co2_2 extends mTSPSGATwoPart {
     this.numberOfSalesmen = numberOfSalesmen;
     this.length = cities;
     this.instanceName = instanceName;
-    
+    this.DEFAULT_PopSize = pop_Size;
     this.p = p;//***update***
     this.power = power;//***update***
   }
@@ -86,7 +86,7 @@ public class singleMachineOAS_SGA_Co2_2 extends mTSPSGATwoPart {
     ObjectiveFunction[0] = new ObjFunctionCo2();//***update***
     Fitness = new singleObjectiveFitness();//singleObjectiveFitness singleObjectiveFitnessByNormalize
     objectiveMinimization = new boolean[numberOfObjs];
-    objectiveMinimization[0] = false;
+    objectiveMinimization[0] = true;
     encodeType = true;
 
     if (numberOfSalesmen >= length) {
@@ -127,30 +127,30 @@ public class singleMachineOAS_SGA_Co2_2 extends mTSPSGATwoPart {
     } else if (type == 0) {//0: All salesmen reserve the same sites
       type = 3;
     }
-    String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + type + "\t" + applyLocalSearch + "\t" + alpha
+    String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + type + "\t" + DEFAULT_PopSize + "\t" + applyLocalSearch + "\t" + alpha
             + "\t" + GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
             + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
-//    writeFile("OASforSMSP_TOU_20171027" + "MaxRevenueFull", implementResult);
+    writeFile("OASforSMSP_Co2_20171130" + "MinCo2Cost", implementResult);
     System.out.print(implementResult);
   }
 
   public static void main(String[] args) {
-    System.out.println("OASforSMSP_TOU_20171027" + "Co2Cost");
+    System.out.println("OASforSMSP_Co2_20171130" + "Co2Cost");
     int counter = 0;
     boolean applyLocalSearch;
-    double[] crossoverRate = new double[]{1, 0.5};//1, 0.5 [0.5]
-    double[] mutationRate = new double[]{0.5};//0.1, 0.5 [0.5]
+    double[] crossoverRate = new double[]{0.5, 0.9};//1, 0.5 [0.5]
+    double[] mutationRate = new double[]{0.1, 0.5};//0.1, 0.5 [0.5]
     double elitism[] = new double[]{0.1};
     //0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
     int[] crossoverType = new int[]{0};//0, 2, 3 [0] No Obj differences; 3 is a little bit higher. 0 is fatest.
     int repeat = 30;//30
     int generations[] = new int[]{0};//1000
-    int populationsSize = 100;
+    int[] populationsSize = new int[]{100, 200};
     int[] numberOfSalesmen = new int[]{2};
     double[] alpha = new double[]{0.1};//0.2, 0.1, 0.05 [0.1] //LocalSearch maxNeighborhood
-    int[] orders = new int[]{10, 15, 20, 25, 50, 100};//10, 15, 20, 25, 50, 100
-    int[] Tao = new int[]{1, 3, 5, 7, 9};//1, 3, 5, 7, 9
-    int[] R = new int[]{1, 3, 5, 7, 9};//1, 3, 5, 7, 9
+    int[] orders = new int[]{10,25,50,};//10, 15, 20, 25, 50, 100
+    int[] Tao = new int[]{5};//1, 3, 5, 7, 9
+    int[] R = new int[]{5};//1, 3, 5, 7, 9
     int instanceReplications = 1;
 
     for (int i = 0; i < orders.length; i++) {
@@ -178,19 +178,21 @@ public class singleMachineOAS_SGA_Co2_2 extends mTSPSGATwoPart {
                           applyLocalSearch = true;
                         }
                         for (int q = 0; q < alpha.length; q++) {
-                          for (int r = 0; r < repeat; r++) {
-                            int _alpha = (int) Math.round(((double) orders[i] * alpha[q]));
-                            generations[0] = orders[i] * (numberOfSalesmen[p] - 1) * 2000 / populationsSize;
-                            singleMachineOAS_SGA_Co2_2 TSP1 = new singleMachineOAS_SGA_Co2_2();
-                            TSP1.alpha = alpha[q];
-                            TSP1.setParameter(crossoverRate[m], mutationRate[n], counter, elitism[o], generations[0],
-                                    crossoverType[t], numberOfSalesmen[p], OASInstances1.getSize(), instanceName,
-                                    OASInstances1.getP(),OASInstances1.getPower());
-                            TSP1.setLocalSearchData(applyLocalSearch, _alpha);
-                            TSP1.initiateVars();
-                            TSP1.start();
+                          for (int pop_Size = 0; pop_Size < populationsSize.length; pop_Size++) {
+                            for (int r = 0; r < repeat; r++) {
+                              int _alpha = (int) Math.round(((double) orders[i] * alpha[q]));
+                              generations[0] = orders[i] * (numberOfSalesmen[p] - 1) * 100 / populationsSize[pop_Size];
+                              singleMachineOAS_SGA_Co2_2 TSP1 = new singleMachineOAS_SGA_Co2_2();
+                              TSP1.alpha = alpha[q];
+                              TSP1.setParameter(crossoverRate[m], mutationRate[n], counter, elitism[o], generations[0],
+                                      crossoverType[t], numberOfSalesmen[p], OASInstances1.getSize(), instanceName, populationsSize[pop_Size],
+                                      OASInstances1.getP(), OASInstances1.getPower());
+                              TSP1.setLocalSearchData(applyLocalSearch, _alpha);
+                              TSP1.initiateVars();
+                              TSP1.start();
 //                        TSP1.printResults();
-                            counter++;
+                              counter++;
+                            }
                           }
                         }
                       }
