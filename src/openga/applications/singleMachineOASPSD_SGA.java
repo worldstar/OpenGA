@@ -21,6 +21,7 @@ import openga.applications.data.OASInstances;
  * Reference "A tabu search algorithm for order acceptance and scheduling", http://home.ku.edu.tr/~coguz/Research/Dataset_OAS.zip
  */
 public class singleMachineOASPSD_SGA extends singleMachineOAS_SGA {
+
   public void initiateVars() {
     GaMain = new singleThreadGAwithInitialPop();//singleThreadGAwithMultipleCrossover singleThreadGA adaptiveGA
     Population = new population();
@@ -58,6 +59,7 @@ public class singleMachineOASPSD_SGA extends singleMachineOAS_SGA {
             objectiveMinimization, numberOfObjs, encodeType, elitism);
     GaMain.setLocalSearchOperator(localSearch1, applyLocalSearch, maxNeighborhood);
   }
+
   public void start() {
     openga.util.timeClock timeClock1 = new openga.util.timeClock();
     timeClock1.start();
@@ -70,15 +72,15 @@ public class singleMachineOASPSD_SGA extends singleMachineOAS_SGA {
     } else if (type == 0) {//0: All salesmen reserve the same sites
       type = 3;
     }
-    String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + type + "\t" + applyLocalSearch + "\t" + alpha
+    String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + type + "\t" + DEFAULT_PopSize + "\t" + applyLocalSearch + "\t" + alpha
             + "\t" + GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
             + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
-    writeFile("OASforSMSP_20170720" + "MaxRevenueFull", implementResult);
+    writeFile("OASforSMSP_20171130" + "MaxRevenueFull", implementResult);
     System.out.print(implementResult);
   }
 
   public static void main(String[] args) {
-    System.out.println("OASforSMSP_20170720" + "MaxRevenueFull");
+    System.out.println("OASforSMSP_20171130" + "MaxRevenueFull");
     int counter = 0;
     boolean applyLocalSearch;
     double[] crossoverRate = new double[]{1, 0.5};//1, 0.5 [0.5]
@@ -87,7 +89,7 @@ public class singleMachineOASPSD_SGA extends singleMachineOAS_SGA {
     int[] crossoverType = new int[]{3, 2, 0};//0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
     int repeat = 10;//30
     int generations[] = new int[]{0};//1000
-    int populationsSize = 100;
+    int[] populationsSize = new int[]{100, 200};
     int[] numberOfSalesmen = new int[]{2};
     double[] alpha = new double[]{0.2, 0.1, 0.05};//0.2, 0.1, 0.05
     int[] orders = new int[]{10, 15, 20, 25, 50, 100};//10, 15, 20, 25, 50, 100
@@ -120,20 +122,22 @@ public class singleMachineOASPSD_SGA extends singleMachineOAS_SGA {
                           applyLocalSearch = true;
                         }
                         for (int q = 0; q < alpha.length; q++) {
-                          for (int r = 0; r < repeat; r++) {
-                            int _alpha = (int) Math.round(((double) orders[i] * alpha[q]));
-                            generations[0] = orders[i] * (numberOfSalesmen[p] - 1) * 2000 / populationsSize;
-                            singleMachineOAS_SGA TSP1 = new singleMachineOAS_SGA();
-                            TSP1.alpha = alpha[q];
-                            TSP1.setParameter(crossoverRate[m], mutationRate[n], counter, elitism[o], generations[0],
-                                    crossoverType[t], numberOfSalesmen[p], OASInstances1.getSize(), instanceName,
-                                    OASInstances1.getR(), OASInstances1.getP(), OASInstances1.getD(), OASInstances1.getD_bar(),
-                                    OASInstances1.getE(), OASInstances1.getW(), OASInstances1.getS());
-                            TSP1.setLocalSearchData(applyLocalSearch, _alpha);
-                            TSP1.initiateVars();
-                            TSP1.start();
+                          for (int pop_Size = 0; pop_Size < populationsSize.length; pop_Size++) {
+                            for (int r = 0; r < repeat; r++) {
+                              int _alpha = (int) Math.round(((double) orders[i] * alpha[q]));
+                              generations[0] = orders[i] * (numberOfSalesmen[p] - 1) * 2000 / populationsSize[pop_Size];
+                              singleMachineOASPSD_SGA TSP1 = new singleMachineOASPSD_SGA();
+                              TSP1.alpha = alpha[q];
+                              TSP1.setParameter(crossoverRate[m], mutationRate[n], counter, elitism[o], generations[0],
+                                      crossoverType[t], numberOfSalesmen[p], OASInstances1.getSize(), instanceName,
+                                      OASInstances1.getR(), OASInstances1.getP(), OASInstances1.getD(), OASInstances1.getD_bar(),
+                                      OASInstances1.getE(), OASInstances1.getW(), OASInstances1.getS(), populationsSize[pop_Size]);
+                              TSP1.setLocalSearchData(applyLocalSearch, _alpha);
+                              TSP1.initiateVars();
+                              TSP1.start();
 //                        TSP1.printResults();
-                            counter++;
+                              counter++;
+                            }
                           }
                         }
                       }
