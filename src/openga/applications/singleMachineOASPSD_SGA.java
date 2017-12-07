@@ -66,35 +66,35 @@ public class singleMachineOASPSD_SGA extends singleMachineOAS_SGA {
     GaMain.startGA();
     timeClock1.end();
     if (type == 3) {//3: TCX (Original) The TCX
-      type = 1;
+      type = 1;//The best in terms of the Obj and CPU time
     } else if (type == 2) {//2: Last salesmen reserve the same sites
-      type = 2;
+      type = 2;//Actually no difference compared with the TCX
     } else if (type == 0) {//0: All salesmen reserve the same sites
-      type = 3;
+      type = 3;//The worst.
     }
     String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + type + "\t" + DEFAULT_PopSize + "\t" + applyLocalSearch + "\t" + alpha
             + "\t" + GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
             + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
-    writeFile("OASforSMSP_20171130" + "MaxRevenueFull", implementResult);
+    writeFile("OASforSMSPPSD_20171207" + "MaxRevenueFull", implementResult);
     System.out.print(implementResult);
   }
 
   public static void main(String[] args) {
-    System.out.println("OASforSMSP_20171130" + "MaxRevenueFull");
+    System.out.println("OASforSMSPPSD-SGALS_20171207" + "MaxRevenueFull");
     int counter = 0;
     boolean applyLocalSearch;
-    double[] crossoverRate = new double[]{1, 0.5};//1, 0.5 [0.5]
-    double[] mutationRate = new double[]{0.1, 0.5};//0.1, 0.5 [0.5]
+    double[] crossoverRate = new double[]{0.5};//0.9, 0.5 [0.5]
+    double[] mutationRate = new double[]{0.5};//0.1, 0.5 [0.5]
     double elitism[] = new double[]{0.1};
-    int[] crossoverType = new int[]{3, 2, 0};//0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
-    int repeat = 10;//30
+    int[] crossoverType = new int[]{3};//0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
+    int repeat = 15;//30
     int generations[] = new int[]{0};//1000
-    int[] populationsSize = new int[]{100, 200};
+    int[] populationsSize = new int[]{50, 100, 200};//50, 100, 200 [50]
     int[] numberOfSalesmen = new int[]{2};
-    double[] alpha = new double[]{0.2, 0.1, 0.05};//0.2, 0.1, 0.05
-    int[] orders = new int[]{10, 15, 20, 25, 50, 100};//10, 15, 20, 25, 50, 100
-    int[] Tao = new int[]{5};//1, 3, 5, 7, 9
-    int[] R = new int[]{5};//1, 3, 5, 7, 9
+    double[] alpha = new double[]{0.2};//0.2, 0.1, 0.05 [0.2]
+    int[] orders = new int[]{20, 50, 100};//10, 15, 20, 25, 50, 100
+    int[] Tao = new int[]{1, 3, 5, 7, 9};//1, 3, 5, 7, 9
+    int[] R = new int[]{1, 3, 5, 7, 9};//1, 3, 5, 7, 9
     int instanceReplications = 1;
 
     for (int i = 0; i < orders.length; i++) {
@@ -105,8 +105,8 @@ public class singleMachineOASPSD_SGA extends singleMachineOAS_SGA {
           }
           for (int l = 0; l < instanceReplications; l++) {
             OASInstances OASInstances1 = new OASInstances();
-            String instanceName = new String(".\\instances\\SingleMachineOAS\\" + orders[i] + "orders\\Tao" + Tao[j] + "\\R" + R[k]
-                    + "\\Dataslack_" + orders[i] + "orders_Tao" + Tao[j] + "R" + R[k] + "_" + (l + 1) + ".txt");
+            String instanceName = new String("./instances/SingleMachineOAS/" + orders[i] + "orders/Tao" + Tao[j] + "/R" + R[k]
+                    + "/Dataslack_" + orders[i] + "orders_Tao" + Tao[j] + "R" + R[k] + "_" + (l + 1) + ".txt");
             OASInstances1.setData(instanceName, orders[i]);
             OASInstances1.getDataFromFile();
 
@@ -115,15 +115,15 @@ public class singleMachineOASPSD_SGA extends singleMachineOAS_SGA {
                 for (int n = 0; n < mutationRate.length; n++) {
                   for (int o = 0; o < elitism.length; o++) {
                     for (int p = 0; p < numberOfSalesmen.length; p++) {
-                      for (int ls = 0; ls < 2; ls++) {
-                        if (ls == 0) {
-                          applyLocalSearch = false;
-                        } else {
-                          applyLocalSearch = true;
-                        }
                         for (int q = 0; q < alpha.length; q++) {
                           for (int pop_Size = 0; pop_Size < populationsSize.length; pop_Size++) {
                             for (int r = 0; r < repeat; r++) {
+                              if (alpha[q] != 0) {
+                                applyLocalSearch = true;
+                              } else {
+                                applyLocalSearch = false;
+                              }                                  
+                              
                               int _alpha = (int) Math.round(((double) orders[i] * alpha[q]));
                               generations[0] = orders[i] * (numberOfSalesmen[p] - 1) * 2000 / populationsSize[pop_Size];
                               singleMachineOASPSD_SGA TSP1 = new singleMachineOASPSD_SGA();
@@ -140,7 +140,6 @@ public class singleMachineOASPSD_SGA extends singleMachineOAS_SGA {
                             }
                           }
                         }
-                      }
                     }
                   }
                 }
