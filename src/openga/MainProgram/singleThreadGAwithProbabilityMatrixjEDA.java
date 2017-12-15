@@ -74,9 +74,11 @@ public class singleThreadGAwithProbabilityMatrixjEDA extends singleThreadGA impl
     }
 
     public void setFlowShopData(int numberOfJob, int numberOfMachines, int processingTime[][]) {
-        this.numberOfJob = numberOfJob;
-        this.numberOfMachines = numberOfMachines;
-        this.processingTime = processingTime;
+//        this.numberOfJob = numberOfJob;
+//        this.numberOfMachines = numberOfMachines;
+//        this.processingTime = processingTime;
+          System.out.println("This method setFlowShopData() is not implemented in singleThreadGAwithProbabilityMatrixjEDA.");
+          System.exit(0);
     }
 
     /**
@@ -402,14 +404,16 @@ public class singleThreadGAwithProbabilityMatrixjEDA extends singleThreadGA impl
     }
 
     public void localSearchStageDC(int iteration) {
-        openga.operator.localSearch.localSearchByVNSDC localSearch1 = new openga.operator.localSearch.localSearchByVNSDC();
-        currentUsedSolution += fixPopSize;//Solutions used in genetic search
-        localSearch1.setData(Population, totalExaminedSolution, maxNeighborhood);
-        localSearch1.setData(Population, archieve, currentUsedSolution, iteration);
-        localSearch1.setObjectives(ObjectiveFunction);
-        localSearch1.setschedule(processingTime, numberOfMachines);
-        localSearch1.startLocalSearch();
-        currentUsedSolution = localSearch1.getCurrentUsedSolution();
+//        openga.operator.localSearch.localSearchByVNSDC localSearch1 = new openga.operator.localSearch.localSearchByVNSDC();
+//        currentUsedSolution += fixPopSize;//Solutions used in genetic search
+//        localSearch1.setData(Population, totalExaminedSolution, maxNeighborhood);
+//        localSearch1.setData(Population, archieve, currentUsedSolution, iteration);
+//        localSearch1.setObjectives(ObjectiveFunction);
+//        localSearch1.setschedule(processingTime, numberOfMachines);
+//        localSearch1.startLocalSearch();
+//        currentUsedSolution = localSearch1.getCurrentUsedSolution();
+          System.out.println("This method localSearchStageDC() is not implemented in singleThreadGAwithProbabilityMatrixjEDA.");
+          System.exit(0);
     }
 
     public void setNEH(int NEH[]) {      //201011 for RIS

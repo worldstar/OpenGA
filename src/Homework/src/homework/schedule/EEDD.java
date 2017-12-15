@@ -1,4 +1,4 @@
-package homework.schedule;
+package src.homework.schedule;
 
 /**
  * <p>Title: </p>

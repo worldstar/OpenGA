@@ -238,4 +238,9 @@ public class localSearchMTSP implements localSearchI{
     return currentUsedSolution;
   }
 
+  @Override
+  public void setData(populationI population1, populationI archive, int currentUsedSolution, int iter) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
 }

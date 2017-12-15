@@ -21,7 +21,7 @@ import openga.applications.data.OASInstancesWithTOU;
  * Reference "A tabu search algorithm for order acceptance and scheduling", http://home.ku.edu.tr/~coguz/Research/Dataset_OAS.zip
  * We use an electricity data from a paper.
  */
-public class singleMachineOAS_SGA_Co2_2 extends mTSPSGATwoPart {
+public class singleMachineOAS_SGA_Co2 extends mTSPSGATwoPart {
 
   public int numberOfSalesmen;
   public int type; //type = 0 : mtsp,  type = 2 : OA,  type = 3 : TCX
@@ -49,7 +49,7 @@ public class singleMachineOAS_SGA_Co2_2 extends mTSPSGATwoPart {
   double[] power;   //  power
   double[][] s;     //  setup times
 
-  public singleMachineOAS_SGA_Co2_2() {
+  public singleMachineOAS_SGA_Co2() {
   }
 
   public void setParameter(double crossoverRate, double mutationRate, int counter, double elitism,
@@ -182,7 +182,7 @@ public class singleMachineOAS_SGA_Co2_2 extends mTSPSGATwoPart {
                             for (int r = 0; r < repeat; r++) {
                               int _alpha = (int) Math.round(((double) orders[i] * alpha[q]));
                               generations[0] = orders[i] * (numberOfSalesmen[p] - 1) * 100 / populationsSize[pop_Size];
-                              singleMachineOAS_SGA_Co2_2 TSP1 = new singleMachineOAS_SGA_Co2_2();
+                              singleMachineOAS_SGA_Co2 TSP1 = new singleMachineOAS_SGA_Co2();
                               TSP1.alpha = alpha[q];
                               TSP1.setParameter(crossoverRate[m], mutationRate[n], counter, elitism[o], generations[0],
                                       crossoverType[t], numberOfSalesmen[p], OASInstances1.getSize(), instanceName, populationsSize[pop_Size],

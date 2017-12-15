@@ -21,7 +21,7 @@ public class singleThreadGAwithinipop_EDA2_RLS extends singleThreadGAwithinipop_
 
     public singleThreadGAwithinipop_EDA2_RLS() {
     }
-    openga.operator.localSearch.localSearchByRLS localSearch1 = new openga.operator.localSearch.localSearchByRLS();
+//    openga.operator.localSearch.localSearchByRLS localSearch1 = new openga.operator.localSearch.localSearchByRLS();
     PBILInteractive PBIL1;   //PBIL
     PBIL PBIL2;
     double container[][];
@@ -79,9 +79,11 @@ public class singleThreadGAwithinipop_EDA2_RLS extends singleThreadGAwithinipop_
     }
 
     public void setFlowShopData(int numberOfJob, int numberOfMachines, int processingTime[][]) {
-        this.numberOfJob = numberOfJob;
-        this.numberOfMachines = numberOfMachines;
-        this.processingTime = processingTime;
+//        this.numberOfJob = numberOfJob;
+//        this.numberOfMachines = numberOfMachines;
+//        this.processingTime = processingTime;
+          System.out.println("This method setFlowShopData() is not implemented in singleThreadGAwithinipop_EDA2_RLS.");
+          System.exit(0);
     }
 
     // flowshop for stopping critial total examming solution N*2* 500
@@ -423,14 +425,16 @@ public class singleThreadGAwithinipop_EDA2_RLS extends singleThreadGAwithinipop_
     }
 
     public void localSearchStageRLS(int iteration) {
-        openga.operator.localSearch.localSearchByRLS localSearch1 = new openga.operator.localSearch.localSearchByRLS();
-        localSearch1.setData(Population, archieve, currentUsedSolution);
-        localSearch1.setData(Population, archieve, currentUsedSolution, iteration);
-        localSearch1.setschedule(processingTime, numberOfMachines);
-        localSearch1.setObjectives(ObjectiveFunction);
-        localSearch1.setNEH(NEH);
-        localSearch1.startLocalSearch();
-        currentUsedSolution = localSearch1.getCurrentUsedSolution();
+//        openga.operator.localSearch.localSearchByRLS localSearch1 = new openga.operator.localSearch.localSearchByRLS();
+//        localSearch1.setData(Population, archieve, currentUsedSolution);
+//        localSearch1.setData(Population, archieve, currentUsedSolution, iteration);
+//        localSearch1.setschedule(processingTime, numberOfMachines);
+//        localSearch1.setObjectives(ObjectiveFunction);
+//        localSearch1.setNEH(NEH);
+//        localSearch1.startLocalSearch();
+//        currentUsedSolution = localSearch1.getCurrentUsedSolution();
+          System.out.println("This method localSearchStageRLS() is not implemented in singleThreadGAwithinipop_EDA2_RLS.");
+          System.exit(0);
     }
 
     public void translate(chromosome _chromosome) {

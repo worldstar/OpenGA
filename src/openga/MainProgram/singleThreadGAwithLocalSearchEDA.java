@@ -93,4 +93,14 @@ public class singleThreadGAwithLocalSearchEDA extends singleThreadGAwithLocalSea
     localSearch1.startLocalSearch();
     currentUsedSolution = localSearch1.getCurrentUsedSolution();
   }
+
+  @Override
+  public void setEDAinfo(double lamda, double beta, int numberOfCrossoverTournament, int numberOfMutationTournament, int startingGenDividen) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void setFlowShopData(int numberOfJob, int numberOfMachines, int[][] processingTime) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
 }

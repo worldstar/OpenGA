@@ -70,15 +70,19 @@ public class singleThreadGAwithProbabilityMatrixILRLS extends singleThreadGA imp
     }
 
     public void setFlowShopData(int numberOfJob, int numberOfMachines, int processingTime[][]) {
-        this.numberOfJob = numberOfJob;
-        this.numberOfMachines = numberOfMachines;
-        this.processingTime = processingTime;
+//        this.numberOfJob = numberOfJob;
+//        this.numberOfMachines = numberOfMachines;
+//        this.processingTime = processingTime;
+          System.out.println("This method setFlowShopData() is not implemented in singleThreadGAwithProbabilityMatrixILRLS.");
+          System.exit(0);
     }
 
     public void setSchedulingData(int numberOfJob, int numberOfMachines, int processingTime[][]) {
-        this.numberOfJob = numberOfJob;
-        this.numberOfMachines = numberOfMachines;
-        this.processingTime = processingTime;
+//        this.numberOfJob = numberOfJob;
+//        this.numberOfMachines = numberOfMachines;
+//        this.processingTime = processingTime;
+        System.out.println("This method setSchedulingData() is not implemented in singleThreadGAwithProbabilityMatrixILRLS.");
+        System.exit(0);
     }
 
     /**
@@ -377,25 +381,29 @@ public class singleThreadGAwithProbabilityMatrixILRLS extends singleThreadGA imp
     }
 
     public void localSearchStage(int iteration) {
-        openga.operator.localSearch.localSearchByRLS localSearch1 = new openga.operator.localSearch.localSearchByRLS();
-        localSearch1.setData(Population, archieve, currentUsedSolution);
-        localSearch1.setData(Population, archieve, currentUsedSolution, iteration);
-        localSearch1.setschedule(processingTime, numberOfMachines);
-        localSearch1.setObjectives(ObjectiveFunction);
-        localSearch1.setNEH(NEH);
-        localSearch1.startLocalSearch();
-        currentUsedSolution = localSearch1.getCurrentUsedSolution();
+//        openga.operator.localSearch.localSearchByRLS localSearch1 = new openga.operator.localSearch.localSearchByRLS();
+//        localSearch1.setData(Population, archieve, currentUsedSolution);
+//        localSearch1.setData(Population, archieve, currentUsedSolution, iteration);
+//        localSearch1.setschedule(processingTime, numberOfMachines);
+//        localSearch1.setObjectives(ObjectiveFunction);
+//        localSearch1.setNEH(NEH);
+//        localSearch1.startLocalSearch();
+//        currentUsedSolution = localSearch1.getCurrentUsedSolution();
+          System.out.println("This method localSearchStage() is not implemented in singleThreadGAwithProbabilityMatrixILRLS.");
+          System.exit(0);
     }
 
     public void localSearchStageDC(int iteration) {
-        openga.operator.localSearch.localSearchByVNSDC localSearch1 = new openga.operator.localSearch.localSearchByVNSDC();
-        currentUsedSolution += fixPopSize;//Solutions used in genetic search
-        localSearch1.setData(Population, totalExaminedSolution, maxNeighborhood);
-        localSearch1.setData(Population, archieve, currentUsedSolution, iteration);
-        localSearch1.setObjectives(ObjectiveFunction);
-        localSearch1.setschedule(processingTime, numberOfMachines);
-        localSearch1.startLocalSearch();
-        currentUsedSolution = localSearch1.getCurrentUsedSolution();
+//        openga.operator.localSearch.localSearchByVNSDC localSearch1 = new openga.operator.localSearch.localSearchByVNSDC();
+//        currentUsedSolution += fixPopSize;//Solutions used in genetic search
+//        localSearch1.setData(Population, totalExaminedSolution, maxNeighborhood);
+//        localSearch1.setData(Population, archieve, currentUsedSolution, iteration);
+//        localSearch1.setObjectives(ObjectiveFunction);
+//        localSearch1.setschedule(processingTime, numberOfMachines);
+//        localSearch1.startLocalSearch();
+//        currentUsedSolution = localSearch1.getCurrentUsedSolution();
+          System.out.println("This method localSearchStageDC() is not implemented in singleThreadGAwithProbabilityMatrixILRLS.");
+          System.exit(0);
     }
 
     public void localSearchStagepop(int iteration) {
@@ -413,54 +421,60 @@ public class singleThreadGAwithProbabilityMatrixILRLS extends singleThreadGA imp
         //ProbabilityMatrixforRLS();
         //        System.out.println(artificialPopulation.getSingleChromosome(0).toString1()+"->"+artificialPopulation.getSingleChromosome(0).getObjValue()[0]);
         //   System.exit(0);
-         openga.operator.localSearch.localSearchByRLS localSearch1 = new openga.operator.localSearch.localSearchByRLS();
+        
+//         openga.operator.localSearch.localSearchByRLS localSearch1 = new openga.operator.localSearch.localSearchByRLS();
+//
+//        localSearch1.setNEH(NEH);
+//        localSearch1.setData(Population, archieve, currentUsedSolution, iteration);
+//        //localSearch1.setData(artificialPopulation, totalExaminedSolution, maxNeighborhood);
+//        localSearch1.setschedule(processingTime, numberOfMachines);
+//        localSearch1.setObjectives(ObjectiveFunction);
+//        localSearch1.startLocalSearch_setup();
+//        currentUsedSolution = localSearch1.getCurrentUsedSolution();
+          System.out.println("This method localSearchStageRLS_setup() is not implemented in singleThreadGAwithProbabilityMatrixILRLS.");
+          System.exit(0);
 
-        localSearch1.setNEH(NEH);
-        localSearch1.setData(Population, archieve, currentUsedSolution, iteration);
-        //localSearch1.setData(artificialPopulation, totalExaminedSolution, maxNeighborhood);
-        localSearch1.setschedule(processingTime, numberOfMachines);
-        localSearch1.setObjectives(ObjectiveFunction);
-        localSearch1.startLocalSearch_setup();
-        currentUsedSolution = localSearch1.getCurrentUsedSolution();
     }
 
     public void translate(chromosome _chromosome) {
-        NEH = new int[numberOfJob];
-        for (int i = 0; i < _chromosome.getLength(); i++) {
-            NEH[i] = _chromosome.genes[i];
-        }
+//        NEH = new int[numberOfJob];
+//        for (int i = 0; i < _chromosome.getLength(); i++) {
+//            NEH[i] = _chromosome.genes[i];
+//        }
+          System.out.println("This method translate() is not implemented in singleThreadGAwithProbabilityMatrixILRLS.");
+          System.exit(0);
     }
 
     public void ProbabilityMatrixforRLS(int i, int interval, int iteration) {
-        Population = selectionStage(Population);
-        PBIL1.setData(Population);
-        PBIL1.startStatistics();
-        container = PBIL1.getContainer();
-        inter = PBIL1.getInter();
-        probMatrix1.setData(Population, artificialPopulation, container, inter);//archieve, Population, artificialPopulation
-        probMatrix1.setDuplicateRate(1);
-        probMatrix1.setStrategy(strategy);     // strategy
-        probMatrix1.setEvaporationMethod(applyEvaporation, evaporationMethod);
-        probMatrix1.assignJobs(container, inter);
-        ProcessObjectiveAndFitness(artificialPopulation);
-        openga.operator.localSearch.localSearchByRLS localSearch1 = new openga.operator.localSearch.localSearchByRLS();
-        if (i % interval == 0) {
-
-            localSearch1.setData(artificialPopulation, archieve, currentUsedSolution, iteration);
-//            localSearch1.setData(artificialPopulation, totalExaminedSolution, maxNeighborhood);
-            localSearch1.setschedule(processingTime, numberOfMachines);
-            localSearch1.setObjectives(ObjectiveFunction);
-//        bestindex = getBestSolnIndex();
-//        translate(artificialPopulation.getSingleChromosome(bestindex));
-            localSearch1.setNEH(NEH);
-            localSearch1.startLocalSearchP();
-            currentUsedSolution = localSearch1.getCurrentUsedSolution();
-        }
-        Population = replacementStage(Population, artificialPopulation);  //Population
-        evalulatePop(Population);
-
+//        Population = selectionStage(Population);
+//        PBIL1.setData(Population);
+//        PBIL1.startStatistics();
+//        container = PBIL1.getContainer();
+//        inter = PBIL1.getInter();
+//        probMatrix1.setData(Population, artificialPopulation, container, inter);//archieve, Population, artificialPopulation
+//        probMatrix1.setDuplicateRate(1);
+//        probMatrix1.setStrategy(strategy);     // strategy
+//        probMatrix1.setEvaporationMethod(applyEvaporation, evaporationMethod);
+//        probMatrix1.assignJobs(container, inter);
+//        ProcessObjectiveAndFitness(artificialPopulation);
+//        openga.operator.localSearch.localSearchByRLS localSearch1 = new openga.operator.localSearch.localSearchByRLS();
+//        if (i % interval == 0) {
 //
+//            localSearch1.setData(artificialPopulation, archieve, currentUsedSolution, iteration);
+////            localSearch1.setData(artificialPopulation, totalExaminedSolution, maxNeighborhood);
+//            localSearch1.setschedule(processingTime, numberOfMachines);
+//            localSearch1.setObjectives(ObjectiveFunction);
+////        bestindex = getBestSolnIndex();
+////        translate(artificialPopulation.getSingleChromosome(bestindex));
+//            localSearch1.setNEH(NEH);
+//            localSearch1.startLocalSearchP();
+//            currentUsedSolution = localSearch1.getCurrentUsedSolution();
+//        }
+//        Population = replacementStage(Population, artificialPopulation);  //Population
+//        evalulatePop(Population);
 
+          System.out.println("This method ProbabilityMatrixforRLS() is not implemented in singleThreadGAwithProbabilityMatrixILRLS.");
+          System.exit(0);
     }
 
     public int getBestSolnIndex() {

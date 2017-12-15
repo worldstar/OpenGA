@@ -188,4 +188,29 @@ public class singleThreadGAwithProbabilityMatrix extends singleThreadGA implemen
     originalSet = Fitness.getPopulation();
     return originalSet;
   }
+
+  @Override
+  public void setWeight(double w1, double w2) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void setLearningRate(double lamda, double beta) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void setNEH(int[] NEH) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void setparaData(int[][][] processingSetupTime, int numberOfMachines) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void setFlowShopData(int numberOfJob, int numberOfMachines, int[][] processingTime) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
 }

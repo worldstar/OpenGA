@@ -119,6 +119,7 @@ public class SelfGuidedGAKnapsack extends knapsackSGA{
                      numberOfObjs, encodeType, elitism);
       model = new PBILforZeroOneWithLapaceCorrection(numberOfItems, lamda);
       GaMain.setEDAinfo(lamda, numberOfCrossoverTournament, numberOfMutationTournament, startingGenDividen, model);
+
   }
 
   public void start(){

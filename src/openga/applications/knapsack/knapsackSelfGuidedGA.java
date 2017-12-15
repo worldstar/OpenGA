@@ -48,9 +48,10 @@ public class knapsackSelfGuidedGA {
         knapsackORLibProblems1.readInstanceData(numberOfItem[i], numberOfKnapsack[j]);
 
         int numberOfInstanceReplications = knapsackORLibProblems1.getInstanceReplications();
-        int profit[][] = knapsackORLibProblems1.getProfit();
-        int weights[][][] = knapsackORLibProblems1.getWeights();
-        int rightHandSide[][] = knapsackORLibProblems1.getRightHandSide();
+//        int profit[][] = knapsackORLibProblems1.getProfit();
+//        int weights[][][] = knapsackORLibProblems1.getWeights();
+//        int rightHandSide[][] = knapsackORLibProblems1.getRightHandSide();
+
         //repeatExperiments
 
         for(int k = 0 ; k < numberOfInstanceReplications ; k ++){

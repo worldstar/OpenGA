@@ -20,7 +20,7 @@ import openga.operator.miningGene.*;
 public class guidedMutationMain_ad extends singleThreadGAwithProbabilityMatrix {
   public guidedMutationMain_ad() {
   }
-  PBIL1 PBIL1;
+  PBIL PBIL1;
   int strategy = 1;
   double container[][];
   double lamda; //learning rate
