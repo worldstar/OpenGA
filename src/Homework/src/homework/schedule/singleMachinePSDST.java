@@ -1,5 +1,4 @@
-
-package application_tce.chan;
+package homework.schedule;
 
 public class singleMachinePSDST {
     
@@ -28,7 +27,7 @@ public class singleMachinePSDST {
         double[] Gamma = new double[n];
 
         for (int i = 1; i <= Gamma.length; i++) {
-            if (1 <= i && i <= r) {
+            if (1 <= i && i <= r) { // 1~4
                 Equation1 = 0; 
                 for (int l=i+1;l<=r;l++){
                     Equation1 += (l-1);
@@ -37,11 +36,10 @@ public class singleMachinePSDST {
                 for (int l=r+1;l<=n;l++){
                     Equation2 += (n+1-l);
                 }
-                Gamma[i-1] = (i-1)+b*(Equation1+Equation2);
-                
-            } else {
+                Gamma[i-1] = (i-1)+b*(Equation1+Equation2);                
+            } else { // 5~7
                 Equation3 = 0;
-                for (int l = r + 1; l <= n; l++) {
+                for (int l = i+1; l <= n; l++) {
                     Equation3 += (n + 1 - l);
                 }
                 Gamma[i-1] = (n + 1 - i) + b * Equation3;
