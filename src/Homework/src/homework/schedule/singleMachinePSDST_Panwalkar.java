@@ -1,4 +1,4 @@
-package application_tce.chan;
+package src.homework.schedule;
 
 public class singleMachinePSDST_Panwalkar {
     
@@ -30,10 +30,10 @@ public class singleMachinePSDST_Panwalkar {
         double[] Gamma = new double[n];
 
         for (int i = 1; i <= Gamma.length; i++) {
-            if (i==1){
+            if (i==1){ // 1
                 Gamma[0] = n*p[0];
             }
-            else if (2 <= i && i <= r) { // 1~4
+            else if (2 <= i && i <= r) { // 2~4
                 Equation1 = 0; 
                 for (int l=i+1;l<=r;l++){
                     Equation1 += (l-1);
@@ -48,11 +48,10 @@ public class singleMachinePSDST_Panwalkar {
                 for (int l = i+1; l <= n; l++) {
                     Equation3 += (n + 1 - l);
                 }
-                Gamma[i-1] = ((n+1-i) + b * Equation3) * p[2];
+                Gamma[i-1] = ((n+1-i) + b*Equation3) * p[2];
             }
             System.out.print(Math.rint(Gamma[i-1]*100)/100 + "  ");
         }
         System.out.println();
     }
-
 }
