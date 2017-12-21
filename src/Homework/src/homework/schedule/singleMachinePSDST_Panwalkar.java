@@ -1,4 +1,4 @@
-package src.homework.schedule;
+package homework.schedule;
 
 public class singleMachinePSDST_Panwalkar {
     
