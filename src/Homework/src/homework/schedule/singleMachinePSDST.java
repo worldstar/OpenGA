@@ -1,4 +1,3 @@
-
 package homework.schedule;
 
 public class singleMachinePSDST {
