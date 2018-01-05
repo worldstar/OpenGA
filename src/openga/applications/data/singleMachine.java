@@ -305,35 +305,52 @@ public class singleMachine {
         String message = "", eachLine = "";
 
         while ((eachLine = br.readLine()) != null)   {
-          message += eachLine;
+          message += eachLine + "\n";
         }
-
-        //System.out.println(message);
-        StringTokenizer tokens = new StringTokenizer(message);
+        
+        String[] STxt;
+        STxt = message.split("\n| ");
+        
+//        System.out.println(message);
+//        StringTokenizer tokens = new StringTokenizer(message);
         //set the coordinates of depot.
         int length = 0;
 
         //to set the coordination and demand of each customer
-        int size = Integer.parseInt(tokens.nextToken());
+        int size = Integer.parseInt(STxt[0]);//tokens.nextToken()
         processingTime = new int[size];
         dueDate = new int[size];
         alpha = new double[size];
         beta = new double[size];
 
-        for(int i = 0 ; i < size ; i ++ ){
-          int tempArray[] = new int[5];
-          tempArray[0] = Integer.parseInt(tokens.nextToken());
-          tempArray[1] = Integer.parseInt(tokens.nextToken());
-          tempArray[2] = Integer.parseInt(tokens.nextToken());
-          tempArray[3] = Integer.parseInt(tokens.nextToken());
-          tempArray[4] = Integer.parseInt(tokens.nextToken());
-          //System.out.println(tempArray[0]+" "+tempArray[1]+" "+tempArray[2]+" "+tempArray[3]+" "+tempArray[4]);
-
-          processingTime[i] = tempArray[0];
-          dueDate[i] = tempArray[2];
-          alpha[i] = tempArray[3];
-          beta[i] = tempArray[4];
+        int tempCount = 1;
+        for(int i = 0 ; i < size ; i++)
+        {
+          processingTime[i] = Integer.parseInt(STxt[tempCount]);
+          dueDate[i] = Integer.parseInt(STxt[tempCount+2]);
+          alpha[i] = Integer.parseInt(STxt[tempCount+3]);
+          beta[i] = Integer.parseInt(STxt[tempCount+4]);
+          tempCount+=5;
         }
+        
+        
+        
+//        for(int i = 0 ; i < size ; i ++ ){
+//          int tempArray[] = new int[5];
+//          tempArray[0] = Integer.parseInt(tokens.nextToken());
+//          tempArray[1] = Integer.parseInt(tokens.nextToken());
+//          tempArray[2] = Integer.parseInt(tokens.nextToken());
+//          tempArray[3] = Integer.parseInt(tokens.nextToken());
+//          tempArray[4] = Integer.parseInt(tokens.nextToken());
+//          //System.out.println(tempArray[0]+" "+tempArray[1]+" "+tempArray[2]+" "+tempArray[3]+" "+tempArray[4]);
+//
+//          processingTime[i] = tempArray[0];
+//          dueDate[i] = tempArray[2];
+//          alpha[i] = tempArray[3];
+//          beta[i] = tempArray[4];
+//        }
+        
+        
     }   //end try
     catch( Exception e )
     {

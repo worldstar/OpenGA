@@ -46,7 +46,8 @@ public class ObjectiveEarlinessTardinessPenalty implements ObjectiveFunctionSche
   }
 
   public void setScheduleData(int processingTime[], int numberOfMachine){
-
+    this.processingTime = processingTime;
+    this.numberOfMachine = numberOfMachine;
   }
 
   public void setAlphaBeta(double alpha[], double beta[]){
@@ -100,7 +101,9 @@ public class ObjectiveEarlinessTardinessPenalty implements ObjectiveFunctionSche
     for(int i = 0 ; i < _seq.length ; i ++ ){
       finishTime[_seq[i]] = currentTime + processingTime[_seq[i]];
       currentTime = finishTime[_seq[i]];
+      
     }
+    
     return finishTime;
   }
 

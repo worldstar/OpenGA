@@ -59,7 +59,7 @@ public class singleMachineEDA2 extends singleMachine {
         //clone1 = new solutionVectorCloneWithMutation();//swap mutation
         //GaMain.setCloneOperatpr(clone1, true);
         //set schedule data to the objectives
-        ObjectiveFunction[0].setScheduleData(processingTime, numberOfMachines);
+        ObjectiveFunction[0].setScheduleData(dueDay , processingTime, numberOfMachines);
         totalSolnsToExamine = 125000;
         DEFAULT_PopSize = 100;
         //System.out.println(DEFAULT_PopSize);
@@ -107,9 +107,9 @@ public class singleMachineEDA2 extends singleMachine {
     public static void main(String[] args) {
         System.out.println("singleMachineEDA_SKS_20080330");
         //openga.applications.data.singleMachine singleMachineData = new openga.applications.data.singleMachine();
-        int jobSets[] = new int[]{60};//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80
+        int jobSets[] = new int[]{20,50,90};//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80 //20,30,40,50,60,90
         int counter = 0;
-        int repeatExperiments = 30;
+        int repeatExperiments = 3;
 
         int popSize[] = new int[]{100};//50, 100, 155, 210 [100]
         double crossoverRate[] = new double[]{0.9},//0.6, 0.9 {0.9}
@@ -136,7 +136,8 @@ public class singleMachineEDA2 extends singleMachine {
                                     for (int p = 0; p < startingGenDividen.length; p++) {
                                         openga.applications.data.singleMachine readSingleMachineData1 = new openga.applications.data.singleMachine();
                                         int numberOfJobs = jobSets[j];
-                                        String fileName = readSingleMachineData1.getFileName(numberOfJobs, k);
+                                        String fileName = readSingleMachineData1.getFileName(
+                                            numberOfJobs, k);
                                         System.out.print(fileName + "\t");
                                         readSingleMachineData1.setData("sks/" + fileName + ".txt");
                                         readSingleMachineData1.getDataFromFile();

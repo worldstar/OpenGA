@@ -84,8 +84,64 @@ public class PBILwithLapaceCorrection implements EDAModelBuildingI{
     laplaceCorrection(tempContainer);    
     //double CR = showPopCorrelationValue(originalPop, tempContainer);
     updateContainer(tempContainer, counter);
+    
+//    CheckModelAccurracy();
+
   }
 
+  public void CheckModelAccurracy()
+  {
+    
+    /*******************************************************************/
+            double[] probabilitySum = new double[originalPop.getPopulationSize()];
+            
+            for(int j = 0 ; j < originalPop.getPopulationSize() ; j++)
+            {
+              probabilitySum[j] = productGeneInfo(originalPop.getSingleChromosome(j) , container);
+//              System.out.println(probabilitySum[j]);
+            }
+            int total = 0;
+            int error = 0;
+            int success = 0;
+            for(int j = 0 ; j < originalPop.getPopulationSize() ; j++)
+            {
+              for(int k = j+1 ; k < originalPop.getPopulationSize() ; k++)
+              {
+                double[] PopGetObjValue = originalPop.getSingleChromosome(j).getObjValue() ;
+                double[] PopGetObjValue2 = originalPop.getSingleChromosome(k).getObjValue() ;
+                
+                total ++;
+                
+                if(probabilitySum[j] >= probabilitySum[k] && PopGetObjValue[0] <= PopGetObjValue2[0])
+                {
+                  success++;
+                }else if (probabilitySum[j] < probabilitySum[k] && PopGetObjValue[0] > PopGetObjValue2[0])
+                {
+                  success++;
+                }else
+                {
+                  error++;
+                }
+                
+              }
+            }
+            
+            System.out.printf("成功率 : %.2f\n",((double)((double)success / (double)total)));
+            
+            /*******************************************************************/
+  }
+  
+  //Probability product, instead of summing up the probability.
+    //2009.8.20
+    private double productGeneInfo(chromosome _chromosome , double[][] container){
+      double productValue = 1;
+      for(int i = 0 ; i < _chromosome.getLength() ; i ++){
+        int job = _chromosome.getSolution()[i];
+        productValue *= container[job][i] * 10;
+      }
+//      //productVale *= Math.pow(10, cutPoint2 - cutPoint1);
+      return productValue;
+    }
 
   //To avoid the pij is 0 which causes the product becomes zero by adding each element by 1.
   //2009.8.20
