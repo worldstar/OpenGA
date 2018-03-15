@@ -188,72 +188,55 @@ public class PBILInteractiveWithEDA3 {
       /*save probabilitySumError*/
         double[] probabilitySum = new double[originalPop.getPopulationSize()];
         double[] probabilityError = new double[originalPop.getPopulationSize()];
+          int[] probabilitySumError ;
+          probabilitySumError = new int[originalPop.getPopulationSize()];
 
         for(int j = 0 ; j < originalPop.getPopulationSize() ; j++)
         {
           probabilitySum[j] = productGeneInfo(originalPop.getSingleChromosome(j) , container);
-//          System.out.println(probabilitySum[j]);
+//              System.out.println(probabilitySum[j] + " , ");
         }
 
-        int[] probabilitySumError ;
-
-        probabilitySumError = new int[originalPop.getPopulationSize()];
-
-        for(int j = 0 ; j < originalPop.getPopulationSize() ; j++)
-        {
-          for(int k = j+1 ; k < originalPop.getPopulationSize() ; k++)
+          int error = 0;
+          int success = 0;
+          for(int j = 0 ; j < originalPop.getPopulationSize() ; j++)
           {
-            double[] PopGetObjValue = originalPop.getSingleChromosome(j).getObjValue() ;
-            double[] PopGetObjValue2 = originalPop.getSingleChromosome(k).getObjValue() ;
+            for(int k = j+1 ; k < originalPop.getPopulationSize() ; k++)
+            {
+              double[] PopGetObjValue = originalPop.getSingleChromosome(j).getObjValue() ;
+              double[] PopGetObjValue2 = originalPop.getSingleChromosome(k).getObjValue() ;
 
-            if(probabilitySum[j] >= probabilitySum[k] && PopGetObjValue[0] <= PopGetObjValue2[0])//success
-            {
-            }else if (probabilitySum[j] < probabilitySum[k] && PopGetObjValue[0] > PopGetObjValue2[0])//success
-            {
-            }else if(probabilitySum[j] < probabilitySum[k] && PopGetObjValue[0] <= PopGetObjValue2[0])//error
-            {
-              if((probabilitySum[k] - probabilitySum[j]) > probabilityError[j])
+              if(probabilitySum[j] >= probabilitySum[k] && PopGetObjValue[0] <= PopGetObjValue2[0])//success
+              {
+                success++;
+              }else if (probabilitySum[j] < probabilitySum[k] && PopGetObjValue[0] > PopGetObjValue2[0])//success
+              {
+                success++;
+              }else if(probabilitySum[j] >= probabilitySum[k] && PopGetObjValue[0] > PopGetObjValue2[0])//error
               {
                 probabilityError[j] = probabilitySum[k] - probabilitySum[j];
-//                if(probabilityError[j] > 2)
-//                {
-//                  probabilityError[j] = 2;
-//                }
-              }
 
-              probabilitySumError[j]++;
-              
-            }else if(probabilitySum[j] >= probabilitySum[k] && PopGetObjValue[0] > PopGetObjValue2[0])//error
-            {
-              if((probabilitySum[j] - probabilitySum[k]) > probabilityError[j])
+                probabilitySumError[j]++;
+
+                error++;
+              }else if(probabilitySum[j] < probabilitySum[k] && PopGetObjValue[0] <= PopGetObjValue2[0])//error
               {
                 probabilityError[j] = probabilitySum[j] - probabilitySum[k];
-//                if(probabilityError[j] > 2)
-//                {
-//                  probabilityError[j] = 2;
-//                }
+
+                probabilitySumError[j]++;
+
+                error++;
+              }else
+              {
+                error++;
               }
-              probabilitySumError[j]++;
-            }else//error
-            {
-//                  System.out.print("error");
             }
           }
-        }
-              
-//              for(int i = 0 ; i < probabilityError.length ; i++)
-//                  {
-////                    System.out.print(probabilityError[i] + " ");
-//                    System.out.printf("%d ",probabilitySumError[i]);
-//                  }
-//                  System.out.println();
-
-                  
+            
       /*******************************************************************/
-    
+
 //    /*******************************************************************/
 //    /*inter before *= 1.1*//*Container up*/
-    
         double tempContainer[][] = new double[chromosomeLength][chromosomeLength];
           //to collect gene information.
           //System.out.println(avgFitness+" "+popSize);
@@ -263,37 +246,40 @@ public class PBILInteractiveWithEDA3 {
           
             if (originalPop.getFitness(i) <= avgFitness) {
               
-                for(int j = 0 ; j < chromosomeLength ; j ++ ){
-                    int gene = originalPop.getSingleChromosome(i).getSolution()[j];
-                    tempContainer[gene][j] += 1;
-
-                    if(probabilitySumError[i] != 0) // error Count up 10%
-                    {
-                      tempContainer[gene][j] *= (1 + (probabilityError[i] / (1.0 + probabilityError[i])));
-//                      System.out.println(1 + (probabilityError[i] / (1.0 + probabilityError[i])));
-//                        System.out.println("probabilityError = " + probabilityError[i]);
-                    }
+//                for(int j = 0 ; j < chromosomeLength ; j ++ ){
+//                    int gene = originalPop.getSingleChromosome(i).getSolution()[j];
+//
+//                    if(probabilitySumError[i] != 0) // error Count up 10%
+//                    {
+////                      tempContainer[gene][j] *= (1 + (probabilityError[i] / (1.0 + probabilityError[i])));
+////                      tempContainer[gene][j] *= (1 + (probabilitySumError[i] / (1.0 + probabilitySumError[i])));
+////                      tempContainer[gene][j] *= 1.1;
+//                        
+//                    }
+//                }
+//                
+//                counter ++;
+              
+                for (int j = 1; j < chromosomeLength; j++){
+                  
+                  int gene = originalPop.getSingleChromosome(i).getSolution()[j];
+                  int gene_before = originalPop.getSingleChromosome(i).getSolution()[j - 1];
+                  
+                  if(probabilitySumError[i] != 0) // error Count up 10%
+                  {
+                    inter[gene_before][gene] *= 1 + (probabilitySumError[i] / (float)(1 + probabilitySumError[i])); //錯誤次數
+                    
+//                    inter[gene_before][gene] *= 1 + (probabilityError[i] / (float)(1 + probabilityError[i])); //錯誤差距
+                  
+                  }
                 }
                 
-                counter ++;
-              
-                for (int j = 1; j < chromosomeLength; j++) {
-                  
-                    int gene = originalPop.getSingleChromosome(i).getSolution()[j];
-                    int gene_before = originalPop.getSingleChromosome(i).getSolution()[j - 1];
-                    
-                    if(probabilitySumError[i] != 0) // error Count up 10%
-                    {
-                      
-                        inter[gene_before][gene] *= (1 + (probabilityError[i] / (1.0 + probabilityError[i])));
-                    }
-                }
             }
         }
         
-        laplaceCorrection(tempContainer);
+//        laplaceCorrection(tempContainer);
           //double CR = showPopCorrelationValue(originalPop, tempContainer);
-        updateContainer(tempContainer, counter);
+//        updateContainer(tempContainer, counter);
         
 //    /*******************************************************************/
 
