@@ -17,60 +17,12 @@ import openga.operator.selection.SelectI;
  *
  * @author Kuo Yu-Cheng
  */
-public class singleThreadGAwithEDA3 extends singleThreadGA implements EDAMainI {
+public class singleThreadGAwithEDA3 extends singleThreadGAwithEDA2 {
 
     public singleThreadGAwithEDA3() {
     }
+    
     PBILInteractiveWithEDA3 PBIL1;   //PBIL
-    double container[][];
-    double inter[][];  //training results
-    double temporaryContainer[][];
-    openga.operator.miningGene.probabilityMatrixInteractiveL probMatrix1 = new openga.operator.miningGene.probabilityMatrixInteractiveL();
-    double lamda = 0.9; //container learning rate   0.1 0.5 0.9
-    double beta = 0.9; //inter learning rate   0.1 0.5 0.9
-    int strategy = 1;  // 2 is default
-    int numberOfCrossoverTournament = 2;
-    int numberOfMutationTournament = 2;
-    int tempNumberOfCrossoverTournament = 2;
-    int tempNumberOfMutationTournament = 2;
-    EDAICrossover Crossover;
-    EDAIMutation Mutation;
-    populationI offsrping = new population();
-    int startingGenDividen = 4;
-    int totalExaminedSolution = 0;
-    int currentUsedSolution = 0;
-
-    //to set basic GA components.
-    public void setData(populationI Population, SelectI Selection, EDAICrossover Crossover, EDAIMutation Mutation,
-            ObjectiveFunctionI ObjectiveFunction[], FitnessI Fitness, int generations, int initialPopSize, int fixPopSize,
-            int length, double crossoverRate, double mutationRate, boolean[] objectiveMinimization,
-            int numberOfObjs, boolean encodeType, double elitism) {
-        this.Population = Population;
-        this.Selection = Selection;
-        this.Crossover = Crossover;
-        this.Mutation = Mutation;
-        this.ObjectiveFunction = ObjectiveFunction;
-        this.Fitness = Fitness;
-        this.generations = generations;
-        this.initialPopSize = initialPopSize;
-        this.fixPopSize = fixPopSize;
-        this.length = length;
-        this.crossoverRate = crossoverRate;
-        this.mutationRate = mutationRate;
-        this.objectiveMinimization = objectiveMinimization;
-        this.numberOfObjs = numberOfObjs;
-        this.encodeType = encodeType;
-        this.elitism = elitism;
-        archieve = null;
-    }
-
-    public void setEDAinfo(double lamda, double beta, int numberOfCrossoverTournament, int numberOfMutationTournament, int startingGenDividen) {
-        this.lamda = lamda;
-        this.beta = beta;
-        this.numberOfCrossoverTournament = numberOfCrossoverTournament;
-        this.numberOfMutationTournament = numberOfMutationTournament;
-        this.startingGenDividen = startingGenDividen;
-    }
 
     public void startGA() {
         Population = initialStage();
@@ -163,82 +115,4 @@ public class singleThreadGAwithEDA3 extends singleThreadGA implements EDAMainI {
         //printResults();
     }
 
-    public void localSearchStage(int iteration) {
-        //openga.operator.localSearch.localSearchByVNS localSearch1 = new openga.operator.localSearch.localSearchByVNS();        
-        localSearch1.setData(Population, totalExaminedSolution, maxNeighborhood);
-        localSearch1.setData(Population, archieve, currentUsedSolution, iteration);
-        localSearch1.setObjectives(ObjectiveFunction);
-        localSearch1.startLocalSearch();
-        currentUsedSolution += localSearch1.getCurrentUsedSolution();
-    } 
-
-    public void intialOffspringPopulation() {
-        offsrping.setGenotypeSizeAndLength(encodeType, fixPopSize, length, numberOfObjs);
-        offsrping.initNewPop();
-    }
-
-    public populationI crossoverStage(populationI Population, double container[][], double inter[][]) {
-        Crossover.setData(crossoverRate, Population);
-        Crossover.setEDAinfo(container, inter, tempNumberOfCrossoverTournament);
-        Crossover.startCrossover();
-        Population = Crossover.getCrossoverResult();
-
-        return Population;
-    }
-
-    public populationI mutationStage(populationI Population, double container[][], double inter[][]) {
-        Mutation.setData(mutationRate, Population);
-        Mutation.setEDAinfo(container, inter, numberOfMutationTournament);        
-        Mutation.startMutation();
-        Population = Mutation.getMutationResult();
-
-        return Population;
-    }
-
-    public populationI ProcessObjectiveAndFitness(populationI originalSet) {
-        //evaluate the objective values
-        for (int i = 0; i < ObjectiveFunction.length; i++) {
-            //System.out.println("The obj "+i);
-            ObjectiveFunction[i].setData(originalSet, i);
-            ObjectiveFunction[i].calcObjective();
-            originalSet = ObjectiveFunction[i].getPopulation();
-        }
-
-        //calculate fitness values
-        Fitness.setData(originalSet, numberOfObjs);
-        Fitness.calculateFitness();
-        originalSet = Fitness.getPopulation();
-        return originalSet;
-    }
-
-    public populationI replacementStage(populationI parent, populationI offspring) {
-        openga.operator.selection.noidenticalReplacement replace1 = new openga.operator.selection.noidenticalReplacement();  //noidenticalReplacement  MuPlusLamdaSelection2
-        openga.operator.clone.solutionVectorCloneWithMutation clone1 = new openga.operator.clone.solutionVectorCloneWithMutation();
-
-        replace1.setData(parent.getPopulationSize(), parent);
-        replace1.setSecondPopulation(offspring);
-        replace1.startToSelect();  //with identical
-
-        clone1.setData(replace1.getSelectionResult());
-        clone1.setArchive(archieve);  //Population
-        clone1.startToClone();
-        //System.out.println(clone1.getNumberOfOverlappedSoln());
-        return clone1.getPopulation();
-
-    }
-
-    public void evalulatePop(populationI originalSet) {
-        //evaluate the objective values and calculate fitness values
-        ProcessObjectiveAndFitness(originalSet);
-        populationI tempFront = (population) findParetoFront(Population, 0);
-        archieve = updateParetoSet(archieve, tempFront);
-    }
-
-    public void setEDAinfo(double lamda, int numberOfCrossoverTournament, int numberOfMutationTournament, int startingGenDividen) {
-    }
-
-    @Override
-    public void setFlowShopData(int numberOfJob, int numberOfMachines, int[][] processingTime) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
 }

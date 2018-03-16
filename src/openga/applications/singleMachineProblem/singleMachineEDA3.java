@@ -22,28 +22,11 @@ import openga.operator.clone.*;
  * @author Chen, Shih-Hsin
  * @version 1.0
  */
-public class singleMachineEDA3 extends singleMachine {
+public class singleMachineEDA3 extends singleMachineEDA2 {
 
     public singleMachineEDA3() {
     }
     
-    public EDAMainI GaMain;
-    public EDAICrossover Crossover;
-    public EDAIMutation Mutation;
-    public double lamda = 0.9; //learning rate
-    public double beta = 0.9;
-    public int numberOfCrossoverTournament = 2;
-    public int numberOfMutationTournament = 2;
-    public int startingGenDividen = 3;
-
-    public void setEDAinfo(double lamda, double beta, int numberOfCrossoverTournament, int numberOfMutationTournament, int startingGenDividen) {
-        this.lamda = lamda;
-        this.beta = beta;
-        this.numberOfCrossoverTournament = numberOfCrossoverTournament;
-        this.numberOfMutationTournament = numberOfMutationTournament;
-        this.startingGenDividen = startingGenDividen;
-    }
-
     public void initiateVars() {
         GaMain = new singleThreadGAwithEDA3();//singleThreadGA singleThreadGAwithSecondFront singleThreadGAwithMultipleCrossover adaptiveGA
         Population = new population();
@@ -83,25 +66,8 @@ public class singleMachineEDA3 extends singleMachine {
         String implementResult = "";
         int bestInd = getBestSolnIndex(GaMain.getArchieve());
         implementResult = fileName + "\t" + lamda + "\t" + beta + "\t" + numberOfCrossoverTournament + "\t" + numberOfMutationTournament + "\t" + startingGenDividen + "\t" + GaMain.getArchieve().getSingleChromosome(bestInd).getObjValue()[0] + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
-        writeFile("singleMachineEDA2_test", implementResult);
+        writeFile("singleMachineEDA3_test", implementResult);
         System.out.print(implementResult);
-    }
-
-    /**
-     * For single objective problem
-     * @param arch1
-     * @return
-     */
-    public int getBestSolnIndex(populationI arch1) {
-        int index = 0;
-        double bestobj = Double.MAX_VALUE;
-        for (int k = 0; k < GaMain.getArchieve().getPopulationSize(); k++) {
-            if (bestobj > GaMain.getArchieve().getObjectiveValues(k)[0]) {
-                bestobj = GaMain.getArchieve().getObjectiveValues(k)[0];
-                index = k;
-            }
-        }
-        return index;
     }
 
     public static void main(String[] args) {
@@ -162,66 +128,5 @@ public class singleMachineEDA3 extends singleMachine {
                 }
             }
         }
-
-
-        /*
-        //Sourd Instance
-        for(int i = 0 ; i < repeatExperiments ; i ++ ){
-        for(int m = 0 ; m < jobSets.length ; m ++ ){//jobSets.length
-        for(int k = 0 ; k < 9 ; k ++ ){
-        System.out.println("Combinations: "+counter);
-        openga.applications.data.singleMachine readSingleMachineData1 = new openga.applications.data.singleMachine();
-        int numberOfJobs = jobSets[m];
-        String fileName = readSingleMachineData1.getFileName(numberOfJobs, k);
-        //fileName = "bky"+numberOfJobs+"_1";
-        System.out.print(fileName+"\t");
-        readSingleMachineData1.setData("sks/"+fileName+".txt");
-        readSingleMachineData1.getDataFromFile();
-        int dueDate[] = readSingleMachineData1.getDueDate();
-        int processingTime[] = readSingleMachineData1.getPtime();
-
-        singleMachine1.setData(numberOfJobs, dueDate, processingTime, fileName);
-        singleMachine1.initiateVars();
-        singleMachine1.startMain();
-        counter ++;
-        }
-        }
-        }//end for
-        System.exit(0);
-         */
-        /*
-        //BKY Instance
-        int incrementSteps = 5;
-        for(int i = 0 ; i < repeatExperiments ; i ++ ){
-        for(int j = 0 ; j < jobSets.length ; j ++ ){//jobSets.length
-        for(int k = 0 ; k < popSize.length ; k ++ ){
-        for (int m = 0; m < crossoverRate.length; m++) {
-        for (int n = 0; n < mutationRate.length; n++) {
-        for(int p = 296 ; p < 297 ; ){
-        openga.applications.data.readSingleMachine readSingleMachineData1 = new openga.applications.data.readSingleMachine();
-        int numberOfJobs = jobSets[j];
-        String fileName = readSingleMachineData1.getFileName(numberOfJobs, p);
-        readSingleMachineData1.setData("instances/SingleMachineBKS/"+fileName+".txt");
-        if(readSingleMachineData1.testReadData()){//to test whether the file exist
-        System.out.print("Combinations: "+counter+"\t");
-        System.out.print(fileName+"\t");
-        readSingleMachineData1.getDataFromFile();
-        int dueDate[] = readSingleMachineData1.getDueDate();
-        int processingTime[] = readSingleMachineData1.getPtime();
-
-        singleMachine1.setData(numberOfJobs, dueDate, processingTime, fileName);
-        singleMachine1.setParameters(popSize[k], crossoverRate[m], mutationRate[n], 100000);
-        singleMachine1.initiateVars();
-        singleMachine1.startMain();
-        counter ++;
-        }
-        p += incrementSteps;
-        }
-        }
-        }
-        }
-        }
-        }//end for
-         */
     }
 }
