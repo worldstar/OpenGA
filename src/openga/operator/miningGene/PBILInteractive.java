@@ -50,6 +50,7 @@ public class PBILInteractive {
         calcAverageFitness();
         calcContainer();
         calcInter();
+//        CheckModelAccurracy();
     }
 
     /**
@@ -177,23 +178,22 @@ public class PBILInteractive {
         //System.exit(0);
          */
 
-//        CheckModelAccurracy();
     }
     
     public void CheckModelAccurracy()
   {
-    
     /*******************************************************************/
             double[] probabilitySum = new double[originalPop.getPopulationSize()];
             
             for(int j = 0 ; j < originalPop.getPopulationSize() ; j++)
             {
-              probabilitySum[j] = productGeneInfo(originalPop.getSingleChromosome(j) , container);
+              probabilitySum[j] = productGeneInfo(originalPop.getSingleChromosome(j) , container , inter);
 //              System.out.println(probabilitySum[j]);
             }
             int total = 0;
             int error = 0;
             int success = 0;
+            
             for(int j = 0 ; j < originalPop.getPopulationSize() ; j++)
             {
               for(int k = j+1 ; k < originalPop.getPopulationSize() ; k++)
@@ -202,7 +202,7 @@ public class PBILInteractive {
                 double[] PopGetObjValue2 = originalPop.getSingleChromosome(k).getObjValue() ;
                 
                 total ++;
-                
+              
                 if(probabilitySum[j] >= probabilitySum[k] && PopGetObjValue[0] <= PopGetObjValue2[0])
                 {
                   success++;
@@ -217,7 +217,7 @@ public class PBILInteractive {
               }
             }
             
-            System.out.printf("成功率 : %.2f\n",((double)((double)success / (double)total)));
+            System.out.printf("%.2f\n",((double)((double)success / (double)total)));
             
             /*******************************************************************/
   }
