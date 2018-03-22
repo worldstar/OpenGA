@@ -233,6 +233,23 @@ public class PBILInteractive {
 //      //productVale *= Math.pow(10, cutPoint2 - cutPoint1);
       return productValue;
     }
+    
+    //Combine two models.
+    double productGeneInfo(chromosome _chromosome ,double[][] container, double inter[][]){
+      double productValue = 1;
+      for(int i = 0 ; i < _chromosome.getLength() ; i ++){
+        int job = _chromosome.getSolution()[i];
+                
+        if(i == 0){//First job
+          productValue *= container[job][i] * 10;
+        }
+        else{
+          int priorJob = _chromosome.getSolution()[i-1];
+          productValue *= (container[job][i] * 10 + inter[priorJob][job] * 10);
+        }             
+      }
+      return productValue;
+    }    
 
     public double calculate_diversity() {
         int temp1[][] = new int[chromosomeLength][chromosomeLength];
