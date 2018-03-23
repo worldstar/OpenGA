@@ -234,8 +234,8 @@ public class PBILInteractive {
       return productValue;
     }
     
-    //Combine two models.
-    double productGeneInfo(chromosome _chromosome ,double[][] container, double inter[][]){
+    //Combine two models. V1
+    double productGeneInfoV1(chromosome _chromosome, double[][] container, double inter[][]){
       double productValue = 1;
       for(int i = 0 ; i < _chromosome.getLength() ; i ++){
         int job = _chromosome.getSolution()[i];
@@ -250,6 +250,29 @@ public class PBILInteractive {
       }
       return productValue;
     }    
+    
+    //Combine two models. V2
+    double productGeneInfo(chromosome _chromosome, double[][] container, double inter[][]){
+      double productValue = 1;
+      for(int i = 0 ; i < _chromosome.getLength() ; i ++){
+        int job = _chromosome.getSolution()[i];
+                
+        if(i == 0){//First job
+          productValue *= container[job][i] * 10;
+        }
+        else{
+          double tempInterSum = 0;
+          
+          for(int j= 0; j < i; j ++){
+            int priorJob = _chromosome.getSolution()[j];
+            tempInterSum += inter[priorJob][job];
+          }
+          
+          productValue *= (container[job][i] * 10 + tempInterSum);
+        }             
+      }
+      return productValue;
+    }      
 
     public double calculate_diversity() {
         int temp1[][] = new int[chromosomeLength][chromosomeLength];
