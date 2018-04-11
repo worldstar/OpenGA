@@ -77,10 +77,12 @@ public class PBILInteractive {
         int counter = 0;
         for (int i = 0; i < popSize; i++) {
             if (originalPop.getFitness(i) <= avgFitness) {
-                for (int j = 0; j < (chromosomeLength - 1); j++) {
+                for (int j = 1; j < (chromosomeLength); j++) {
                     int gene = originalPop.getSingleChromosome(i).getSolution()[j];
-                    int gene_after = originalPop.getSingleChromosome(i).getSolution()[j + 1];
-                    tempinter[gene_after][gene]++;
+                    //int gene_after = originalPop.getSingleChromosome(i).getSolution()[j + 1];                    
+                    //tempinter[gene_after][gene]++;                    
+                    int gene_before = originalPop.getSingleChromosome(i).getSolution()[j - 1];
+                    tempinter[gene][gene_before]++;
                 }
                 counter++;
             }
@@ -251,24 +253,18 @@ public class PBILInteractive {
       return productValue;
     }    
     
-    //Combine two models. V2
+    //Combine two models. V3
     double productGeneInfo(chromosome _chromosome, double[][] container, double inter[][]){
-      double productValue = 1;
+      double productValue = 0;
       for(int i = 0 ; i < _chromosome.getLength() ; i ++){
         int job = _chromosome.getSolution()[i];
                 
         if(i == 0){//First job
-          productValue *= container[job][i] * 10;
+          productValue += container[job][i] * 10;
         }
         else{
-          double tempInterSum = 0;
-          
-          for(int j= 0; j < i; j ++){
-            int priorJob = _chromosome.getSolution()[j];
-            tempInterSum += inter[priorJob][job];
-          }
-          
-          productValue *= (container[job][i] * 10 + tempInterSum);
+          int priorJob = _chromosome.getSolution()[i-1];                 
+          productValue += (container[job][i] * inter[priorJob][job] * 100);
         }             
       }
       return productValue;
