@@ -49,7 +49,7 @@ public class readFlowShopTaillardInstance extends readFlowShopRevInstance {
         String message = "", eachLine = "";
 
         while ((eachLine = br.readLine()) != null)   {
-          message += eachLine;
+          message += eachLine + " ";
         }
 
         //System.out.println(message);
