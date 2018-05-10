@@ -219,7 +219,7 @@ public class PBILInteractive {
               }
             }
             
-            System.out.printf("%.2f\n",((double)((double)success / (double)total)));
+//            System.out.printf("%.2f\n",((double)((double)success / (double)total)));
             
             /*******************************************************************/
   }

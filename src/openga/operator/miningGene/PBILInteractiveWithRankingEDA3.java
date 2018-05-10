@@ -10,18 +10,49 @@ import openga.chromosomes.*;
  * @author Chen, Shih-Hsin
  * @version 1.0
  */
-public class PBILInteractiveWithEDA3 extends PBILInteractive {
+public class PBILInteractiveWithRankingEDA3 extends PBILInteractive {
 
-    public PBILInteractiveWithEDA3(populationI originalPop, double lamda, double beta) {
+    public PBILInteractiveWithRankingEDA3(populationI originalPop, double lamda, double beta) {
       super(originalPop, lamda, beta);
     }
-
+    double container[][];
+    double inter[][]; 
+    double container_temp[][];
+    double inter_temp[][];
+    double[] lamdas = new double[]{0.1,0.5,0.9};
+    double[] betas = new double[]{0.1,0.5,0.9};
+    double lamda_temp;
+    double beta_temp;
     public void startStatistics() {
-        calcAverageFitness();
-        calcContainer();
-        calcInter();
-        enhanceContainer();
-//        CheckModelAccurracy();
+      calcAverageFitness();
+      double Accurracy_temp = 0.0 , Accurracy = 0.0;
+      for(int i = 0 ; i < lamdas.length ; i++)
+      {
+        for(int j = 0 ; j < betas.length ; j++)
+        {
+            container = new double[chromosomeLength][chromosomeLength];
+            inter = new double[chromosomeLength][chromosomeLength];
+            lamda = lamdas[i];
+            beta = betas[j];
+            calcContainer();
+            calcInter();
+            enhanceContainer();
+            Accurracy_temp = CheckModelAccurracy_double();
+            System.out.println(Accurracy_temp + " , lamda : " + lamda + " , beta : " + beta);
+            if(Accurracy < Accurracy_temp)
+            {
+              Accurracy = Accurracy_temp;
+              container_temp = container;
+              inter_temp = inter;
+              lamda_temp = lamda;
+              beta_temp = beta;
+            }
+        }
+      }
+//      System.out.println(Accurracy + " , lamda : " + lamda_temp + " , beta : " + beta_temp);
+      container = container_temp;
+      inter = inter_temp;
+
     }
 
     public void calcInter() {  // interactive array
@@ -73,6 +104,38 @@ public class PBILInteractiveWithEDA3 extends PBILInteractive {
         //System.exit(0);
 
         
+    }
+    
+    @Override
+    public void calcContainer() {
+        double tempContainer[][] = new double[chromosomeLength][chromosomeLength];
+        //to collect gene information.
+
+        int counter = 0;
+        for (int i = 0; i < popSize; i++) {
+            if (originalPop.getFitness(i) <= avgFitness) {
+                for (int j = 0; j < chromosomeLength; j++) {
+                    int gene = originalPop.getSingleChromosome(i).getSolution()[j];
+                    tempContainer[gene][j] += 1;
+                }
+                counter++;
+            }
+        }
+
+        //to normalize them between [0, 1].
+        for (int i = 0; i < chromosomeLength; i++) {
+            for (int j = 0; j < chromosomeLength; j++) {
+                tempContainer[i][j] /= counter;
+            }
+        }
+        
+        //for learning rate lamda
+        for (int i = 0; i < chromosomeLength; i++) {
+            for (int j = 0; j < chromosomeLength; j++) {
+                container[i][j] = (1 - lamda) * container[i][j] + (lamda) * tempContainer[i][j];
+                //container[i][j]= tempContainer[i][j];
+            }
+        }
     }
 
     public void enhanceContainer()
@@ -198,5 +261,46 @@ public class PBILInteractiveWithEDA3 extends PBILInteractive {
             }
         }
       
+  }
+    
+    public double CheckModelAccurracy_double()
+  {
+    /*******************************************************************/
+            double[] probabilitySum = new double[originalPop.getPopulationSize()];
+            
+            for(int j = 0 ; j < originalPop.getPopulationSize() ; j++)
+            {
+              probabilitySum[j] = productGeneInfo(originalPop.getSingleChromosome(j) , container , inter);
+//              System.out.println(probabilitySum[j]);
+            }
+            int total = 0;
+            int error = 0;
+            int success = 0;
+            
+            for(int j = 0 ; j < originalPop.getPopulationSize() ; j++)
+            {
+              for(int k = j+1 ; k < originalPop.getPopulationSize() ; k++)
+              {
+                double[] PopGetObjValue = originalPop.getSingleChromosome(j).getObjValue() ;
+                double[] PopGetObjValue2 = originalPop.getSingleChromosome(k).getObjValue() ;
+                
+                total ++;
+              
+                if(probabilitySum[j] >= probabilitySum[k] && PopGetObjValue[0] <= PopGetObjValue2[0])
+                {
+                  success++;
+                }else if (probabilitySum[j] < probabilitySum[k] && PopGetObjValue[0] > PopGetObjValue2[0])
+                {
+                  success++;
+                }else
+                {
+                  error++;
+                }
+                
+              }
+            }
+            
+            return ((double)((double)success / (double)total));
+            /*******************************************************************/
   }
 }
