@@ -82,7 +82,7 @@ public class PBILInteractive {
                     //int gene_after = originalPop.getSingleChromosome(i).getSolution()[j + 1];                    
                     //tempinter[gene_after][gene]++;                    
                     int gene_before = originalPop.getSingleChromosome(i).getSolution()[j - 1];
-                    tempinter[gene][gene_before]++;
+                    tempinter[gene_before][gene]++;
                 }
                 counter++;
             }

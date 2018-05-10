@@ -68,10 +68,12 @@ public class PBILInteractiveWithRankingEDA3 extends PBILInteractive {
         int counter = 0;
         for (int i = 0; i < popSize; i++) {
             if (originalPop.getFitness(i) <= avgFitness) {
-                for (int j = 0; j < (chromosomeLength - 1); j++) {
+                for (int j = 1; j < (chromosomeLength - 1); j++) {
                     int gene = originalPop.getSingleChromosome(i).getSolution()[j];
-                    int gene_after = originalPop.getSingleChromosome(i).getSolution()[j + 1];
-                    tempinter[gene_after][gene]++;
+                    //int gene_after = originalPop.getSingleChromosome(i).getSolution()[j + 1];
+                    //tempinter[gene_after][gene]++;
+                    int gene_prior = originalPop.getSingleChromosome(i).getSolution()[j - 1];
+                    tempinter[gene_prior][gene]++;                    
                 }
                 counter++;
             }
