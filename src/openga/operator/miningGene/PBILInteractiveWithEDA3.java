@@ -127,18 +127,21 @@ public class PBILInteractiveWithEDA3 extends PBILInteractive {
         for (int i = 0; i < popSize; i++) {
           
 //            if (originalPop.getFitness(i) <= avgFitness) {
-                /*inter*/
-                for (int j = 1; j < chromosomeLength; j++) 
-                {
-                    int gene = originalPop.getSingleChromosome(i).getSolution()[j];//1
-                    int gene_before = originalPop.getSingleChromosome(i).getSolution()[j - 1];//0
-                    
-                    if(probabilityError[i] != 0 | probabilityError[i] != 0.0) { 
-                      
-                        double x = ((probabilityError[i] - min) / (max - min));
-                        inter[gene_before][gene] *= (1 + (x / (float)(1 + x)));                 
-                    }
-                }
+//                /*inter*/
+//                for (int j = 1; j < chromosomeLength; j++) 
+//                {
+//                    int gene = originalPop.getSingleChromosome(i).getSolution()[j];//1
+//                    int gene_before = originalPop.getSingleChromosome(i).getSolution()[j - 1];//0
+//                    
+//                    if(probabilityError[i] != 0 | probabilityError[i] != 0.0) { 
+//                      
+//                        double x = ((probabilityError[i] - min) / (max - min));
+//                        double y = 1 - inter[gene_before][gene];
+//                        double z = y*x;
+////                        y *= (1 +(x / (float)(1 + x)));       
+//                        inter[gene_before][gene] += z;
+//                    }
+//                }
                 /*container*/
                 for (int j = 0; j < chromosomeLength; j++) 
                 {
@@ -146,7 +149,11 @@ public class PBILInteractiveWithEDA3 extends PBILInteractive {
                     if(probabilityError[i] != 0 | probabilityError[i] != 0.0) { 
                       
                         double x = ((probabilityError[i] - min) / (max - min));
-                        container[gene][j]  *= (1 + (x / (float)(1 + x)));
+                        double y = 1 - container[gene][j];
+                        double z = y*x;
+//                        y *= (1 +(x / (float)(1 + x)));
+                        container[gene][j] += z;
+//                        System.out.println(container[gene][j]);
                     }
                 }
 //            }//avgFitness
