@@ -50,8 +50,8 @@ public class singleThreadGAwithEDA3 extends singleThreadGAwithEDA2 {
             //collect gene information, it's for mutation matrix
             if (i % startingGenDividen != 0) {
                 //if (diversity < 0.3) {
-                tempNumberOfCrossoverTournament = 1;
-                tempNumberOfMutationTournament = 1;
+                //tempNumberOfCrossoverTournament = 1;
+                //tempNumberOfMutationTournament = 1;
             } else {
                 //if ((diversity < 0.2)  && (i % (generations / 10) == 0)) {
                 //     tempNumberOfCrossoverTournament = 1;
