@@ -45,6 +45,7 @@ public class forScheduleMakespanFlowShopPSD extends forScheduleMakespan {
             machineTime[j] = machineTime[j - 1] + processingTime[index][j];
           }
           
+          //PSD
           for(int k = 0 ;k < i;k++)
           {
             int temp = chromosome1.genes[k];
