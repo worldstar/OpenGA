@@ -19,7 +19,7 @@ public class ObjectiveMakeSpanForFlowShopPSD extends ObjectiveMakeSpan implement
    * So there is a little bit modification on the processing time and the latter calculateObjective().
    */
   int processingTime[][];
-  forScheduleMakespanFlowShop forScheduleMakespan1 = new forScheduleMakespanFlowShop();
+  forScheduleMakespanFlowShopPSD forScheduleMakespan1 = new forScheduleMakespanFlowShopPSD();
 
   public void setScheduleData(int processingTime[][], int numberOfMachine){
     this.processingTime = processingTime;
