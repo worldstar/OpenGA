@@ -1,4 +1,4 @@
-package openga.applications;
+package openga.applications.Continuous;
 import openga.chromosomes.*;
 import openga.operator.selection.*;
 import openga.operator.crossover.*;
