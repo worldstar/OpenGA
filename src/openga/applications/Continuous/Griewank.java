@@ -1,4 +1,4 @@
-package openga.applications;
+package openga.applications.Continuous;
 import openga.chromosomes.*;
 import openga.operator.selection.*;
 import openga.operator.crossover.*;
@@ -107,16 +107,15 @@ public class Griewank {
     timeClock1.start();
     GaMain.startGA();
     timeClock1.end();
-
+/*
     for(int k = 0 ; k < DEFAULT_PopSize ; k ++ ){
-//      System.out.print(k+": "+GaMain.getPopulation().getSingleChromosome(k).toString2()+"\t"+GaMain.getPopulation().getSingleChromosome(k).getObjValue()[0]+"\t"+GaMain.getPopulation().getSingleChromosome(k).getFitnessValue()+"\n");
+      System.out.print(k+": "+GaMain.getPopulation().getSingleChromosome(k).toString2()+"\t"+GaMain.getPopulation().getSingleChromosome(k).getObjValue()[0]+"\t"+GaMain.getPopulation().getSingleChromosome(k).getFitnessValue()+"\n");
     }
 
     for(int k = 0 ; k < GaMain.getArchieve().getPopulationSize() ; k ++ ){
-      System.out.print(k+": "+GaMain.getArchieve().getSingleChromosome(k).toString2()+"\t"
-      +GaMain.getArchieve().getSingleChromosome(k).getObjValue()[0]+"\t"+GaMain.getArchieve().getSingleChromosome(k).getFitnessValue()+"\n");
+      System.out.print(k+": "+GaMain.getArchieve().getSingleChromosome(k).toString2()+"\t"+GaMain.getArchieve().getSingleChromosome(k).getObjValue()[0]+"\t"+GaMain.getArchieve().getSingleChromosome(k).getFitnessValue()+"\n");
     }
-
+*/
     String implementResult = counter+"\t"+seed+"\t"+DEFAULT_crossoverRate+"\t"+DEFAULT_mutationRate+"\t"
         +GaMain.getArchieve().getSingleChromosome(0).toString2()+"\t"
         +GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]+"\t"+timeClock1.getExecutionTime()+"\n";
