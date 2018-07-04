@@ -22,7 +22,8 @@ public class singleThreadGAwithEDA3 extends singleThreadGAwithEDA2 {
     public singleThreadGAwithEDA3() {
     }
     
-    PBILInteractiveWithEDA3 PBIL1;   //PBIL
+//    PBILInteractiveWithEDA3 PBIL1;   //PBIL
+    PBILInteractiveWithEDA3_2 PBIL1;   //PBIL
 
     public void startGA() {
         Population = initialStage();
@@ -33,7 +34,8 @@ public class singleThreadGAwithEDA3 extends singleThreadGAwithEDA2 {
         intialOffspringPopulation();
         archieve = findParetoFront(Population, 0);
 
-        PBIL1 = new PBILInteractiveWithEDA3(Population, lamda, beta);   // PBIL
+//        PBIL1 = new PBILInteractiveWithEDA3(Population, lamda, beta);   // PBIL
+        PBIL1 = new PBILInteractiveWithEDA3_2(Population, lamda, beta);   // PBIL
 
         container = PBIL1.getContainer();
         inter = PBIL1.getInter();
