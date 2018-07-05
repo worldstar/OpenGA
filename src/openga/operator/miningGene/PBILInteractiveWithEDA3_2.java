@@ -45,18 +45,19 @@ public class PBILInteractiveWithEDA3_2 extends PBILInteractive {
         for (int i = 0; i < popSize; i++) {
             if (originalPop.getFitness(i) <= avgFitness) {
                 for (int j = 0; j < chromosomeLength; j++) {
+                  int gene = originalPop.getSingleChromosome(i).getSolution()[j];
+                  tempContainer[gene][j] += 1;
+                  
                   if(D1 > 0 && j >= D1)
                   {
                     for(int k = 0 ; k < D1 ; k++)
                     {
-                      int gene = originalPop.getSingleChromosome(i).getSolution()[j - (k+1)];
+                      gene = originalPop.getSingleChromosome(i).getSolution()[j - (k+1)];
                       tempContainer[gene][j] += 1;
                     }      
-                  }else
-                  {
-                      int gene = originalPop.getSingleChromosome(i).getSolution()[j];
-                      tempContainer[gene][j] += 1;
-                  }            
+                  }
+                  
+                  
                 }
                 counter++;
             }
