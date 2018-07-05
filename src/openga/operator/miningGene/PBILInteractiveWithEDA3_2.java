@@ -52,7 +52,7 @@ public class PBILInteractiveWithEDA3_2 extends PBILInteractive {
                   {
                     for(int k = 0 ; k < D1 ; k++)
                     {
-                      gene = originalPop.getSingleChromosome(i).getSolution()[j - (k+1)];
+                      gene = originalPop.getSingleChromosome(i).getSolution()[j - k];
                       tempContainer[gene][j] += 1;
                     }      
                   }
@@ -127,7 +127,7 @@ public class PBILInteractiveWithEDA3_2 extends PBILInteractive {
                     {
                       for(int k = 0 ; k < D2 ; k++)
                       {
-                        gene_prior = originalPop.getSingleChromosome(i).getSolution()[j - 1 - (k + 1)];
+                        gene_prior = originalPop.getSingleChromosome(i).getSolution()[j - k ];
                         tempinter[gene_prior][gene]++;
                       }      
                     }
