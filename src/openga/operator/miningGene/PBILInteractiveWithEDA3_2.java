@@ -16,8 +16,8 @@ public class PBILInteractiveWithEDA3_2 extends PBILInteractive {
       super(originalPop, lamda, beta);
     }
     
-    int D1 = 0;
-    int D2 = 0;
+    int D1 = 2;
+    int D2 = 2;
 
     public void startStatistics() {
         calcAverageFitness();
@@ -45,15 +45,16 @@ public class PBILInteractiveWithEDA3_2 extends PBILInteractive {
         for (int i = 0; i < popSize; i++) {
             if (originalPop.getFitness(i) <= avgFitness) {
                 for (int j = 0; j < chromosomeLength; j++) {
-                  int gene = originalPop.getSingleChromosome(i).getSolution()[j];
-                  if(D1 > 0 && gene >= D1)
+                  if(D1 > 0 && j >= D1)
                   {
                     for(int k = 0 ; k < D1 ; k++)
                     {
-                      tempContainer[gene - (k + 1)][j] += 1;
+                      int gene = originalPop.getSingleChromosome(i).getSolution()[j - (k+1)];
+                      tempContainer[gene][j] += 1;
                     }      
                   }else
                   {
+                      int gene = originalPop.getSingleChromosome(i).getSolution()[j];
                       tempContainer[gene][j] += 1;
                   }            
                 }
@@ -121,11 +122,12 @@ public class PBILInteractiveWithEDA3_2 extends PBILInteractive {
                     int gene_prior = originalPop.getSingleChromosome(i).getSolution()[j - 1];
                     tempinter[gene_prior][gene]++;
                     
-                    if(D2 > 0 && gene_prior >= D2)
+                    if(D2 > 0 && (j-1) >= D2)
                     {
                       for(int k = 0 ; k < D2 ; k++)
                       {
-                        tempinter[gene_prior - (k + 1)][j] += 1;
+                        gene_prior = originalPop.getSingleChromosome(i).getSolution()[j - 1 - (k + 1)];
+                        tempinter[gene_prior][gene]++;
                       }      
                     }
                     
