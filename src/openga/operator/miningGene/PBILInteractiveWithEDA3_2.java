@@ -44,22 +44,17 @@ public class PBILInteractiveWithEDA3_2 extends PBILInteractive {
         int counter = 0;
         for (int i = 0; i < popSize; i++) {
             if (originalPop.getFitness(i) <= avgFitness) {
-                for (int j = 0; j < chromosomeLength; j++) {
-                  int gene = originalPop.getSingleChromosome(i).getSolution()[j];
-                  tempContainer[gene][j] += 1;
-                  
+                for (int j = 0; j < chromosomeLength; j++) {                  
                   if(D1 > 0 && j >= D1)
                   {
                     for(int k = 0 ; k < D1 ; k++)
                     {
                       gene = originalPop.getSingleChromosome(i).getSolution()[j - k];
                       tempContainer[gene][j] += 1;
+                      counter++;
                     }      
-                  }
-                  
-                  
-                }
-                counter++;
+                  }                                    
+                }                
             }
         }
 
@@ -117,23 +112,19 @@ public class PBILInteractiveWithEDA3_2 extends PBILInteractive {
         int counter = 0;
         for (int i = 0; i < popSize; i++) {
             if (originalPop.getFitness(i) <= avgFitness) {
-                for (int j = 1; j < (chromosomeLength); j++) {
-                  
+                for (int j = 1; j < (chromosomeLength); j++) {                  
                     int gene = originalPop.getSingleChromosome(i).getSolution()[j];
-                    int gene_prior = originalPop.getSingleChromosome(i).getSolution()[j - 1];
-                    tempinter[gene_prior][gene]++;
                     
                     if(D2 > 0 && (j-1) >= D2)
                     {
                       for(int k = 0 ; k < D2 ; k++)
                       {
-                        gene_prior = originalPop.getSingleChromosome(i).getSolution()[j - k ];
+                        int gene_prior = originalPop.getSingleChromosome(i).getSolution()[j-k-1];
                         tempinter[gene_prior][gene]++;
+                        counter++;
                       }      
-                    }
-                    
-                }
-                counter++;
+                    }                  
+                }                
             }
         }
 
