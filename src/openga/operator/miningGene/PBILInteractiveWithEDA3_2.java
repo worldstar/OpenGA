@@ -10,20 +10,23 @@ import openga.chromosomes.*;
  * @author Chen, Shih-Hsin
  * @version 1.0
  */
-public class PBILInteractiveWithEDA3_2 extends PBILInteractive {
+public class PBILInteractiveWithEDA3_2 extends PBILInteractive{
 
-    public PBILInteractiveWithEDA3_2(populationI originalPop, double lamda, double beta) {
+    public PBILInteractiveWithEDA3_2(populationI originalPop, double lamda, double beta , int D1 , int D2 ) {
       super(originalPop, lamda, beta);
+      this.D1 = D1;
+      this.D2 = D2;
     }
     
-    int D1 = 2;
-    int D2 = 2;
+    int D1 = 0;
+    int D2 = 0;
 
     public void startStatistics() {
         calcAverageFitness();
         calcContainer();
         calcInter();
         enhanceContainer();
+//        System.out.println(D1 + " , " + D2);
 //        CheckModelAccurracy();
     }
     
@@ -45,11 +48,11 @@ public class PBILInteractiveWithEDA3_2 extends PBILInteractive {
         for (int i = 0; i < popSize; i++) {
             if (originalPop.getFitness(i) <= avgFitness) {
                 for (int j = 0; j < chromosomeLength; j++) {                  
-                  if(D1 > 0 && j >= D1)
+                  if(D1 >= 0 && j >= D1)
                   {
-                    for(int k = 0 ; k < D1 ; k++)
+                    for(int k = 0 ; k <= D1 ; k++)
                     {
-                      gene = originalPop.getSingleChromosome(i).getSolution()[j - k];
+                      int gene = originalPop.getSingleChromosome(i).getSolution()[j - k];
                       tempContainer[gene][j] += 1;
                       counter++;
                     }      
@@ -115,9 +118,9 @@ public class PBILInteractiveWithEDA3_2 extends PBILInteractive {
                 for (int j = 1; j < (chromosomeLength); j++) {                  
                     int gene = originalPop.getSingleChromosome(i).getSolution()[j];
                     
-                    if(D2 > 0 && (j-1) >= D2)
+                    if(D2 >= 0 && (j-1) >= D2)
                     {
-                      for(int k = 0 ; k < D2 ; k++)
+                      for(int k = 0 ; k <= D2 ; k++)
                       {
                         int gene_prior = originalPop.getSingleChromosome(i).getSolution()[j-k-1];
                         tempinter[gene_prior][gene]++;
@@ -242,4 +245,5 @@ public class PBILInteractiveWithEDA3_2 extends PBILInteractive {
         }
       
   }
+
 }

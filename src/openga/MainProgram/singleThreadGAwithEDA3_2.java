@@ -17,13 +17,17 @@ import openga.operator.selection.SelectI;
  *
  * @author Kuo Yu-Cheng
  */
-public class singleThreadGAwithEDA3 extends singleThreadGAwithEDA2 {
+public class singleThreadGAwithEDA3_2 extends singleThreadGAwithEDA2 implements PBILInteractiveWithEDA3_2I {
 
-    public singleThreadGAwithEDA3() {
+    public singleThreadGAwithEDA3_2() {
     }
     
-    PBILInteractiveWithEDA3 PBIL1;   //PBIL
+    int D1 = 0;
+    int D2 = 0;
     
+//    PBILInteractiveWithEDA3 PBIL1;   //PBIL
+    PBILInteractiveWithEDA3_2 PBIL1;   //PBIL
+
     public void startGA() {
         Population = initialStage();
         //evaluate the objective values and calculate fitness values
@@ -33,7 +37,8 @@ public class singleThreadGAwithEDA3 extends singleThreadGAwithEDA2 {
         intialOffspringPopulation();
         archieve = findParetoFront(Population, 0);
 
-        PBIL1 = new PBILInteractiveWithEDA3(Population, lamda, beta);   // PBIL
+//        PBIL1 = new PBILInteractiveWithEDA3(Population, lamda, beta);   // PBIL
+        PBIL1 = new PBILInteractiveWithEDA3_2(Population, lamda, beta , D1 , D2);   // PBIL
 
         container = PBIL1.getContainer();
         inter = PBIL1.getInter();
@@ -114,5 +119,15 @@ public class singleThreadGAwithEDA3 extends singleThreadGAwithEDA2 {
         }while(i < generations && currentUsedSolution < this.fixPopSize*this.generations);
         //printResults();
     }
+
+  @Override
+  public void setD1(int D1) {
+    this.D1 = D1;
+  }
+
+  @Override
+  public void setD2(int D2) {
+    this.D2 = D2;
+  }
 
 }
