@@ -8,7 +8,7 @@ import openga.chromosomes.*;
  *
  * @author YU-TANG CHANG
  */
-public class ObjectiveFunctionforOAS_MLA extends TPObjectiveFunctionMTSP implements ObjectiveFunctionOASI {
+public class ObjectiveFunctionOAS_MLA extends TPObjectiveFunctionMTSP implements ObjectiveFunctionOASI {
 
   chromosome chromosome1;
 
@@ -27,25 +27,6 @@ public class ObjectiveFunctionforOAS_MLA extends TPObjectiveFunctionMTSP impleme
   double[] w;       //  weight
   double[][] s;     //  setup times
   double[] C;       //  completion Time
-
-  public static void main(String[] args) {
-    ObjectiveFunctionforOAS_MLA TPOAS = new ObjectiveFunctionforOAS_MLA();
-    TPOAS.r = new double[]{10, 2, 4, 6, 4, 5, 7, 3};
-    TPOAS.p = new double[]{19, 13, 4, 13, 12, 12, 2, 6};
-    TPOAS.d = new double[]{50, 60, 40, 70, 90, 100, 60, 30};
-    TPOAS.d_bar = new double[]{70, 80, 50, 90, 110, 120, 70, 40};
-    TPOAS.e = new double[]{19, 16, 10, 12, 19, 3, 16, 19};
-    TPOAS.w = new double[]{0.95, 0.8, 1, 0.6, 0.95, 0.15, 1.6, 1.9};
-
-    TPOAS.C = new double[TPOAS.r.length];
-
-    chromosome _chromosome1 = new chromosome();
-    _chromosome1.setGenotypeAndLength(true, 10, 2);
-
-    int[] soln = new int[]{3, 0, 7, 4, 1, 5, 6, 2};
-    _chromosome1.setSolution(soln);
-    TPOAS.evaluateAll(_chromosome1, 2);
-  }
 
   @Override
   public void calcObjective() {
@@ -80,15 +61,15 @@ public class ObjectiveFunctionforOAS_MLA extends TPObjectiveFunctionMTSP impleme
   public void calcMaximumRevenue() {
     Revenue = 0;
 
-    int numberOfCities = length - numberOfSalesmen, currentPosition = 0, stopPosition = 0, index = 0;
+    int numberOfCities = length - numberOfSalesmen, index = 0;
     double time = 0;
     double time2 = 0;
 
     ArrayList<Integer> _chromosome1 = new ArrayList<>();
     ArrayList<Integer> accept = new ArrayList<>();
     ArrayList<Integer> reject = new ArrayList<>();
-    _chromosome1.addAll(chromosometoList(chromosome1));    
-    
+    _chromosome1.addAll(chromosometoList(chromosome1));
+
     for (int i = 0; i < numberOfCities; i++) {
       index = chromosome1.genes[i];
 //      System.out.print(index);
@@ -157,13 +138,32 @@ public class ObjectiveFunctionforOAS_MLA extends TPObjectiveFunctionMTSP impleme
     return Revenue;
   }
 
-//  @Override
-//  public double[] getObjectiveValues(int index) {
-//    double objectives[];
-//    objectives = chromosome1.getObjValue();
-//    double obj = evaluateAll(chromosome1, numberOfSalesmen);
-//    objectives[0] = obj;
-//    chromosome1.setObjValue(objectives);
-//    return chromosome1.getObjValue();
-//  }
+  @Override
+  public double[] getObjectiveValues(int index) {
+    double objectives[];
+    objectives = chromosome1.getObjValue();
+    double obj = evaluateAll(chromosome1, numberOfSalesmen);
+    objectives[0] = obj;
+    chromosome1.setObjValue(objectives);
+    return chromosome1.getObjValue();
+  }
+
+  public static void main(String[] args) {
+    ObjectiveFunctionOAS_MLA TPOAS = new ObjectiveFunctionOAS_MLA();
+    TPOAS.r = new double[]{10, 2, 4, 6, 4, 5, 7, 3};
+    TPOAS.p = new double[]{19, 13, 4, 13, 12, 12, 2, 6};
+    TPOAS.d = new double[]{50, 60, 40, 70, 90, 100, 60, 30};
+    TPOAS.d_bar = new double[]{70, 80, 50, 90, 110, 120, 70, 40};
+    TPOAS.e = new double[]{19, 16, 10, 12, 19, 3, 16, 19};
+    TPOAS.w = new double[]{0.95, 0.8, 1, 0.6, 0.95, 0.15, 1.6, 1.9};
+
+    TPOAS.C = new double[TPOAS.r.length];
+
+    chromosome _chromosome1 = new chromosome();
+    _chromosome1.setGenotypeAndLength(true, 10, 2);
+
+    int[] soln = new int[]{3, 0, 7, 4, 1, 5, 6, 2};
+    _chromosome1.setSolution(soln);
+    TPOAS.evaluateAll(_chromosome1, 2);
+  }
 }
