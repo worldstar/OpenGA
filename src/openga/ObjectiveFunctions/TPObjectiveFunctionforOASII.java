@@ -172,5 +172,10 @@ public class TPObjectiveFunctionforOASII extends TPObjectiveFunctionMTSP impleme
   public double getMaximumRevenue() {
     return maximumRevenue;
   }
+
+  @Override
+  public void setOASData(double[] r, double[] p, double[] d, double[] d_bar, double[] e, double[] w, double b, int numberOfSalesmen) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
   
 }

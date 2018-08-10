@@ -166,4 +166,9 @@ public class ObjectiveFunctionOAS_MLA extends TPObjectiveFunctionMTSP implements
     _chromosome1.setSolution(soln);
     TPOAS.evaluateAll(_chromosome1, 2);
   }
+
+  @Override
+  public void setOASData(double[] r, double[] p, double[] d, double[] d_bar, double[] e, double[] w, double b, int numberOfSalesmen) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
 }
