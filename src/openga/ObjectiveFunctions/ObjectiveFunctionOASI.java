@@ -10,4 +10,5 @@ package openga.ObjectiveFunctions;
 
 public interface ObjectiveFunctionOASI extends ObjectiveFunctionI{
   public void setOASData(double[] r, double[] p, double[] d, double[] d_bar, double[] e, double[] w, double[][] s, int numberOfSalesmen);
+  public void setOASData(double[] r, double[] p, double[] d, double[] d_bar, double[] e, double[] w, double b, int numberOfSalesmen);
 }
