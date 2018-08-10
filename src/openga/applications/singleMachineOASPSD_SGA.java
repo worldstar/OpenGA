@@ -21,7 +21,7 @@ import openga.applications.data.OASInstances;
  * Reference "A tabu search algorithm for order acceptance and scheduling", http://home.ku.edu.tr/~coguz/Research/Dataset_OAS.zip
  */
 public class singleMachineOASPSD_SGA extends singleMachineOAS_SGA {
-  double b = 0.1; //Setup index for PSD.
+  double b; //Setup index for PSD.
   
   public void setParameter(double crossoverRate, double mutationRate, int counter, double elitism,
           int generation, int type, int numberOfSalesmen, int cities, String instanceName,
@@ -53,7 +53,7 @@ public class singleMachineOASPSD_SGA extends singleMachineOAS_SGA {
     Mutation = new swapMutationTwoPart();//TwoPartMTSPMutation
     localSearch1 = new localSearchByIG();
     ObjectiveFunction = new ObjectiveFunctionOASI[numberOfObjs];
-    ObjectiveFunction[0] = new TPObjectiveFunctionOASPSD();
+    ObjectiveFunction[0] = new TPObjectiveFunctionforOAS_Setup();
     Fitness = new singleObjectiveFitness();//singleObjectiveFitness singleObjectiveFitnessByNormalize
     objectiveMinimization = new boolean[numberOfObjs];
     objectiveMinimization[0] = false;
@@ -95,27 +95,27 @@ public class singleMachineOASPSD_SGA extends singleMachineOAS_SGA {
     } else if (type == 0) {//0: All salesmen reserve the same sites
       type = 3;//The worst.
     }
-    String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + type + "\t" + DEFAULT_PopSize + "\t" + alpha
+    String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + type + "\t" + DEFAULT_PopSize + "\t" + alpha + "\t" + b
             + "\t" + GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
             + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
-    writeFile("OASforSMSPPSD_20171207" + "MaxRevenueFull", implementResult);
+    writeFile("OASforSMSPPSD_20180810_Setup" + "MaxRevenueFull", implementResult);
     System.out.print(implementResult);
   }
 
   public static void main(String[] args) {
-    System.out.println("OASforSMSPPSD-SGALS_20171207" + "MaxRevenueFull");
+    System.out.println("OASforSMSPPSD-SGALS_20180810" + "MaxRevenueFull");
     int counter = 0;
     boolean applyLocalSearch;
-    double[] crossoverRate = new double[]{0.5};//0.9, 0.5 [0.5]
-    double[] mutationRate = new double[]{0.5};//0.1, 0.5 [0.5]
+    double[] crossoverRate = new double[]{1,0.5};//0.9, 0.5 [0.5]
+    double[] mutationRate = new double[]{0.1,0.5};//0.1, 0.5 [0.5]
     double elitism[] = new double[]{0.1};
-    int[] crossoverType = new int[]{3};//0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
-    int repeat = 15;//30
+    int[] crossoverType = new int[]{3,2};//0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
+    int repeat = 3;//30
     int generations[] = new int[]{0};//1000
     int[] populationsSize = new int[]{50, 100, 200};//50, 100, 200 [50]
     int[] numberOfSalesmen = new int[]{2};
-    double[] alpha = new double[]{0.2};//0.2, 0.1, 0.05 [0.2]
-    int[] orders = new int[]{20, 50, 100};//10, 15, 20, 25, 50, 100
+    double[] alpha = new double[]{0.2, 0.1, 0.05, 0};//0.2, 0.1, 0.05 [0.2]
+    int[] orders = new int[]{10, 15, 20, 25, 50, 100};//10, 15, 20, 25, 50, 100
     int[] Tao = new int[]{1, 3, 5, 7, 9};//1, 3, 5, 7, 9
     int[] R = new int[]{1, 3, 5, 7, 9};//1, 3, 5, 7, 9
     double b[] = new double[]{0.1, 0.2, 0.3};//Setup index for PSD.

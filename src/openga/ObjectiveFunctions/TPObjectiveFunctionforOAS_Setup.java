@@ -16,8 +16,7 @@ public class TPObjectiveFunctionforOAS_Setup extends TPObjectiveFunctionMTSP imp
   double minimumCost;
   double Revenue;
   double maximumRevenue;
-  double PSDtime;
-  double b;
+  double PSDtime=0;  
   boolean havePunish;
 
   //Instance Data
@@ -29,7 +28,8 @@ public class TPObjectiveFunctionforOAS_Setup extends TPObjectiveFunctionMTSP imp
   double[] w;       //  weight
   double[][] s;     //  setup times
   double[] C;       //completion Time
-
+  double b;       // total processing Time
+  
   public static void main(String[] args) {
     TPObjectiveFunctionforOAS_Setup TPOAS = new TPObjectiveFunctionforOAS_Setup();
 //    TPOAS.r = new double[]{3, 29, 22, 14, 24, 8, 16, 46, 39, 43};
@@ -127,6 +127,7 @@ public class TPObjectiveFunctionforOAS_Setup extends TPObjectiveFunctionMTSP imp
   public void calcMaximumRevenue() {
     Revenue = 0;
     maximumRevenue = 0;
+    PSDtime = 0; 
     int numberOfCities = length - numberOfSalesmen,
             currentPosition = 0, stopPosition = 0,
             index, lastindex = 0;
@@ -276,5 +277,6 @@ public class TPObjectiveFunctionforOAS_Setup extends TPObjectiveFunctionMTSP imp
     this.w = w;
     this.b = b;
     this.numberOfSalesmen = numberOfSalesmen;
+    C = new double[p.length];
   }
 }
