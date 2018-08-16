@@ -26,7 +26,8 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
   double[] e;       //  revenue
   double[] w;       //  weight
   double[][] s;     //  setup times
-  double[] C;       //completion Time
+  double[] C;       //  completion Time
+  double b;         //  total processing Time
 
   public static void main(String[] args) {
     TPObjectiveFunctionforOAS TPOAS = new TPObjectiveFunctionforOAS();
@@ -269,6 +270,14 @@ public class TPObjectiveFunctionforOAS extends TPObjectiveFunctionMTSP implement
 
   @Override
   public void setOASData(double[] r, double[] p, double[] d, double[] d_bar, double[] e, double[] w, double b, int numberOfSalesmen) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    this.r = r;
+    this.p = p;
+    this.d = d;
+    this.d_bar = d_bar;
+    this.e = e;
+    this.w = w;
+    this.b = b;
+    this.numberOfSalesmen = numberOfSalesmen;
+    C = new double[p.length];
   }
 }
