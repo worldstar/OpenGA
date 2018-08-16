@@ -101,9 +101,9 @@ public class parallelMachineSetupOAS extends singleMachineOAS_SGA {
     localSearch1 = new localSearchByIG();
     ObjectiveFunction = new ObjectiveFunctionOASI[numberOfObjs];
     if (numberOfSalesmen > 2) {
-      ObjectiveFunction[0] = new TPObjectiveFunctionOASParallelPSD();//the first objective
+      ObjectiveFunction[0] = new TPObjectiveFunctionOASParallelPSD_Setup();//the first objective
     } else {
-      ObjectiveFunction[0] = new TPObjectiveFunctionOASPSD();//the first objective
+      ObjectiveFunction[0] = new TPObjectiveFunctionforOAS_Setup();//the first objective
     }
     Fitness = new singleObjectiveFitness();//singleObjectiveFitness singleObjectiveFitnessByNormalize
     objectiveMinimization = new boolean[numberOfObjs];
@@ -151,10 +151,10 @@ public class parallelMachineSetupOAS extends singleMachineOAS_SGA {
     } else if (type == 0) {
       type = 3;
     }
-    String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + type + "\t" + DEFAULT_PopSize + "\t" + numberOfSalesmen + "\t" + alpha
+    String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + type + "\t" + DEFAULT_PopSize + "\t" + numberOfSalesmen + "\t" + alpha + "\t" + b
             + "\t" + GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
             + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
-    writeFile("parallelMachineSetupOASPSD_20170720" + "MaxRevenueFull", implementResult);
+    writeFile("parallelMachineSetupOASPSD_20180816_Type12" + "MaxRevenueFull", implementResult);
     System.out.print(implementResult);
     //System.out.print("\n");
     //System.out.print(GaMain.getArchieve().getSingleChromosome(0).toString1());
@@ -168,13 +168,13 @@ public class parallelMachineSetupOAS extends singleMachineOAS_SGA {
     double[] crossoverRate = new double[]{1, 0.5};//1, 0.5
     double[] mutationRate = new double[]{0.1, 0.5};//0.1, 0.5
     double elitism[] = new double[]{0.1};//3, 5, 10, 20, 30
-    int[] crossoverType = new int[]{3, 2, 0};//0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
+    int[] crossoverType = new int[]{3, 2};//0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
     int repeat = 10;
     int generations[] = new int[]{0};//1000
     int[] populationsSize = new int[]{100, 200};
-    double[] alpha = new double[]{0.2, 0.1, 0.05};//0.2, 0.1, 0.05 Parameter of IG algrithm
-    int[] numberOfSalesmen = new int[]{2, 4, 6};//3,4,6
-    int[] numberOfJobs = new int[]{20, 40, 60, 80, 100, 120};//20, 40, 60, 80, 100, 120
+    double[] alpha = new double[]{0.2, 0.1, 0.05, 0};//0.2, 0.1, 0.05 Parameter of IG algrithm
+    int[] numberOfSalesmen = new int[]{4, 6};//3,4,6
+    int[] numberOfJobs = new int[]{20, 40, 60, 80};//20, 40, 60, 80, 100, 120
     double b[] = new double[]{0.1, 0.2, 0.3};
     int startInstanceID = 1;//1
     int endStartInstanceID = 1;//15
@@ -191,14 +191,7 @@ public class parallelMachineSetupOAS extends singleMachineOAS_SGA {
           RT.SaveValueOfTxt(RT.TxtLength);
         } catch (IOException ex) {
         }
-
-        for (int ls = 0; ls < 2; ls++) {
-          if (ls == 0) {
-            applyLocalSearch = false;
-          } else {
-            applyLocalSearch = true;
-          }
-
+        
           for (int s = 0; s < numberOfSalesmen.length; s++) {
             for (int cr = 0; cr < crossoverRate.length; cr++) {
               for (int t = 0; t < crossoverType.length; t++) {
@@ -206,7 +199,7 @@ public class parallelMachineSetupOAS extends singleMachineOAS_SGA {
                   for (int e = 0; e < elitism.length; e++) {
                     for (int a = 0; a < alpha.length; a++) {
                       for (int pop_Size = 0; pop_Size < populationsSize.length; pop_Size++) {
-                        for(int m = 0 ; s < b.length ; m++){
+                        for(int m = 0 ; m < b.length ; m++){
                           for (int r = 0; r < repeat; r++) {
                             int _alpha = (int) Math.round(((double) numberOfJobs[j] * alpha[a]));
                             generations[0] = numberOfJobs[j] * (numberOfSalesmen[s] - 1) * 2000 / populationsSize[pop_Size];
@@ -229,7 +222,7 @@ public class parallelMachineSetupOAS extends singleMachineOAS_SGA {
               }
             }
           }
-        }
+        
 
       }
     }
