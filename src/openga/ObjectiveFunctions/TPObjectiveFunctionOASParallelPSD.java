@@ -1,122 +1,117 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package openga.ObjectiveFunctions;
 
 import java.util.ArrayList;
 import java.util.List;
+import openga.chromosomes.*;
 
-/**
- *
- * @author Administrator
- */
-public class TPObjectiveFunctionOASParallelPSD extends TPObjectiveFunctionOASParallel {
 
-  double[] PSD;
+public class TPObjectiveFunctionOASParallelPSD  extends TPObjectiveFunctionMTSP implements ObjectiveFunctionOASI {
 
+  populationI population;// Part-one chromosomes
+  chromosome chromosome1;
+  double Revenue;
+  double maximumRevenue;
+  int numberOfSalesmen;
+  int length, indexOfObjective;
+  
+  //Objective Value
+  double minimumCost;
+  boolean havePunish;
+  
+  //Instance Data
+  double[] r;       //  release date.(arrival time)
+  double[] p;       //  processing time
+  double[] d;       //  due-date
+  double[] d_bar;   //  deadline
+  double[] e;       //  revenue
+  double[] w;       //  weight
+  double[][] s;     //  setup times
+  double[] C;       //  completion Time
+  double b;         //  Setup index for PSD.
+  
+  
+  public List<Integer> chromosometoList(chromosome _chromosome1) {
+    List<Integer> soln = new ArrayList<Integer>();
+    for (int i = 0; i < _chromosome1.genes.length; i++) {
+      soln.add(_chromosome1.genes[i]);
+    }
+    return soln;
+  }
+  
+  
+  public double evaluateAll(chromosome _chromosome1, int numberOfSalesmen) {
+    this.setData(_chromosome1, numberOfSalesmen);
+    this.calcMaximumRevenue();
+    return this.getMaximumRevenue();
+  }
+  
+  
   public void calcMaximumRevenue() {
-    revenues = new double[numberOfSalesmen - 1];
-    time = new double[numberOfSalesmen - 1];
-    List<Integer> _chromosome1 = new ArrayList<>();
-    _chromosome1.addAll(chromosometoList(chromosome1));
+    Revenue = 0;
+    maximumRevenue = 0;
+    int numberofMachines = numberOfSalesmen - 1;   
+ 
+    int numberOfCities = length - numberOfSalesmen, index=0, lastindex = 0, currentPosition = 0, stopPosition = 0;
+    
+    double[] PSDtime = new double[numberofMachines];
+    double[] time = new double[numberofMachines];
+    
+    for (int i=0;i<numberofMachines;i++){
+      PSDtime[i]=0;
+      time[i]=0;     
+      C[i]=0;
+    }
+
+    List<Integer> _chromosome1 = new ArrayList<>();    
     List<List<Integer>> accept = new ArrayList<>();
+    for (int i=0;i<numberofMachines;i++){
+      accept.add(new ArrayList<Integer>());
+    }
+    
     List<Integer> reject = new ArrayList<>();
     List<Integer> salesmen = new ArrayList<>();
-    int index;
-
-//    System.out.println("_chromosome1(B):" + _chromosome1.toString());
-    for (int m = 0; m < numberOfSalesmen - 1; m++) {
-      List<Double> times = new ArrayList<>();   //initialize times & revenue.
-      completionTimes.add(times);
-      moveGene(_chromosome1, accept, 0);       //give every accept machine a order first.
-      index = accept.get(m).get(0);
-      time[m] = calccompletionTime(0, index, -1);
-      completionTimes.get(m).add(time[m]);
-      revenues[m] = calcRevenue(time[m], index);
-    }
-//    System.out.println("accept:" + accept.toString());
-//    System.out.println("times:" + Arrays.toString(time));
-//    System.out.println("revenues:" + Arrays.toString(revenues));
-//    System.out.println("completionTimes:" + completionTimes.toString());
-
-    /*try to insert last order on every machine, 
-      if revenue & completion time is better, 
-      put the order into the machine.*/
-    double _time, _time2, revenue, _revenue;
-    List<List<Integer>> _accept = new ArrayList<>();
-    copyGenes(accept, _accept);
+    _chromosome1.addAll(chromosometoList(chromosome1));
+    
     int machineNumber = 0;
-    for (int i = 0; i < _chromosome1.size() - numberOfSalesmen; i++) {
-      index = _chromosome1.get(i);
-      _time = time[0];
-      copyGene(_chromosome1, accept.get(0), i);
-      _time = calccompletionTime(_time, index, accept.get(0).get(accept.get(0).size() - 2),i);//after Comparison time[0] will update
-      revenue = calcRevenue(_time, index);
-
-      for (int m = 1; m < numberOfSalesmen - 1; m++) {
-        _time2 = time[m];
-        copyGene(_chromosome1, _accept.get(m), i);
-        _time2 = calccompletionTime(_time2, index, _accept.get(m).get(_accept.get(m).size() - 2),i);
-        _revenue = calcRevenue(_time2, index);
-//        System.out.println("accept:" + accept.toString() + "\t" + "revenue:" + revenue + "\t" + "mb" + " " + _time + "\t");
-//        System.out.println("_accept:" + _accept.toString() + "\t" + "_revenue:" + _revenue + "\t" + "m" + (m + 1) + " " + _time2 + "\t");
-
-        if (m == numberOfSalesmen - 2 && revenue == 0 && _revenue == 0) {
-//          System.out.println("the order is reject.");
-          copyGene(_chromosome1, reject, i);
-          accept.get(machineNumber).remove(accept.get(machineNumber).size() - 1);
-          machineNumber = numberOfSalesmen;
-        } else if (revenue > _revenue) {
-//          System.out.println("revenue > _revenue");
-        } else if (revenue == _revenue) {
-          if (_time <= _time2) {
-//            System.out.println("revenue = _revenue, _time < _time2");
-          } else if (_time == _time2) {
-            int numberofOrders = accept.get(0).size(), _numberofOrders = accept.get(m).size();
-            if (numberofOrders <= _numberofOrders) {
-//              System.out.println("revenue = _revenue, _time = _time2, numberofOrders <= _numberofOrders");
-            } else {
-//              System.out.println("revenue = _revenue, _time = _time2, numberofOrders > _numberofOrders");
-              copyGenes(_accept, accept);
-              _time = _time2;
-              revenue = _revenue;
-              machineNumber = m;
-            }
-          } else {
-//            System.out.println("revenue = _revenue, _time > _time2");
-            copyGenes(_accept, accept);
-            _time = _time2;
-            revenue = _revenue;
-            machineNumber = m;
-          }
-        } else {
-//          System.out.println("revenue < _revenue");
-          copyGenes(_accept, accept);
-          _time = _time2;
-          revenue = _revenue;
-          machineNumber = m;
+    for (int i = 0; i < numberOfSalesmen; i++) {
+      stopPosition += _chromosome1.get(numberOfCities + i);
+      for (int j = currentPosition; j < stopPosition; j++) {
+        index = chromosome1.genes[j];
+        if (time[machineNumber] < r[index]) {
+          time[machineNumber] = r[index];
         }
-        _accept.get(m).remove(_accept.get(m).size() - 1);
-        _revenue -= calcRevenue(_time2, index);
-        _time2 = 0;
-//        System.out.println("accept(C):" + accept.toString() + "\t" + "revenue:" + revenue + "\t" + _time + "\t");
-//        System.out.println();
+        if (j != 0) {
+          time[machineNumber] += p[index] + (PSDtime[machineNumber] * b);
+        } 
+        PSDtime[machineNumber] += p[index]; // Total_Time * b [0.1,0.2,1.0]
+        C[machineNumber] = time[machineNumber];
+
+        if (C[machineNumber] <= d[index]) {
+          Revenue = e[index];
+        } else if (C[machineNumber] > d[index] && C[machineNumber] <= d_bar[index]) {
+          Revenue = e[index] - (C[machineNumber] - d[index]) * w[index];
+        } else {
+          Revenue = 0;
+        }
+        maximumRevenue += Revenue;
+
+        if (Revenue == 0) {        
+          reject.add(_chromosome1.get(j));
+        } else {
+          accept.get(machineNumber).add(_chromosome1.get(j));
+        }
+        lastindex = index;
       }
-      if (machineNumber != numberOfSalesmen) {
-//        System.out.println("one gene moved.");
-        time[machineNumber] = _time;
-        revenues[machineNumber] += revenue;
-        completionTimes.get(machineNumber).add(_time);
+      
+      currentPosition += _chromosome1.get(numberOfCities + i);      
+      //判斷當前機器誰能最早空出時間處理下一個工件
+      double count=99999999;
+      for (int k=0;k<numberofMachines;k++){
+        if (C[k] < count){count = C[k]; machineNumber = k;}                
       }
-      copyGenes(accept, _accept);
-      machineNumber = 0;
-//      System.out.println("times:" + Arrays.toString(time));
-//      System.out.println("revenues:" + Arrays.toString(revenues));
-//      System.out.println();
+      
     }
-//    System.out.println();
+
     _chromosome1.clear();
     for (int m = 0; m < accept.size(); m++) {
       _chromosome1.addAll(accept.get(m));
@@ -126,26 +121,93 @@ public class TPObjectiveFunctionOASParallelPSD extends TPObjectiveFunctionOASPar
     _chromosome1.addAll(reject);
     _chromosome1.addAll(salesmen);
     chromosome1.setSolution(_chromosome1);
-    maximumRevenue = calctotalRevenue();
-
-//    System.out.println("accept:"+accept.toString());
-//    System.out.println("reject:"+reject.toString());
-//    System.out.println("salesmen:"+salesmen.toString());
-//    System.out.println("_chromosome1:"+_chromosome1.toString());
-//    System.out.println("maximumRevenue:"+maximumRevenue);
-//    System.out.println();
+    maximumRevenue = maximumRevenue;
   }
 
-  public double calccompletionTime(double time, int index, int lastindex, int i) {
-    if (lastindex != -1) {
-      for (int k = 0; k < i; k++) {
-        time += p[chromosome1.genes[k]];
-      }
+  @Override
+  public void calcObjective() {
+    //    System.out.print("calcObjective");
+    double obj;
+    double objectives[];
+//    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < population.getPopulationSize(); i++) {
+//      System.out.print("population(before): ");
+//      for (int j = 0; j < population.getSingleChromosome(i).genes.length; j++) {
+//        System.out.print(population.getSingleChromosome(i).genes[j] + " ");
+//      }
+//      System.out.println("End");
+      objectives = population.getObjectiveValues(i);
+      obj = evaluateAll(population.getSingleChromosome(i), numberOfSalesmen);
+      objectives[indexOfObjective] = obj;
+      population.setObjectiveValue(i, objectives);
+      chromosome1.setObjValue(objectives);
+      population.setSingleChromosome(i, chromosome1);
+//      System.out.print("population(after):  ");
+//      for (int j = 0; j < population.getSingleChromosome(i).genes.length; j++) {
+//        System.out.print(population.getSingleChromosome(i).genes[j] + " ");
+//      }
+//      System.out.println("End");
     }
-    if (time < r[index]) {
-      time = r[index];
-    }
-    time += p[index];
-    return time;
   }
+  
+  public double getMaximumRevenue() {
+    return maximumRevenue;
+  }
+  
+//  public void calcMinimumCost() {
+//  }
+//  
+//  public double getMinimumCost() {
+//    return minimumCost;
+//  }
+  
+
+  
+  @Override
+  public void setOASData(double[] r, double[] p, double[] d, double[] d_bar, double[] e, double[] w, double b, int numberOfSalesmen) {
+    this.r = r;
+    this.p = p;
+    this.d = d;
+    this.d_bar = d_bar;
+    this.e = e;
+    this.w = w;
+    this.b = b;
+    this.numberOfSalesmen = numberOfSalesmen;
+    C = new double[p.length];
+  }
+
+  @Override
+  public void setData(populationI population, int indexOfObjective) {
+    this.population = population;
+    this.length = population.getLengthOfChromosome();
+    this.indexOfObjective = indexOfObjective;
+  }
+
+  @Override
+  public void setData(chromosome chromosome1, int numberOfSalesmen) {
+    this.chromosome1 = chromosome1;
+    this.numberOfSalesmen = numberOfSalesmen;
+    length = chromosome1.getLength();
+  }
+  
+  @Override
+  public populationI getPopulation() {
+    return population;
+  }
+
+   @Override
+  public double[] getObjectiveValues(int index) {
+    double objectives[];
+    objectives = chromosome1.getObjValue();
+    double obj = evaluateAll(chromosome1, numberOfSalesmen);
+    objectives[0] = obj;
+    chromosome1.setObjValue(objectives);
+    return chromosome1.getObjValue();
+  }
+  
+  @Override
+  public void setOASData(double[] r, double[] p, double[] d, double[] d_bar, double[] e, double[] w, double[][] s, int numberOfSalesmen) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+  
 }
