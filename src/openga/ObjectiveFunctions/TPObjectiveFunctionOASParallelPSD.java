@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Administrator
  */
-public class TPObjectiveFunctionOASParallelPSD extends TPObjectiveFunctionOASParallel {
+public class TPObjectiveFunctionOASParallelV2 extends TPObjectiveFunctionOASParallel {
 
   double[] PSD;
 
