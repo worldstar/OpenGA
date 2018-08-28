@@ -251,15 +251,21 @@ public class singleMachine {
 "sks688a"};
 
   String M90[] = new String[]
-{"sks922a",
-"sks925a",
-"sks928a",
-"sks952a",
-"sks955a",
-"sks958a",
-"sks982a",
-"sks985a",
-"sks988a"};
+{
+    "sks922a",
+    "sks955a",
+    "sks988a"
+    
+//"sks922a",
+//"sks925a",
+//"sks928a",
+//"sks952a",
+//"sks955a",
+//"sks958a",
+//"sks982a",
+//"sks985a",
+//"sks988a"
+  };
 
 
   public String getFileName(int _size, int index){

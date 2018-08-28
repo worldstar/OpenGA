@@ -32,6 +32,7 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 {
 //    public EDAMainI GaMain;
     public int D1 = 0;
     public int D2 = 0;
+    public int OptMin = 0;
     
     @Override
     public int getBestSolnIndex(populationI arch1) {
@@ -46,7 +47,7 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 {
         return index;
     }
     
-    public void setEDAinfo(double lamda, double beta, int numberOfCrossoverTournament, int numberOfMutationTournament, int startingGenDividen , int D1 , int D2) {
+    public void setEDAinfo(double lamda, double beta, int numberOfCrossoverTournament, int numberOfMutationTournament, int startingGenDividen , int D1 , int D2 , int OptMin) {
         this.lamda = lamda;
         this.beta = beta;
         this.numberOfCrossoverTournament = numberOfCrossoverTournament;
@@ -54,6 +55,7 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 {
         this.startingGenDividen = startingGenDividen;
         this.D1 = D1;
         this.D2 = D2;
+        this.OptMin = OptMin;
     }
     
     public void initiateVars() {
@@ -86,6 +88,7 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 {
         GaMain.setEDAinfo(lamda, beta, numberOfCrossoverTournament, numberOfMutationTournament, startingGenDividen);  //startingGenDividen here is as interval of EDA
         GaMain.setD1(this.D1);
         GaMain.setD2(this.D2);
+        GaMain.setOptMin(this.OptMin);
     }
 
     public void startMain() {
@@ -111,7 +114,7 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 {
 
 
         int counter = 0;
-        int repeatExperiments = 1;//3
+        int repeatExperiments = 50;//3
 
         int popSize[] = new int[]{100};//50, 100, 155, 210 [100]
         double crossoverRate[] = new double[]{0.6, 0.9},//0.6, 0.9 {0.9}
@@ -129,6 +132,7 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 {
 //        int D2[] = new int[]{0,1,2,9};//n/10 , 9,10,20  , 0,1,2,10
         int D1[] = new int[]{0,1,2,10};//n/10 , 9,10,20  , 0,1,2,10
         int D2[] = new int[]{0,1,2,10};//n/10 , 9,10,20  , 0,1,2,10
+        int optMin = 0;
 
 
         for (int j = 0; j < jobSets.length; j++) {//jobSets.length
@@ -149,10 +153,10 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 {
                                           int numberOfJobs = jobSets[j];
                                         
                                           /*===sks===*/
-  //                                        openga.applications.data.singleMachine readSingleMachineData1 = new openga.applications.data.singleMachine();
-  //                                        String fileName = readSingleMachineData1.getFileName(numberOfJobs, k);
-  //                                        readSingleMachineData1.setData("sks/" + fileName + ".txt");
-  //                                        readSingleMachineData1.getDataFromFile();
+//                                          openga.applications.data.singleMachine readSingleMachineData1 = new openga.applications.data.singleMachine();
+//                                          String fileName = readSingleMachineData1.getFileName(numberOfJobs, k);
+//                                          readSingleMachineData1.setData("sks/" + fileName + ".txt");
+//                                          readSingleMachineData1.getDataFromFile();
 
                                           /*===bky===*/
                                           openga.applications.data.readSingleMachine readSingleMachineData1 = new openga.applications.data.readSingleMachine();
@@ -168,7 +172,7 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 {
   //                                            System.out.println("Combinations: " + counter);
                                               singleMachineEDA3_2 singleMachine1 = new singleMachineEDA3_2();
                                               singleMachine1.setData(numberOfJobs, dueDate, processingTime,fileName);
-                                              singleMachine1.setEDAinfo(lamdalearningrate[lx], betalearningrate[bx], numberOfCrossoverTournament[m], numberOfMutationTournament[n], startingGenDividen[p] , D1[D1Count], D2[D2Count]);
+                                              singleMachine1.setEDAinfo(lamdalearningrate[lx], betalearningrate[bx], numberOfCrossoverTournament[m], numberOfMutationTournament[n], startingGenDividen[p] , D1[D1Count], D2[D2Count] , optMin);
                                               singleMachine1.initiateVars();
                                               singleMachine1.startMain();
                                               counter++;

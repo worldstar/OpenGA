@@ -13,20 +13,34 @@ import openga.chromosomes.*;
 /* enhance Inter and Container add D1 and D2*/
 public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
 
-    public PBILInteractiveWithEDA3_2_2(populationI originalPop, double lamda, double beta , int D1 , int D2 ) {
+    public PBILInteractiveWithEDA3_2_2(populationI originalPop, double lamda, double beta , int D1 , int D2 , int OptMin) {
       super(originalPop, lamda, beta);
       this.D1 = D1;
       this.D2 = D2;
+      this.OptMin = OptMin;
     }
     
     int D1 = 0;
     int D2 = 0;
+    int OptMin = 0;
+    double[] probabilitySum ;
+    double[] probabilityError ;
 
     public void startStatistics() {
         calcAverageFitness();
         calcContainer();
         calcInter();
-        enhanceContainer();
+        
+        if(OptMin == 0)
+        {
+          checkModelAccuracyMin();
+          enhanceContainer();
+        }else if(OptMin == 1)
+        {
+          checkModelAccuracyMax();
+          enhanceContainer();
+        }
+        
 //        System.out.println(D1 + " , " + D2);
 //        CheckModelAccurracy();
     }
@@ -161,12 +175,13 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
         
     }
     
-    public void enhanceContainer()
+    
+    public void checkModelAccuracyMin()
     {
       /*******************************************************************/
       /*save probabilitySumError*/
-        double[] probabilitySum = new double[originalPop.getPopulationSize()];
-        double[] probabilityError = new double[originalPop.getPopulationSize()];
+        probabilitySum = new double[originalPop.getPopulationSize()];
+        probabilityError = new double[originalPop.getPopulationSize()];
 //        double[] probabilitySumError ;
 //        probabilitySumError = new double[originalPop.getPopulationSize()];
 
@@ -201,7 +216,52 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
           }
             
       /*******************************************************************/
-      
+    }
+    
+    public void checkModelAccuracyMax()
+    {
+      /*******************************************************************/
+      /*save probabilitySumError*/
+        probabilitySum = new double[originalPop.getPopulationSize()];
+        probabilityError = new double[originalPop.getPopulationSize()];
+//        double[] probabilitySumError ;
+//        probabilitySumError = new double[originalPop.getPopulationSize()];
+
+        for(int j = 0 ; j < originalPop.getPopulationSize() ; j++)
+        {
+          probabilitySum[j] = productGeneInfo(originalPop.getSingleChromosome(j) , container , inter);
+          probabilityError[j] = 0.0;
+        }
+
+          for(int j = 0 ; j < originalPop.getPopulationSize() ; j++)
+          {
+            for(int k = j+1 ; k < originalPop.getPopulationSize() ; k++)
+            {
+              double[] PopGetObjValue = originalPop.getSingleChromosome(j).getObjValue() ;
+              double[] PopGetObjValue2 = originalPop.getSingleChromosome(k).getObjValue() ;
+              
+              if(probabilitySum[j] >= probabilitySum[k] && PopGetObjValue[0] >= PopGetObjValue2[0])//success
+              {
+              }else if (probabilitySum[j] < probabilitySum[k] && PopGetObjValue[0] < PopGetObjValue2[0])//success
+              {
+              }else if(probabilitySum[j] >= probabilitySum[k] && PopGetObjValue[0] < PopGetObjValue2[0])//error
+              {
+                probabilityError[k] += (probabilitySum[j] - probabilitySum[k]);
+//                probabilitySumError[j]++;
+                
+              }else if(probabilitySum[j] < probabilitySum[k] && PopGetObjValue[0] >= PopGetObjValue2[0])//error
+              {
+                probabilityError[j] += (probabilitySum[k] - probabilitySum[j]);
+//                probabilitySumError[j]++;
+              }
+            }
+          }
+            
+      /*******************************************************************/
+    }
+    
+    public void enhanceContainer()
+    {
 //    /*******************************************************************/
 //    /*inter before *= 1.1*//*Container up*/
 
