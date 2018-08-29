@@ -30,9 +30,9 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 {
     
     public PBILInteractiveWithEDA3_2I GaMain;
 //    public EDAMainI GaMain;
-    public int D1 = 0;
-    public int D2 = 0;
-    public int OptMin = 0;
+    public int D1;
+    public int D2;
+    public boolean OptMin;
     
     @Override
     public int getBestSolnIndex(populationI arch1) {
@@ -47,7 +47,7 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 {
         return index;
     }
     
-    public void setEDAinfo(double lamda, double beta, int numberOfCrossoverTournament, int numberOfMutationTournament, int startingGenDividen , int D1 , int D2 , int OptMin) {
+    public void setEDAinfo(double lamda, double beta, int numberOfCrossoverTournament, int numberOfMutationTournament, int startingGenDividen , int D1 , int D2 , boolean OptMin) {
         this.lamda = lamda;
         this.beta = beta;
         this.numberOfCrossoverTournament = numberOfCrossoverTournament;
@@ -132,7 +132,7 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 {
 //        int D2[] = new int[]{0,1,2,9};//n/10 , 9,10,20  , 0,1,2,10
         int D1[] = new int[]{0,1,2,10};//n/10 , 9,10,20  , 0,1,2,10
         int D2[] = new int[]{0,1,2,10};//n/10 , 9,10,20  , 0,1,2,10
-        int optMin = 0;
+        boolean optMin = true;
 
 
         for (int j = 0; j < jobSets.length; j++) {//jobSets.length

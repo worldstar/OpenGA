@@ -24,7 +24,7 @@ public class singleThreadGAwithEDA3_2 extends singleThreadGAwithEDA2 implements 
     
     int D1;
     int D2;
-    int OptMin;
+    boolean OptMin;
     
 //    PBILInteractiveWithEDA3 PBIL1;   //PBIL
 //    PBILInteractiveWithEDA3_2 PBIL1;   //PBIL
@@ -134,7 +134,7 @@ public class singleThreadGAwithEDA3_2 extends singleThreadGAwithEDA2 implements 
   }
 
   @Override
-  public void setOptMin(int OptMin) {
+  public void setOptMin(boolean OptMin) {
     this.OptMin = OptMin;
   }
 

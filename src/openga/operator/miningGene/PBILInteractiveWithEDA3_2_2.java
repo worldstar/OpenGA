@@ -13,16 +13,16 @@ import openga.chromosomes.*;
 /* enhance Inter and Container add D1 and D2*/
 public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
 
-    public PBILInteractiveWithEDA3_2_2(populationI originalPop, double lamda, double beta , int D1 , int D2 , int OptMin) {
+    public PBILInteractiveWithEDA3_2_2(populationI originalPop, double lamda, double beta , int D1 , int D2 , boolean OptMin) {
       super(originalPop, lamda, beta);
       this.D1 = D1;
       this.D2 = D2;
       this.OptMin = OptMin;
     }
     
-    int D1 = 0;
-    int D2 = 0;
-    int OptMin = 0;
+    int D1;
+    int D2;
+    boolean OptMin;
     double[] probabilitySum ;
     double[] probabilityError ;
 
@@ -31,15 +31,15 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
         calcContainer();
         calcInter();
         
-        if(OptMin == 0)
+        if(OptMin)
         {
           checkModelAccuracyMin();
-          enhanceContainer();
-        }else if(OptMin == 1)
+        }else
         {
           checkModelAccuracyMax();
-          enhanceContainer();
         }
+        
+          enhanceContainer();
         
 //        System.out.println(D1 + " , " + D2);
 //        CheckModelAccurracy();
