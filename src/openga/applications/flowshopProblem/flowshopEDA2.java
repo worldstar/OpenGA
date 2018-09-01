@@ -48,7 +48,7 @@ public class flowshopEDA2 extends flowshopNEH_EDA2_VNS {
         ObjectiveFunction[0].setScheduleData(processingTime, numberOfMachines);
         //GaMain.setFlowShopData(numberOfJob, numberOfMachines, processingTime);
         //DEFAULT_generations = totalSolnsToExamine / (DEFAULT_PopSize);
-        DEFAULT_generations = (numberOfMachines * 100);   //*flowtime* //(numberOfMachines * numberOfJob) / 2 * 30
+        DEFAULT_generations = (numberOfJob * 100);   //*flowtime* //(numberOfMachines * numberOfJob) / 2 * 30
         DEFAULT_PopSize     = 200;
         //set the data to the GA main program.
         GaMain.setData(Population, Selection, Crossover, Mutation, ObjectiveFunction, Fitness, DEFAULT_generations, DEFAULT_PopSize, DEFAULT_PopSize,
