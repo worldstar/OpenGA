@@ -125,9 +125,11 @@ public class SPGA2_forSingleMachine {
    clone1 = new solutionVectorCloneWithMutation();
    ObjectiveFunction  = new ObjectiveFunctionScheduleI[numberOfObjs];
    Fitness   = new FitnessByScalarizedM_objectives();
-
-   ObjectiveFunction[0] = new ObjectiveEarlinessForSingleMachine();//the first objective
-   ObjectiveFunction[1] = new ObjectiveTardinessForSingleMachine();//the second one.
+   
+   ObjectiveFunction[0] = new objectiveTC();//the first objective
+   //ObjectiveFunction[0] = new ObjectiveEarlinessForSingleMachine();//the first objective
+   ObjectiveFunction[1] = new objectiveTADC();//the second one.
+   //ObjectiveFunction[1] = new ObjectiveTardinessForSingleMachine();//the second one.
 
    int numberOfMachines = 1;
    //set schedule data to the objectives
