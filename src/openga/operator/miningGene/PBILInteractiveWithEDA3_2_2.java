@@ -272,6 +272,8 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
         
         for (int i = 0; i < popSize; i++) {
           
+              double x = ((probabilityError[i] - min) / (max - min));
+              
 //            if (originalPop.getFitness(i) <= avgFitness) {
                 /*inter*/
                 for (int j = 1; j < chromosomeLength; j++) {
@@ -283,7 +285,6 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
                             int gene_before = originalPop.getSingleChromosome(i).getSolution()[j-k-1];//0
                             if(probabilityError[i] != 0 | probabilityError[i] != 0.0) { 
 
-                                double x = ((probabilityError[i] - min) / (max - min));
                                 double y = 1 - inter[gene_before][gene];
                                 double z = y*x;
             //                        y *= (1 +(x / (float)(1 + x)));       
@@ -301,7 +302,6 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
                             int gene = originalPop.getSingleChromosome(i).getSolution()[j - k];//0
                             if(probabilityError[i] != 0 | probabilityError[i] != 0.0) { 
 
-                                double x = ((probabilityError[i] - min) / (max - min));
                                 double y = 1 - container[gene][j];
                                 double z = y*x;
         //                        y *= (1 +(x / (float)(1 + x)));
