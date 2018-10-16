@@ -62,7 +62,7 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 {
     }
     
     public void initiateVars() {
-        GaMain = new singleThreadGAwithEDA3_2();//singleThreadGA singleThreadGAwithSecondFront singleThreadGAwithMultipleCrossover adaptiveGA
+        GaMain = new singleThreadGAwithEDA3_2_2();//singleThreadGA singleThreadGAwithSecondFront singleThreadGAwithMultipleCrossover adaptiveGA
         Population = new population();
         Selection = new binaryTournament();//binaryTournament
         Crossover = new twoPointCrossover2EDA2();//twoPointCrossover2 oneByOneChromosomeCrossover twoPointCrossover2withAdpative twoPointCrossover2withAdpativeThreshold
@@ -77,7 +77,7 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 {
         //GaMain.setCloneOperatpr(clone1, true);
         //set schedule data to the objectives
         ObjectiveFunction[0].setScheduleData(dueDay , processingTime, numberOfMachines);
-        totalSolnsToExamine = 75000;
+        totalSolnsToExamine = 100000;
         DEFAULT_PopSize = 100;
         //System.out.println(DEFAULT_PopSize);
         //System.exit(0);
@@ -118,7 +118,7 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 {
 
 
         int counter = 0;
-        int repeatExperiments = 30;//3
+        int repeatExperiments = 50;//3
 
         int popSize[] = new int[]{100};//50, 100, 155, 210 [100]
         double crossoverRate[] = new double[]{0.6},//0.6, 0.9 {0.9}

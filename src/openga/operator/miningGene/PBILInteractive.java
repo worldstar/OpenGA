@@ -219,7 +219,49 @@ public class PBILInteractive {
               }
             }
             
-//            System.out.printf("%.2f\n",((double)((double)success / (double)total)));
+            System.out.printf("%.2f\n",((double)((double)success / (double)total)));
+            
+            /*******************************************************************/
+  }
+    
+    public double CheckModelAccurracyDouble()
+  {
+    /*******************************************************************/
+            double[] probabilitySum = new double[originalPop.getPopulationSize()];
+            
+            for(int j = 0 ; j < originalPop.getPopulationSize() ; j++)
+            {
+              probabilitySum[j] = productGeneInfo(originalPop.getSingleChromosome(j) , container , inter);
+//              System.out.println(probabilitySum[j]);
+            }
+            int total = 0;
+            int error = 0;
+            int success = 0;
+            
+            for(int j = 0 ; j < originalPop.getPopulationSize() ; j++)
+            {
+              for(int k = j+1 ; k < originalPop.getPopulationSize() ; k++)
+              {
+                double[] PopGetObjValue = originalPop.getSingleChromosome(j).getObjValue() ;
+                double[] PopGetObjValue2 = originalPop.getSingleChromosome(k).getObjValue() ;
+                
+                total ++;
+              
+                if(probabilitySum[j] >= probabilitySum[k] && PopGetObjValue[0] <= PopGetObjValue2[0])
+                {
+                  success++;
+                }else if (probabilitySum[j] < probabilitySum[k] && PopGetObjValue[0] > PopGetObjValue2[0])
+                {
+                  success++;
+                }else
+                {
+                  error++;
+                }
+                
+              }
+            }
+            
+            return ((double)((double)success / (double)total));
             
             /*******************************************************************/
   }
