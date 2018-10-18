@@ -41,10 +41,10 @@ public class singleThreadGAwithEDA3_2_2 extends singleThreadGAwithEDA2 implement
 
 //        PBIL1 = new PBILInteractiveWithEDA3(Population, lamda, beta);   // PBIL
 //        PBIL1 = new PBILInteractiveWithEDA3_2(Population, lamda, beta , D1 , D2);   // PBIL
-//        PBIL1 = new PBILInteractiveWithEDA3_2_2(Population, lamda, beta , D1 , D2 , OptMin);   // PBIL
+        PBIL1 = new PBILInteractiveWithEDA3_2_2(Population, lamda, beta , D1 , D2 , OptMin);   // PBIL
 
-//        container = PBIL1.getContainer();
-//        inter = PBIL1.getInter();
+        container = PBIL1.getContainer();
+        inter = PBIL1.getInter();
 
         temporaryContainer = new double[length][length];
         
@@ -67,8 +67,8 @@ public class singleThreadGAwithEDA3_2_2 extends singleThreadGAwithEDA2 implement
                 //     tempNumberOfMutationTournament = 1;
                 // } else {
                 
-                tempNumberOfCrossoverTournament = numberOfCrossoverTournament;
-                tempNumberOfMutationTournament = numberOfMutationTournament;
+                        tempNumberOfCrossoverTournament = numberOfCrossoverTournament;
+                        tempNumberOfMutationTournament = numberOfMutationTournament;
                 
                 //-----------------------------------------------------------------------------------------------------------------
                         double CheckModelTemp = 0 ;
@@ -79,7 +79,7 @@ public class singleThreadGAwithEDA3_2_2 extends singleThreadGAwithEDA2 implement
                         for(int j = 0 ; j < D1.length ; j++)
                         {
                           for(int k = 0 ; k < D2.length ; k++)
-                          {
+                          {                            
                             PBIL1 = new PBILInteractiveWithEDA3_2_2(Population, lamda, beta , D1[j] , D2[k] , OptMin);   // PBIL
                             
                             container = PBIL1.getContainer();
@@ -96,11 +96,13 @@ public class singleThreadGAwithEDA3_2_2 extends singleThreadGAwithEDA2 implement
                             }
                           }
                         }
-
-
+                        
                         container = conTemp;
                         inter = intTemp;
                         temporaryContainer = container;
+//                        System.out.printf("%.2f,",PBIL1.CheckModelAccurracyDouble());
+//                        System.out.println(getArchieve().getSingleChromosome(getBestSolnIndex(getArchieve())).getObjValue()[0]);
+//                        
                 //-----------------------------------------------------------------------------------------------------------------
                 
                 //temporaryContainer = AccuArray(container);
@@ -152,6 +154,19 @@ public class singleThreadGAwithEDA3_2_2 extends singleThreadGAwithEDA2 implement
 */
         }while(i < generations && currentUsedSolution < this.fixPopSize*this.generations);
         //printResults();
+    }
+    
+  
+    public int getBestSolnIndex(populationI arch1) {
+        int index = 0;
+        double bestobj = Double.MAX_VALUE;
+        for (int k = 0; k < getArchieve().getPopulationSize(); k++) {
+            if (bestobj > getArchieve().getObjectiveValues(k)[0]) {
+                bestobj = getArchieve().getObjectiveValues(k)[0];
+                index = k;
+            }
+        }
+        return index;
     }
 
   @Override
