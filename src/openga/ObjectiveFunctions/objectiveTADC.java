@@ -16,8 +16,8 @@ public class objectiveTADC implements ObjectiveFunctionScheduleI, alphaBetaI {
 
   int sequence[];
   int processingTime[];
-  double[] alpha = {0};
-  double[] b = {0};
+  double[] alpha;
+  double[] b;
   double weights[];
   populationI originalPop;
   int indexOfObjective;
@@ -99,7 +99,8 @@ public class objectiveTADC implements ObjectiveFunctionScheduleI, alphaBetaI {
 
   @Override
   public void setAlphaBeta(double[] alpha, double[] beta) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    this.alpha = alpha;
+    this.b = beta;
   }
 
   @Override
