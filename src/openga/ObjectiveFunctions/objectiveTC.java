@@ -16,8 +16,8 @@ public class objectiveTC implements ObjectiveFunctionScheduleI, alphaBetaI {
 
   int sequence[];
   int processingTime[];
-  double[] alpha = {0};
-  double[] b = {0};
+  double[] alpha;
+  double[] b;
   double weights[];
   int n = 0;//the number of jobs
   populationI originalPop;
