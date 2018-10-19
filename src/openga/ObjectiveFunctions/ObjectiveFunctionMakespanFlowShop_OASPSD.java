@@ -19,7 +19,7 @@ import openga.applications.data.readPFSSOAWT_flowshop;
  * Company: Yuan-Ze University</p>
  *
  */
-public class ObjectiveFunctionMakespanFlowShop_OASPSD extends ObjectiveFunctionTSP implements ObjFunctionPFSSOAWTII {
+public class ObjectiveFunctionMakespanFlowShop_OASPSD extends ObjectiveFunctionTSP implements ObjFunctionPFSSOAWT_PSDI {
 
   public ObjectiveFunctionMakespanFlowShop_OASPSD() {
   }
@@ -43,7 +43,7 @@ public class ObjectiveFunctionMakespanFlowShop_OASPSD extends ObjectiveFunctionT
 
   //
   public String writeFileName;
-  public double[] pal;
+  public double[] profitotal;
   public double[] profit;
   public double maximumRevenue;
   public int[][] completeTime;
@@ -54,7 +54,7 @@ public class ObjectiveFunctionMakespanFlowShop_OASPSD extends ObjectiveFunctionT
 
   @Override
   public void setScheduleData(int processingTime[][], int indexOfObjective) {
-//    length = processingTime.length;
+    //length = processingTime.length;
     //machineTime = new int[numberOfMachine];
     this.processingTime = processingTime;
     this.indexOfObjective = indexOfObjective;
@@ -66,7 +66,7 @@ public class ObjectiveFunctionMakespanFlowShop_OASPSD extends ObjectiveFunctionT
 
     maximumRevenue = 0.0;
 
-    pal = new double[piTotal];
+    profitotal = new double[piTotal];
     profit = new double[piTotal];
     completeTime = new int[Sequence.length][machineTotal];
     accept = new boolean[Sequence.length];
@@ -93,13 +93,13 @@ public class ObjectiveFunctionMakespanFlowShop_OASPSD extends ObjectiveFunctionT
 
       }
     
-      pal[i] = ((completeTime[i][machineTotal - 1] - di[Sequence[i]]) * wi[Sequence[i]]); 
-      if (pal[i] < 0) {
-        pal[i] = 0.0;
+      profitotal[i] = ((completeTime[i][machineTotal - 1] - di[Sequence[i]]) * wi[Sequence[i]]); 
+      if (profitotal[i] < 0) {
+        profitotal[i] = 0.0;
       }
 
-      if (fristProfit[Sequence[i]] - pal[i] > 0) {
-        profit[i] = fristProfit[Sequence[i]] - pal[i];
+      if (fristProfit[Sequence[i]] - profitotal[i] > 0) {
+        profit[i] = fristProfit[Sequence[i]] - profitotal[i];
 //        accept[i] = true;
       } else {
         profit[i] = 0.0;
@@ -120,11 +120,6 @@ public class ObjectiveFunctionMakespanFlowShop_OASPSD extends ObjectiveFunctionT
     }
     
     return maximumRevenue;
-    
-  }
-  
-  public static void main(String[] args) {
-    ObjectiveFunctionMakespanFlowShop_OASPSD o = new ObjectiveFunctionMakespanFlowShop_OASPSD();
     
   }
 

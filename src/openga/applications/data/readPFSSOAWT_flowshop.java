@@ -6,7 +6,6 @@
  */
 package openga.applications.data;
 
-import openga.ObjectiveFunctions.*;
 import openga.applications.data.*;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

@@ -56,7 +56,7 @@ public class flowshop_OAS {
   SelectI Selection;
   CrossoverI Crossover, Crossover2;
   MutationI Mutation, Mutation2;
-  ObjFunctionPFSSOAWTII[] ObjectiveFunction;
+  ObjFunctionPFSSOAWT_PSDI[] ObjectiveFunction;
   FitnessI Fitness;
   MainI GaMain;
 
@@ -126,7 +126,7 @@ public class flowshop_OAS {
     Crossover2 = new PMX();
     Mutation = new swapMutation();//shiftMutation
     Mutation2 = new shiftMutation();//inverseMutation
-    ObjectiveFunction = new ObjFunctionPFSSOAWTII[numberOfObjs];
+    ObjectiveFunction = new ObjFunctionPFSSOAWT_PSDI[numberOfObjs];
     ObjectiveFunction[0] = new ObjectiveFunctionMakespanFlowShop_OAS();//the first objective
     Fitness = new singleObjectiveFitness();//singleObjectiveFitness singleObjectiveFitnessByNormalize
     objectiveMinimization = new boolean[numberOfObjs];
