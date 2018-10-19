@@ -133,14 +133,15 @@ public class findParetoSet {
 //          }
 //        }
 
-    SamplePareto_ReadFile a = new SamplePareto_ReadFile();
+    ReadParetoFile a = new ReadParetoFile();
     a.setRead_FileName("SPGA2_TADC_TC", ".csv");
     a.read_csv();
     double[][] testObjs = a.getdata();
 
     findParetoSet1.setObjVals(testObjs);
     findParetoSet1.startToFind();
-
+    findParetoSet1.printParetoValue("20181020_SPGA2_Pareto_Value" + ".csv", findParetoSet1.formParetoSet());
+    
     openga.util.printClass printClass1 = new openga.util.printClass();
     printClass1.printMatrix("",findParetoSet1.flag);
 
