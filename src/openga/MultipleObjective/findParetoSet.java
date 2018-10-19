@@ -1,6 +1,10 @@
 package openga.MultipleObjective;
+import java.io.IOException;
+import java.io.FileWriter;
 import java.util.Vector;
 import openga.chromosomes.population;
+import openga.MultipleObjective.*;
+
 /**
  * <p>Pareto Optimal Set</p>
  * <p>Find all pareto optimal from a population</p>
@@ -20,8 +24,8 @@ public class findParetoSet {
   //Hence, the default value is false.
   boolean flag[];
   //To store the result of pareto solution which contains the index of chromosome in a population.
-  int paretoSet[];
-  double paretoIndex[][];
+  int paretoIndex[];
+  double paretoSet[][];
   double fitness[];
   int nondominate = 0;
 
@@ -43,7 +47,7 @@ public class findParetoSet {
       //if flag[i] is true, it means it has been dominated which we can skip it directly
       if(flag[i] != true){
         for(int j = i+1; j < flag.length ; j ++ ){
-          if(flag[j] != true){//the same with "if(flag[i] != true"
+          if(flag[j] != true){//the same with "if(flag[i] != true"            
             boolean comparisionRsult = getObjcomparison(objVals[i],objVals[j]);//test i is better than j
             boolean comparisionRsult2 = getObjcomparison(objVals[j],objVals[i]);//test j is better than i
             if(comparisionRsult){//if true, j is dominated by i
@@ -87,7 +91,7 @@ public class findParetoSet {
   /**
    * To form the pareto set according to the boolean value of flag.
    */
-  public double[][] formParetoSet(){
+  public double[][] formParetoSet() throws IOException{
     Vector Vector1 = new Vector();
     int counter = 0;
     for(int i = 0 ; i < flag.length ; i ++ ){
@@ -97,26 +101,42 @@ public class findParetoSet {
       }
     }
     //initialize the paretoSet and get their own index.
-    paretoSet = new int[counter];
-    paretoIndex = new double[counter][2];
+    paretoIndex = new int[counter];
+    paretoSet = new double[counter][2];
     for(int i = 0 ; i < counter ; i ++ ){
-      paretoSet[i] = Integer.parseInt(Vector1.elementAt(i).toString());
-      paretoIndex[i] = objVals[paretoSet[i]];
+      paretoIndex[i] = Integer.parseInt(Vector1.elementAt(i).toString()); // this index   
+      paretoSet[i] = objVals[paretoIndex[i]]; // this pareto value           
     }
-    return paretoIndex;
+    return paretoSet;
   }
 
-  public static void main(String[] args) {
+  public void printParetoValue(String Filename, double[][] value) throws IOException{
+    FileWriter fw =new FileWriter(Filename);
+    String implementResult = "X_value" + "," + "Y_Value" + "\n";
+    for (int i=0;i<value.length;i++){
+      implementResult += value[i][0] + "," + value[i][1] + "\n";
+    }
+    fw.write(implementResult);
+    fw.close();
+//    System.out.print(implementResult);
+  }
+  
+  public static void main(String[] args) throws IOException {
     findParetoSet findParetoSet1 = new findParetoSet();
     //double testObjs[][] = {{20,32},{25,30},{27,23},{40,32},{38,25},{15,30},{26,25}};
 
-    int size = 50, noObjs = 2;
-    double testObjs[][] = new double[size][noObjs];
-    for(int i = 0; i < size ; i ++ ){
-      for(int j = 0 ; j < noObjs ; j ++ ){
-        testObjs[i][j] = 1+Math.random()*10;
-      }
-    }
+//        int size = 50, noObjs = 2;
+//        double testObjs[][] = new double[size][noObjs];
+//        for(int i = 0; i < size ; i ++ ){
+//          for(int j = 0 ; j < noObjs ; j ++ ){
+//            testObjs[i][j] = 1+Math.random()*10;
+//          }
+//        }
+
+    SamplePareto_ReadFile a = new SamplePareto_ReadFile();
+    a.setRead_FileName("SPGA2_TADC_TC", ".csv");
+    a.read_csv();
+    double[][] testObjs = a.getdata();
 
     findParetoSet1.setObjVals(testObjs);
     findParetoSet1.startToFind();
