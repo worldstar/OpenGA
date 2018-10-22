@@ -33,6 +33,8 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 {
     public int D1;
     public int D2;
     public boolean OptMin;
+    EDA3CrossoverI Crossover;
+    EDA3MutationI Mutation;
     
     @Override
     public int getBestSolnIndex(populationI arch1) {
@@ -59,26 +61,29 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 {
         this.DEFAULT_crossoverRate = DEFAULT_crossoverRate;
         this.DEFAULT_mutationRate = DEFAULT_mutationRate;
         
-    }
+    }        
     
     public void initiateVars() {
         GaMain = new singleThreadGAwithEDA3_2_2();//singleThreadGA singleThreadGAwithSecondFront singleThreadGAwithMultipleCrossover adaptiveGA
         Population = new population();
         Selection = new binaryTournament();//binaryTournament
-        Crossover = new twoPointCrossover2EDA2();//twoPointCrossover2 oneByOneChromosomeCrossover twoPointCrossover2withAdpative twoPointCrossover2withAdpativeThreshold
-        Mutation = new swapMutationEDA2();//shiftMutation shiftMutationWithAdaptive shiftMutationWithAdaptiveThreshold
+        Crossover = new twoPointCrossover2EDA3();//twoPointCrossover2EDA3 twoPointCrossover2 oneByOneChromosomeCrossover twoPointCrossover2withAdpative twoPointCrossover2withAdpativeThreshold
+        Mutation = new swapMutationEDA3();//shiftMutation shiftMutationWithAdaptive shiftMutationWithAdaptiveThreshold
         ObjectiveFunction = new ObjectiveFunctionScheduleI[numberOfObjs];
         ObjectiveFunction[0] = new ObjectiveEarlinessTardinessPenalty();
         Fitness = new singleObjectiveFitness();
         objectiveMinimization = new boolean[numberOfObjs];
         objectiveMinimization[0] = true;
         encodeType = true;
+        
+        Crossover.setEDAinfo(D1, D2);
+        Mutation.setEDAinfo(D1, D2);
         //clone1 = new solutionVectorCloneWithMutation();//swap mutation
         //GaMain.setCloneOperatpr(clone1, true);
         //set schedule data to the objectives
         ObjectiveFunction[0].setScheduleData(dueDay , processingTime, numberOfMachines);
-        totalSolnsToExamine = 100000;
-        DEFAULT_PopSize = 100;
+        totalSolnsToExamine = 125000;//125000 100000 75000
+//        DEFAULT_PopSize = 100;
         //System.out.println(DEFAULT_PopSize);
         //System.exit(0);
         DEFAULT_generations = totalSolnsToExamine / (DEFAULT_PopSize);
@@ -113,34 +118,34 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 {
 //        int jobSets[] = new int[]{20,50,90};//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80 //20,30,40,50,60,90//20,50,90
 
 //        int jobSets[] = new int[]{20,30,40,50,60,90};//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80 //20,30,40,50,60,90//20,50,90
-        int jobSets[] = new int[]{90};//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80 //20,30,40,50,60,90//20,50,90
+        int jobSets[] = new int[]{50};//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80 //20,30,40,50,60,90//20,50,90
 //        int jobSets[] = new int[]{100,200};//bky
 
 
         int counter = 0;
-        int repeatExperiments = 50;//3
+        int repeatExperiments = 60;//3
 
         int popSize[] = new int[]{100};//50, 100, 155, 210 [100]
-        double crossoverRate[] = new double[]{0.6},//0.6, 0.9 {0.9}
+        double crossoverRate[] = new double[]{0.9},//0.6, 0.9 {0.9}
                 mutationRate[] = new double[]{0.5},//0.1, 0.5 {0.5}
                 elitism = 0.1;
 
         //EDA parameters.
         double lamdalearningrate[] = new double[]{0.1}; //0.1, 0.5, 0.9
         double betalearningrate[] = new double[]{0.9};   //0.1, 0.5, 0.9
-        int numberOfCrossoverTournament[] = new int[]{2};//{1, 2, 4} //2
-        int numberOfMutationTournament[] = new int[]{2};//{1, 2, 4}  //4
-        int startingGenDividen[] = new int[]{7};//{2, 4}  //2
+        int numberOfCrossoverTournament[] = new int[]{5};//{1, 2, 4} //4-5
+        int numberOfMutationTournament[] = new int[]{2};//{1, 2, 4}  //2
+        int startingGenDividen[] = new int[]{4};//{2, 4}  //4
         
 //        int D1[] = new int[]{0,1,2,9};//n/10 , 9,10,20  , 0,1,2,10
 //        int D2[] = new int[]{0,1,2,9};//n/10 , 9,10,20  , 0,1,2,10
-        int D1[] = new int[]{1};//n/10 , 9,10,20  , 0,1,2,10
-        int D2[] = new int[]{1};//n/10 , 9,10,20  , 0,1,2,10
+        int D1[] = new int[]{2};//n/10 , 9,10,20  , 0,1,2,10
+        int D2[] = new int[]{3};//n/10 , 9,10,20  , 0,1,2,10
         boolean optMin = true;
 
 
         for (int j = 0; j < jobSets.length; j++) {//jobSets.length
-            for (int k = 1; k < 2; k++) {  //49
+            for (int k = 0; k < 1; k++) {  //49
 //              for (int k = 0; k < 1; k++) {//bky
                 if (jobSets[j] <= 50 || (jobSets[j] > 50 && k < 9)) {
 //                    if ((jobSets[j] <= 50 && (k == 0 || k == 3 || k == 6 || k == 21 || k == 24 || k == 27 || k == 42 || k == 45 || k == 48)) || (jobSets[j] > 50 && k < 9)) {

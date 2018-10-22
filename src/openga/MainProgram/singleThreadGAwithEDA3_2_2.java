@@ -71,34 +71,39 @@ public class singleThreadGAwithEDA3_2_2 extends singleThreadGAwithEDA2 implement
                         tempNumberOfMutationTournament = numberOfMutationTournament;
                 
                 //-----------------------------------------------------------------------------------------------------------------
-                        double CheckModelTemp = 0 ;
-                        double[][] conTemp = new double[length][length];
-                        double[][] intTemp = new double[length][length];
-                        int[] D1 = new int[]{0,1,2};
-                        int[] D2 = new int[]{0,1,2};
-                        for(int j = 0 ; j < D1.length ; j++)
-                        {
-                          for(int k = 0 ; k < D2.length ; k++)
-                          {                            
-                            PBIL1 = new PBILInteractiveWithEDA3_2_2(Population, lamda, beta , D1[j] , D2[k] , OptMin);   // PBIL
-                            
-                            container = PBIL1.getContainer();
-                            inter = PBIL1.getInter();
-                            PBIL1.setData(offsrping);
-                            PBIL1.startStatistics();
-                            
-                            if(CheckModelTemp < PBIL1.CheckModelAccurracyDouble())
-                            {
-                              CheckModelTemp = PBIL1.CheckModelAccurracyDouble();
-                                         
-                              conTemp = PBIL1.getContainer();
-                              intTemp = PBIL1.getInter();
-                            }
-                          }
-                        }
-                        
-                        container = conTemp;
-                        inter = intTemp;
+//                        double CheckModelTemp = 0 ;
+//                        double[][] conTemp = new double[length][length];
+//                        double[][] intTemp = new double[length][length];
+//                        int[] D1 = new int[]{0,1,2};
+//                        int[] D2 = new int[]{0,1,2};
+//                        for(int j = 0 ; j < D1.length ; j++)
+//                        {
+//                          for(int k = 0 ; k < D2.length ; k++)
+//                          {                            
+//                            PBIL1 = new PBILInteractiveWithEDA3_2_2(Population, lamda, beta , D1[j] , D2[k] , OptMin);   // PBIL
+//                            
+//                            container = PBIL1.getContainer();
+//                            inter = PBIL1.getInter();
+//                            PBIL1.setData(offsrping);
+//                            PBIL1.startStatistics();
+//                            
+//                            if(CheckModelTemp < PBIL1.CheckModelAccurracyDouble())
+//                            {
+//                              CheckModelTemp = PBIL1.CheckModelAccurracyDouble();
+//                                         
+//                              conTemp = PBIL1.getContainer();
+//                              intTemp = PBIL1.getInter();
+//                            }
+//                          }
+//                        }
+//                        container = conTemp;
+//                        inter = intTemp;                        
+                    PBIL1 = new PBILInteractiveWithEDA3_2_2(Population, lamda, beta , D1 , D2 , OptMin);   // PBIL
+                    PBIL1.startStatistics();
+
+                    container = PBIL1.getContainer();
+                    inter = PBIL1.getInter();                        
+
                         temporaryContainer = container;
 //                        System.out.printf("%.2f,",PBIL1.CheckModelAccurracyDouble());
 //                        System.out.println(getArchieve().getSingleChromosome(getBestSolnIndex(getArchieve())).getObjValue()[0]);

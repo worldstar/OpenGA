@@ -13,7 +13,7 @@ import openga.chromosomes.*;
 /* enhance Inter and Container add D1 and D2*/
 public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
 
-    public PBILInteractiveWithEDA3_2_2(populationI originalPop, double lamda, double beta , int D1 , int D2 , boolean OptMin) {
+    public PBILInteractiveWithEDA3_2_2(populationI originalPop, double lamda, double beta, int D1 , int D2, boolean OptMin) {
       super(originalPop, lamda, beta);
       this.D1 = D1;
       this.D2 = D2;
@@ -31,19 +31,27 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
         calcContainer();
         calcInter();
         
-//        if(OptMin)
-//        {
-//          checkModelAccuracyMin();
-//        }else
-//        {
-//          checkModelAccuracyMax();
-//        }
+        double beforeEhanced = 0, afterEnhanced = 0;
+        
+        if(OptMin)
+        {
+          beforeEhanced = CheckModelAccurracy();
+        }else
+        {
+          checkModelAccuracyMax();
+        }
+
 //          enhanceContainer();
 
-          enhanceContainer2();
+        enhanceContainer2();
         
 //        System.out.println(D1 + " , " + D2);
-//        CheckModelAccurracy();
+        afterEnhanced = CheckModelAccurracy();
+//        if(afterEnhanced < beforeEhanced && afterEnhanced < 0.55){
+//          System.out.println("Result is not improved.");
+//        }
+//        System.out.println("beforeEhanced:\t"+beforeEhanced + "\tafterEnhanced\t" + afterEnhanced);
+//        System.exit(0);
     }
     
     public void calcContainer() {
@@ -302,20 +310,47 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
         }
     }
     
+    //Combine two models. V4
+    double productGeneInfo(chromosome _chromosome, double[][] container, double inter[][]){
+      double productValue = 0;
+      for(int i = 0 ; i < _chromosome.getLength() ; i ++){
+        int job = _chromosome.getSolution()[i];
+                
+        if(i == 0){//First job
+          productValue += container[job][i];
+        }
+        else{
+          double temp = 0;
+          for(int k = 0 ; k <= D2 && i-k-1 > 0; k++){
+            int priorJob = _chromosome.getSolution()[i-k-1];
+            //Conditional proability
+            temp += inter[priorJob][job];
+          }
+          productValue += (temp) * (container[job][i]);
+        }             
+      }
+      return productValue;
+    }      
+    
     public void enhanceContainer2()
     {
 //    /*******************************************************************/
       
         openga.util.sort.selectionSort seleSort = new openga.util.sort.selectionSort();
         int[] index = new int[popSize];
+        int[] index2 = new int[popSize];
+        int[] index3 = new int[popSize];
         double[] objValue = new double[popSize];
         double[] predictValue = new double[popSize];
-        double[] predictValue2;
+        double[] predictValueSorted = new double[popSize];
+        double[] targetValue  = new double[popSize];
         for(int i = 0 ; i < popSize ; i++)
         {
           index[i] = i;
+          index2[i] = i;
+          index3[i] = i;
           objValue[i] = originalPop.getSingleChromosome(i).getObjValue()[0];
-          predictValue[i] = productGeneInfo(originalPop.getSingleChromosome(i) , container , inter);
+          predictValue[i] = predictValueSorted[i] = productGeneInfo(originalPop.getSingleChromosome(i) , container , inter);
         }
         
         seleSort.setData(objValue);
@@ -323,27 +358,33 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
         seleSort.Sort_withNomial();
         index = seleSort.getNomialData();
         
-        seleSort.setData(predictValue);
-        seleSort.executeSelectionSort();
-        seleSort.reverseNomialOrder();
-        predictValue2 = seleSort.getData();
+        seleSort.setData(predictValueSorted);
+        seleSort.setNomialData(index2);
+        seleSort.Sort_withNomialDesc();
+//        targetValue = seleSort.getData();                
         
-        double max = predictValue2[0];
-        double min = predictValue2[predictValue2.length - 1];
+        double max = predictValueSorted[0];
+        double min = predictValueSorted[predictValueSorted.length - 1];
+        min = 0;
         
-        for (int i = 0; i < popSize; i++) {
-              double x = 1 - ((predictValue[index[i]] - min) / (max - min)); //原本簡易計算
+        for (int i = 0; i < popSize ; i++) {
+          int objRanking = this.getRank(i, index);
+          targetValue[i] = predictValueSorted[objRanking];
+//              double x = 1 - ((predictValue[index[i]] - min) / (max - min)); //原本簡易計算
 //              double x = java.lang.Math.tanh(predictValue[index[i]]);//tanh (幅度大)
 //              double x = predictValue[index[i]]/(1 + predictValue[index[i]]);//x/1+|x| (幅度小)
+//              double x = (targetValue[i] - predictValue[i]) / (max - min);  
+              double x = (targetValue[i] - predictValue[i]) / (max - min);  
               
-              double x2 = (1/(1+((predictValue[index[i]] - min) / (max - min)))); //原本簡易計算
+//              double x2 = (1/(1+((predictValue[index[i]] - min) / (max - min)))); //原本簡易計算
 //              double x2 = java.lang.Math.tanh(predictValue[index[i]]);//tanh (幅度大)
 //              double x2 = predictValue[index[i]]/(1 + predictValue[index[i]]);//x/1+|x| (幅度小)
+//              double x2 = x;
               
 //            System.out.printf("%.4f,",originalPop.getSingleChromosome(i).getObjValue()[0]);
 //            System.out.printf("%.4f,",productGeneInfo(originalPop.getSingleChromosome(i) , container , inter));
 
-                /*inter*/
+                /*inter*/ //&& (index[i] > popSize * 0.8 && targetValue[index[i]] < predictValue[i]) 
                 for (int j = 1; j < chromosomeLength; j++) {
                   
                     int gene = originalPop.getSingleChromosome(index[i]).getSolution()[j];//1
@@ -352,50 +393,68 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
                             int gene_before = originalPop.getSingleChromosome(index[i]).getSolution()[j-k-1];//0
                             
                             //--------------------------------------------------------
-                            double y = 0 , z = 0;
-                            if((predictValue2[i] - predictValue[index[i]]) >= 0)
-                            {
-                                y = 1 - inter[gene_before][gene];
-                                z = y*x;
-                            }else
-                            {
-                                y = inter[gene_before][gene];
-                                z = y*(x2)*-1;
-                            } 
-                                inter[gene_before][gene] += z;
-                                
-                            //--------------------------------------------------------
-                            
+                            double y = 0;
+                            y = inter[gene_before][gene];
+                            inter[gene_before][gene] += y*x;                                
+                            //--------------------------------------------------------                            
                         }      
                     }
                 }
                 
-                /*container*/
+                /*container*/ //&& (index[i] > popSize * 0.8 && targetValue[index[i]] < predictValue[i])
                 for (int j = 0; j < chromosomeLength; j++) {
                     if(D1 >= 0 && j >= D1){
                         for(int k = 0 ; k <= D1 ; k++){
                             int gene = originalPop.getSingleChromosome(index[i]).getSolution()[j - k];//0
                             
                             //--------------------------------------------------------
-                            double y = 0 , z = 0 ;
-                            if((predictValue2[i] - predictValue[index[i]]) >= 0)
-                            {
-                                y = 1 - container[gene][j];
-                                z = y*x;  
-                            }else
-                            {
-                                y = container[gene][j];
-                                z = y*(x2)*-1;
-                            } 
-                                container[gene][j] += z;
-                            //--------------------------------------------------------
-                            
+                            double y = 0;
+                            y = container[gene][j];
+                            container[gene][j] += x*y;                                                                                        
+                            //--------------------------------------------------------                            
                         }      
                     }
                 }
 //              System.out.printf("%.4f \n",productGeneInfo(originalPop.getSingleChromosome(i) , container , inter) );
         }
+
+//        System.out.println("After enhanced.");
+//        double adjustedResult[] = new double[this.popSize];
+//        double adjustedResultSorted[] = new double[this.popSize];
+//        
+//        for(int i = 0 ; i < popSize ; i++)
+//        {
+//          adjustedResult[i] = adjustedResultSorted[i] = productGeneInfo(originalPop.getSingleChromosome(i) , container , inter);
+//        } 
+//        
+//        seleSort.setData(adjustedResultSorted);
+//        seleSort.setNomialData(index3);
+//        seleSort.Sort_withNomialDesc();
+//        index3 = seleSort.getNomialData();        
         
+//        for(int i = 0 ; i < popSize ; i++)
+//        {
+//          objValue[i] = originalPop.getSingleChromosome(i).getObjValue()[0];
+//          System.out.println(index[i]+"\t"+originalPop.getSingleChromosome(i).getObjValue()[0]+"\t"+getRank(i, index)+"\t"
+//                  +predictValue[i]+"\t"+getRank(i, index2)+"\t"+targetValue[i]+"\t"
+//                  +adjustedResult[i]+"\t"+getRank(i, index3));
+//        }    
+        
+//        System.exit(0);
+        
+    }
+    
+    public int getRank(int chromosomeIndex, int sortedRank[]){
+      int rankIndex = 0;
+      
+      for(int i = 0 ; i < sortedRank.length; i++){
+        if(sortedRank[i] == chromosomeIndex){
+          rankIndex = i;
+          break;
+        }
+      }
+      
+      return rankIndex;
     }
 
 }

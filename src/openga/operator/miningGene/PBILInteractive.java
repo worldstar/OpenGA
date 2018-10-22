@@ -182,7 +182,7 @@ public class PBILInteractive {
 
     }
     
-    public void CheckModelAccurracy()
+    public double CheckModelAccurracy()
   {
     /*******************************************************************/
             double[] probabilitySum = new double[originalPop.getPopulationSize()];
@@ -219,9 +219,10 @@ public class PBILInteractive {
               }
             }
             
-            System.out.printf("%.2f\n",((double)((double)success / (double)total)));
+//            System.out.printf("Success: %d, total: %d Rate:\t%.2f\n",success, total, ((double)((double)success / (double)total)));
             
             /*******************************************************************/
+            return (double)success / (double)total;
   }
     
     public double CheckModelAccurracyDouble()

@@ -108,6 +108,31 @@ public class selectionSort {
       nomialData[f] = tempNomial;
     }
   }
+  
+  //the third one is double data type and with nomial variable in descending order
+  public void Sort_withNomialDesc(){
+    int f;//index flag
+    double temp;//temp value
+    int tempNomial;
+    for(int j = 0 ; j < data.length ; j ++ ){
+      f = j;
+      temp = data[j];
+      tempNomial = nomialData[j];
+
+      for( int k = j+1 ; k < data.length ; k++){
+        if(data[k] > data[f]){
+          f = k;
+        }
+      }
+      //to swap the value
+      data[j] = data[f];
+      data[f] = temp;
+
+      //to swap the nomial value
+      nomialData[j] = nomialData[f];
+      nomialData[f] = tempNomial;
+    }
+  }    
 
   //the fourth one is int data type and with nomial variable
   public void Sort_int_withNomial(){
