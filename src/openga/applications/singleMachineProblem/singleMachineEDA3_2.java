@@ -15,6 +15,13 @@ import openga.applications.singleMachine;
 import openga.operator.clone.*;
 import openga.operator.miningGene.PBILInteractiveWithEDA3_2I;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+
 /**
  * <p>Title: The OpenGA project which is to build general framework of Genetic algorithm.</p>
  * <p>Description: </p>
@@ -23,7 +30,7 @@ import openga.operator.miningGene.PBILInteractiveWithEDA3_2I;
  * @author Chen, Shih-Hsin
  * @version 1.0
  */
-public class singleMachineEDA3_2 extends singleMachineEDA2 {
+public class singleMachineEDA3_2 extends singleMachineEDA2 implements Runnable {
 
     public singleMachineEDA3_2() {
     }
@@ -112,18 +119,26 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 {
         System.out.print(implementResult);
     }
 
+    @Override
+    public void run() {
+      initiateVars();
+      startMain();
+    }
+    
     public static void main(String[] args) {
 //        System.out.println("singleMachineEDA_SKS_20080330");
         //openga.applications.data.singleMachine singleMachineData = new openga.applications.data.singleMachine();
 //        int jobSets[] = new int[]{20,50,90};//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80 //20,30,40,50,60,90//20,50,90
 
-//        int jobSets[] = new int[]{20,30,40,50,60,90};//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80 //20,30,40,50,60,90//20,50,90
-        int jobSets[] = new int[]{50};//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80 //20,30,40,50,60,90//20,50,90
+        int jobSets[] = new int[]{20,30,40,50,60,90};//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80 //20,30,40,50,60,90//20,50,90
+//        int jobSets[] = new int[]{90};//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80 //20,30,40,50,60,90//20,50,90
 //        int jobSets[] = new int[]{100,200};//bky
 
+        int threadNum = 1;
+        ExecutorService executor = Executors.newFixedThreadPool(threadNum);
 
         int counter = 0;
-        int repeatExperiments = 60;//3
+        int repeatExperiments = 1;//3
 
         int popSize[] = new int[]{100};//50, 100, 155, 210 [100]
         double crossoverRate[] = new double[]{0.9},//0.6, 0.9 {0.9}
@@ -131,21 +146,21 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 {
                 elitism = 0.1;
 
         //EDA parameters.
-        double lamdalearningrate[] = new double[]{0.1}; //0.1, 0.5, 0.9
-        double betalearningrate[] = new double[]{0.9};   //0.1, 0.5, 0.9
-        int numberOfCrossoverTournament[] = new int[]{5};//{1, 2, 4} //4-5
-        int numberOfMutationTournament[] = new int[]{2};//{1, 2, 4}  //2
-        int startingGenDividen[] = new int[]{4};//{2, 4}  //4
+        double lamdalearningrate[] = new double[]{0.1, 0.5, 0.9}; //0.1, 0.5, 0.9
+        double betalearningrate[] = new double[]{0.1, 0.5, 0.9};   //0.1, 0.5, 0.9
+        int numberOfCrossoverTournament[] = new int[]{1,2,4,5};//{1, 2, 4} //4-5//1,2,4,5
+        int numberOfMutationTournament[] = new int[]{1, 2, 4};//{1, 2, 4}  //2 //1, 2, 4
+        int startingGenDividen[] = new int[]{2,4,7};//{2, 4}  //4//2,4,7
         
 //        int D1[] = new int[]{0,1,2,9};//n/10 , 9,10,20  , 0,1,2,10
 //        int D2[] = new int[]{0,1,2,9};//n/10 , 9,10,20  , 0,1,2,10
-        int D1[] = new int[]{2};//n/10 , 9,10,20  , 0,1,2,10
-        int D2[] = new int[]{3};//n/10 , 9,10,20  , 0,1,2,10
+        int D1[] = new int[]{0,1,2,3};//n/10 , 9,10,20  , 0,1,2,10//0,1,2,3
+        int D2[] = new int[]{0,1,2,3,4};//n/10 , 9,10,20  , 0,1,2,10//0,1,2,3,4
         boolean optMin = true;
 
 
         for (int j = 0; j < jobSets.length; j++) {//jobSets.length
-            for (int k = 0; k < 1; k++) {  //49
+            for (int k = 0; k < 3; k++) {  //49
 //              for (int k = 0; k < 1; k++) {//bky
                 if (jobSets[j] <= 50 || (jobSets[j] > 50 && k < 9)) {
 //                    if ((jobSets[j] <= 50 && (k == 0 || k == 3 || k == 6 || k == 21 || k == 24 || k == 27 || k == 42 || k == 45 || k == 48)) || (jobSets[j] > 50 && k < 9)) {
@@ -181,11 +196,14 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 {
 
                                                       for (int i = 0; i < repeatExperiments; i++) {
               //                                            System.out.println("Combinations: " + counter);
+              
                                                           singleMachineEDA3_2 singleMachine1 = new singleMachineEDA3_2();
                                                           singleMachine1.setData(numberOfJobs, dueDate, processingTime,fileName);
                                                           singleMachine1.setEDAinfo(lamdalearningrate[lx], betalearningrate[bx], numberOfCrossoverTournament[m], numberOfMutationTournament[n], startingGenDividen[p] , D1[D1Count], D2[D2Count] , optMin , crossoverRate[CRCount] , mutationRate[MRCount]);
-                                                          singleMachine1.initiateVars();
-                                                          singleMachine1.startMain();
+                                                          
+                                                          Runnable worker = singleMachine1;
+                                                          executor.execute(worker);
+                                                                                                                    
                                                           counter++;
                                                       }
 
@@ -201,5 +219,8 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 {
                 }
             }
         }
+        
+        executor.shutdown();
+        
     }
 }
