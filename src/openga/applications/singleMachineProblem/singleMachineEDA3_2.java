@@ -140,7 +140,7 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 implements Runnable {
 //        int jobSets[] = new int[]{90};//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80 //20,30,40,50,60,90//20,50,90
 //        int jobSets[] = new int[]{100,200};//bky
 
-        int threadNum = 1;
+        int threadNum = 4;
         ExecutorService executor = Executors.newFixedThreadPool(threadNum);
 
         int counter = 0;
@@ -165,12 +165,32 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 implements Runnable {
         boolean optMin = true;
 
         int instanceReplications = 3;
-        int innerLoopSize = instanceReplications * repeatExperiments * crossoverRate.length * mutationRate.length * lamdalearningrate.length * betalearningrate.length 
-                            * numberOfCrossoverTournament.length * numberOfMutationTournament.length * startingGenDividen.length * D1.length * D2.length;
-        CountDownLatch latch = new CountDownLatch(innerLoopSize);
-
         for (int j = 0; j < jobSets.length; j++) {//jobSets.length
             for (int k = 0; k < instanceReplications; k++) {  //49
+              
+                int innerLoopSize = repeatExperiments * crossoverRate.length * mutationRate.length * lamdalearningrate.length * betalearningrate.length 
+                                    * numberOfCrossoverTournament.length * numberOfMutationTournament.length * startingGenDividen.length * D1.length * D2.length;
+                CountDownLatch latch = new CountDownLatch(innerLoopSize);
+
+                int numberOfJobs = jobSets[j];
+
+                /*===sks===*/
+                openga.applications.data.singleMachine readSingleMachineData1 = new openga.applications.data.singleMachine();
+                String fileName = readSingleMachineData1.getFileName(numberOfJobs, k);
+                readSingleMachineData1.setData("sks/" + fileName + ".txt");
+                readSingleMachineData1.getDataFromFile();
+
+                /*===bky===*/
+//                openga.applications.data.readSingleMachine readSingleMachineData1 = new openga.applications.data.readSingleMachine();
+//                String fileName = readSingleMachineData1.getFileName(numberOfJobs, k+1);
+//                readSingleMachineData1.setData("sks/" + fileName + ".txt");
+//                readSingleMachineData1.getDataFromFile();
+
+//                System.out.print(fileName + "\t");
+
+                int dueDate[] = readSingleMachineData1.getDueDate();
+                int processingTime[] = readSingleMachineData1.getPtime();
+              
 //              for (int k = 0; k < 1; k++) {//bky
                 if (jobSets[j] <= 50 || (jobSets[j] > 50 && k < 9)) {
 //                    if ((jobSets[j] <= 50 && (k == 0 || k == 3 || k == 6 || k == 21 || k == 24 || k == 27 || k == 42 || k == 45 || k == 48)) || (jobSets[j] > 50 && k < 9)) {
@@ -186,23 +206,6 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 implements Runnable {
                                                 for(int D1Count = 0 ; D1Count < D1.length ; D1Count++) {
                                                     for(int D2Count = 0 ; D2Count < D2.length ; D2Count++) {
 
-                                                      int numberOfJobs = jobSets[j];
-
-                                                      /*===sks===*/
-                                                      openga.applications.data.singleMachine readSingleMachineData1 = new openga.applications.data.singleMachine();
-                                                      String fileName = readSingleMachineData1.getFileName(numberOfJobs, k);
-                                                      readSingleMachineData1.setData("sks/" + fileName + ".txt");
-                                                      readSingleMachineData1.getDataFromFile();
-
-                                                      /*===bky===*/
-//                                                      openga.applications.data.readSingleMachine readSingleMachineData1 = new openga.applications.data.readSingleMachine();
-//                                                      String fileName = readSingleMachineData1.getFileName(numberOfJobs, k+1);
-//                                                      readSingleMachineData1.setData("sks/" + fileName + ".txt");
-//                                                      readSingleMachineData1.getDataFromFile();
-
-              //                                        System.out.print(fileName + "\t");
-                                                      int dueDate[] = readSingleMachineData1.getDueDate();
-                                                      int processingTime[] = readSingleMachineData1.getPtime();
 
                                                       for (int i = 0; i < repeatExperiments; i++) {
               //                                            System.out.println("Combinations: " + counter);
@@ -227,17 +230,19 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 implements Runnable {
                         }
                     }
                 }
+                
+                
+              try {
+              //Wait the all works are done. Then we process next instance.
+              latch.await();
+              } catch (InterruptedException E) {
+                 E.printStackTrace();
+              }
+
+              executor.shutdown();
+
+                
             }
         }
-        
-        try {
-        //Wait the all works are done. Then we process next instance.
-        latch.await();
-        } catch (InterruptedException E) {
-           E.printStackTrace();
-        }
-        
-        executor.shutdown();
-        
     }
 }
