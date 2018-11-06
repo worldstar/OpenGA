@@ -35,15 +35,17 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
         
         if(OptMin)
         {
-          beforeEhanced = CheckModelAccurracy();
+//          checkModelAccuracyMin();
+//          beforeEhanced = CheckModelAccurracy();
         }else
         {
-          checkModelAccuracyMax();
+//          checkModelAccuracyMax();
         }
 
 //          enhanceContainer();
 
         enhanceContainer2();
+          System.out.printf("%.2f\n",CheckModelAccurracy());
         
 //        System.out.println(D1 + " , " + D2);
         afterEnhanced = CheckModelAccurracy();
@@ -268,7 +270,7 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
 
         openga.util.algorithm.getMin getMin = new openga.util.algorithm.getMin();
         openga.util.algorithm.getMax getMax = new openga.util.algorithm.getMax();
-        double min = getMin.setData(probabilityError);
+        double min = 0;
         double max = getMax.setData(probabilityError);
         
         for (int i = 0; i < popSize; i++) {
@@ -284,7 +286,8 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
                         for(int k = 0 ; k <= D2 ; k++){
                             int gene_before = originalPop.getSingleChromosome(i).getSolution()[j-k-1];//0
                             
-                            double y = 1 - inter[gene_before][gene];
+//                            double y = 1 - inter[gene_before][gene];
+                            double y = inter[gene_before][gene];
                             double z = y*x;
                             inter[gene_before][gene] += z;
                         }      
@@ -298,7 +301,8 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
                           
                             int gene = originalPop.getSingleChromosome(i).getSolution()[j - k];//0
 
-                            double y = 1 - container[gene][j];
+//                            double y = 1 - container[gene][j];
+                            double y = container[gene][j];
                             double z = y*x;
                             container[gene][j] += z;
                             
