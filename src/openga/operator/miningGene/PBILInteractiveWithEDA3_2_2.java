@@ -43,9 +43,14 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
         }
 
 //          enhanceContainer();
+        int epoch = 5;
+        for(int i = 0 ; i < epoch; i++){
+          beforeEhanced = CheckModelAccurracy();
+          enhanceContainer2();
+        }
 
-        enhanceContainer2();
-          System.out.printf("%.2f\n",CheckModelAccurracy());
+//        enhanceContainer2();
+//          System.out.printf("%.2f\n",CheckModelAccurracy());
         
 //        System.out.println(D1 + " , " + D2);
         afterEnhanced = CheckModelAccurracy();
@@ -289,7 +294,7 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
 //                            double y = 1 - inter[gene_before][gene];
                             double y = inter[gene_before][gene];
                             double z = y*x;
-                            inter[gene_before][gene] += z;
+                            inter[gene_before][gene] += z/2;
                         }      
                     }
                 }
@@ -304,7 +309,7 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
 //                            double y = 1 - container[gene][j];
                             double y = container[gene][j];
                             double z = y*x;
-                            container[gene][j] += z;
+                            container[gene][j] += z/2;
                             
                         }
                     }
@@ -399,7 +404,7 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
                             //--------------------------------------------------------
                             double y = 0;
                             y = inter[gene_before][gene];
-                            inter[gene_before][gene] += y*x;                                
+                            inter[gene_before][gene] += y*x/2;                                
                             //--------------------------------------------------------                            
                         }      
                     }
@@ -414,7 +419,7 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
                             //--------------------------------------------------------
                             double y = 0;
                             y = container[gene][j];
-                            container[gene][j] += x*y;                                                                                        
+                            container[gene][j] += x*y/2;                                                                                        
                             //--------------------------------------------------------                            
                         }      
                     }
