@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 
-public class SamplePareto_ReadFile {
+public class ReadParetoFile {
     ArrayList a = new ArrayList();
     ArrayList b = new ArrayList();
     
@@ -43,8 +43,7 @@ public class SamplePareto_ReadFile {
             data[i][1] = Double.parseDouble((String) b.get(i));
         }
     }
-    
-    
+        
     public void result_output() {
         for (int i = 0; i < data.length; i++) {
             for (int j = 0; j < data[0].length; j++) {
@@ -55,11 +54,10 @@ public class SamplePareto_ReadFile {
                 }
             }System.out.println();
         }
-    }
-    
+    }    
     
     public static void main(String[] args) throws IOException  {
-        SamplePareto_ReadFile a = new SamplePareto_ReadFile();
+        ReadParetoFile a = new ReadParetoFile();
         a.read_csv();
         a.result_output();
     }

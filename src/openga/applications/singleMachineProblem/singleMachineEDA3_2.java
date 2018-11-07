@@ -144,7 +144,7 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 implements Runnable {
         ExecutorService executor = Executors.newFixedThreadPool(threadNum);
 
         int counter = 0;
-        int repeatExperiments = 1;//3
+        int repeatExperiments = 30;//3
 
         int popSize[] = new int[]{100};//50, 100, 155, 210 [100]
         double crossoverRate[] = new double[]{0.9},//0.6, 0.9 {0.9}
@@ -230,19 +230,15 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 implements Runnable {
                         }
                     }
                 }
-                
-                
+                                
               try {
               //Wait the all works are done. Then we process next instance.
               latch.await();
               } catch (InterruptedException E) {
                  E.printStackTrace();
-              }
-
-              executor.shutdown();
-
-                
+              }                
             }
         }
+        executor.shutdown();
     }
 }
