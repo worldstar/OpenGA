@@ -15,5 +15,6 @@ public interface PBILInteractiveWithEDA3_2I extends EDAMainI {
     public void setD1(int D1);
     public void setD2(int D2);
     public void setOptMin(boolean OptMin);
+    public void setEpoch(int epoch);
   
 }

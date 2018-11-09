@@ -38,6 +38,7 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 implements Runnable {
     public int D1;
     public int D2;
     public boolean OptMin;
+    int epoch;
     CountDownLatch latch;
     EDA3CrossoverI Crossover;
     EDA3MutationI Mutation;
@@ -55,7 +56,7 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 implements Runnable {
         return index;
     }
     
-    public void setEDAinfo(double lamda, double beta, int numberOfCrossoverTournament, int numberOfMutationTournament, int startingGenDividen , int D1 , int D2 , boolean OptMin , double DEFAULT_crossoverRate , double DEFAULT_mutationRate , CountDownLatch latch) {
+    public void setEDAinfo(double lamda, double beta, int numberOfCrossoverTournament, int numberOfMutationTournament, int startingGenDividen , int D1 , int D2 , boolean OptMin , double DEFAULT_crossoverRate , double DEFAULT_mutationRate , CountDownLatch latch , int epoch) {
         this.lamda = lamda;
         this.beta = beta;
         this.numberOfCrossoverTournament = numberOfCrossoverTournament;
@@ -67,6 +68,7 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 implements Runnable {
         this.DEFAULT_crossoverRate = DEFAULT_crossoverRate;
         this.DEFAULT_mutationRate = DEFAULT_mutationRate;
         this.latch = latch;
+        this.epoch = epoch;
         
     }        
     
@@ -104,6 +106,7 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 implements Runnable {
         GaMain.setD1(this.D1);
         GaMain.setD2(this.D2);
         GaMain.setOptMin(this.OptMin);
+        GaMain.setEpoch(this.epoch);
     }
 
     public void startMain() {
@@ -114,7 +117,7 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 implements Runnable {
         //to output the implementation result.
         String implementResult = "";
         int bestInd = getBestSolnIndex(GaMain.getArchieve());
-        implementResult = fileName + "\t" + lamda + "\t" + beta + "\t" + numberOfCrossoverTournament + "\t" + numberOfMutationTournament + "\t" + startingGenDividen + "\t" + D1 + "\t" + D2 + "\t" + OptMin + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + GaMain.getArchieve().getSingleChromosome(bestInd).getObjValue()[0] + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
+        implementResult = fileName + "\t" + lamda + "\t" + beta + "\t" + numberOfCrossoverTournament + "\t" + numberOfMutationTournament + "\t" + startingGenDividen + "\t" + D1 + "\t" + D2 + "\t" + OptMin + "\t" + epoch + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + GaMain.getArchieve().getSingleChromosome(bestInd).getObjValue()[0] + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
         writeFile("singleMachineEDA3_test", implementResult);
         System.out.print(implementResult);
     }
@@ -140,36 +143,37 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 implements Runnable {
 //        int jobSets[] = new int[]{90};//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80 //20,30,40,50,60,90//20,50,90
 //        int jobSets[] = new int[]{100,200};//bky
 
-        int threadNum = 4;
+        int threadNum = 20;
         ExecutorService executor = Executors.newFixedThreadPool(threadNum);
 
         int counter = 0;
         int repeatExperiments = 30;//3
 
         int popSize[] = new int[]{100};//50, 100, 155, 210 [100]
-        double crossoverRate[] = new double[]{0.9},//0.6, 0.9 {0.9}
-                mutationRate[] = new double[]{0.5},//0.1, 0.5 {0.5}
+        double crossoverRate[] = new double[]{0.1},//0.6, 0.9 {0.9}
+                mutationRate[] = new double[]{0.9},//0.1, 0.5 {0.5}
                 elitism = 0.1;
 
         //EDA parameters.
-        double lamdalearningrate[] = new double[]{0.1, 0.5, 0.9}; //0.1, 0.5, 0.9
-        double betalearningrate[] = new double[]{0.1, 0.5, 0.9};   //0.1, 0.5, 0.9
-        int numberOfCrossoverTournament[] = new int[]{1,2,4,5};//{1, 2, 4} //4-5//1,2,4,5
-        int numberOfMutationTournament[] = new int[]{1, 2, 4};//{1, 2, 4}  //2 //1, 2, 4
-        int startingGenDividen[] = new int[]{2,4,7};//{2, 4}  //4//2,4,7
+        double lamdalearningrate[] = new double[]{0.9}; //0.1, 0.5, 0.9
+        double betalearningrate[] = new double[]{0.5};   //0.1, 0.5, 0.9
+        int numberOfCrossoverTournament[] = new int[]{5};//{1, 2, 4} //4-5//1,2,4,5
+        int numberOfMutationTournament[] = new int[]{1};//{1, 2, 4}  //2 //1, 2, 4
+        int startingGenDividen[] = new int[]{4};//{2, 4}  //4//2,4,7
         
 //        int D1[] = new int[]{0,1,2,9};//n/10 , 9,10,20  , 0,1,2,10
 //        int D2[] = new int[]{0,1,2,9};//n/10 , 9,10,20  , 0,1,2,10
-        int D1[] = new int[]{0,1,2,3};//n/10 , 9,10,20  , 0,1,2,10//0,1,2,3
-        int D2[] = new int[]{0,1,2,3,4};//n/10 , 9,10,20  , 0,1,2,10//0,1,2,3,4
+        int[] D1 = new int[]{1};//n/10 , 9,10,20  , 0,1,2,10//0,1,2,3
+        int[] D2 = new int[]{0};//n/10 , 9,10,20  , 0,1,2,10//0,1,2,3,4
         boolean optMin = true;
+        int[] epoch = new int[]{0,1,2,5};
 
         int instanceReplications = 3;
         for (int j = 0; j < jobSets.length; j++) {//jobSets.length
             for (int k = 0; k < instanceReplications; k++) {  //49
               
                 int innerLoopSize = repeatExperiments * crossoverRate.length * mutationRate.length * lamdalearningrate.length * betalearningrate.length 
-                                    * numberOfCrossoverTournament.length * numberOfMutationTournament.length * startingGenDividen.length * D1.length * D2.length;
+                                    * numberOfCrossoverTournament.length * numberOfMutationTournament.length * startingGenDividen.length * D1.length * D2.length * epoch.length;
                 CountDownLatch latch = new CountDownLatch(innerLoopSize);
 
                 int numberOfJobs = jobSets[j];
@@ -192,7 +196,7 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 implements Runnable {
                 int processingTime[] = readSingleMachineData1.getPtime();
               
 //              for (int k = 0; k < 1; k++) {//bky
-                if (jobSets[j] <= 50 || (jobSets[j] > 50 && k < 9)) {
+//                if (jobSets[j] <= 50 || (jobSets[j] > 50 && k < 9)) {
 //                    if ((jobSets[j] <= 50 && (k == 0 || k == 3 || k == 6 || k == 21 || k == 24 || k == 27 || k == 42 || k == 45 || k == 48)) || (jobSets[j] > 50 && k < 9)) {
                     //if((jobSets[j] <= 50 && (k != 0 && k != 3 && k != 6 && k != 21 && k != 24 && k != 27 && k != 42 && k != 45 && k != 48)) ||  (jobSets[j] > 50 && k < 9)){
                     for (int lx = 0; lx < lamdalearningrate.length; lx++) {
@@ -205,21 +209,22 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 implements Runnable {
                                             for(int MRCount = 0 ; MRCount < mutationRate.length ; MRCount++) {
                                                 for(int D1Count = 0 ; D1Count < D1.length ; D1Count++) {
                                                     for(int D2Count = 0 ; D2Count < D2.length ; D2Count++) {
-
-
-                                                      for (int i = 0; i < repeatExperiments; i++) {
+                                                      for(int epochCount = 0; epochCount < epoch.length ; epochCount++){
+                                                        for (int i = 0; i < repeatExperiments; i++) {
               //                                            System.out.println("Combinations: " + counter);
               
                                                           singleMachineEDA3_2 singleMachine1 = new singleMachineEDA3_2();
                                                           singleMachine1.setData(numberOfJobs, dueDate, processingTime,fileName);
-                                                          singleMachine1.setEDAinfo(lamdalearningrate[lx], betalearningrate[bx], numberOfCrossoverTournament[m], numberOfMutationTournament[n], startingGenDividen[p] , D1[D1Count], D2[D2Count] , optMin , crossoverRate[CRCount] , mutationRate[MRCount] , latch);
+                                                          singleMachine1.setEDAinfo(lamdalearningrate[lx], betalearningrate[bx], numberOfCrossoverTournament[m], 
+                                                                  numberOfMutationTournament[n], startingGenDividen[p] , D1[D1Count], D2[D2Count] , optMin , 
+                                                                  crossoverRate[CRCount] , mutationRate[MRCount] , latch , epoch[epochCount]);
                                                           
                                                           Runnable worker = singleMachine1;
                                                           executor.execute(worker);
                                                                                                                     
                                                           counter++;
+                                                        }
                                                       }
-
                                                     }
                                                 }
                                             }
@@ -229,11 +234,11 @@ public class singleMachineEDA3_2 extends singleMachineEDA2 implements Runnable {
                             }
                         }
                     }
-                }
+//                }
                                 
               try {
               //Wait the all works are done. Then we process next instance.
-              latch.await();
+                latch.await();
               } catch (InterruptedException E) {
                  E.printStackTrace();
               }                

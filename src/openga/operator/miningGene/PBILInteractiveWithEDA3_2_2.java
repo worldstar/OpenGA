@@ -13,52 +13,50 @@ import openga.chromosomes.*;
 /* enhance Inter and Container add D1 and D2*/
 public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
 
-    public PBILInteractiveWithEDA3_2_2(populationI originalPop, double lamda, double beta, int D1 , int D2, boolean OptMin) {
+    public PBILInteractiveWithEDA3_2_2(populationI originalPop, double lamda, double beta, int D1 , int D2, boolean OptMin , int epoch) {
       super(originalPop, lamda, beta);
       this.D1 = D1;
       this.D2 = D2;
       this.OptMin = OptMin;
+      this.epoch = epoch;
     }
+    
+    //Enhance
+    double[] probabilitySum ;
+    double[] probabilityError ;
+    
+    //Enhance2
+    int[] index;
+    int[] index2;
+//        int[] index3 = new int[popSize];
+    double[] objValue;
+    double[] predictValue;
+    double[] predictValueSorted;
+    double[] targetValue;
     
     int D1;
     int D2;
     boolean OptMin;
-    double[] probabilitySum ;
-    double[] probabilityError ;
+    int epoch;
 
     public void startStatistics() {
         calcAverageFitness();
         calcContainer();
         calcInter();
         
-        double beforeEhanced = 0, afterEnhanced = 0;
-        
-        if(OptMin)
-        {
-//          checkModelAccuracyMin();
-//          beforeEhanced = CheckModelAccurracy();
-        }else
-        {
-//          checkModelAccuracyMax();
-        }
-
-//          enhanceContainer();
-        int epoch = 5;
+//        if(OptMin)
+//        {
+//        }else
+//        {
+//        }
+          
         for(int i = 0 ; i < epoch; i++){
-          beforeEhanced = CheckModelAccurracy();
+//          checkModelAccuracyMin();
+//          enhanceContainer();
+          enhance2Sort();
           enhanceContainer2();
         }
 
-//        enhanceContainer2();
-//          System.out.printf("%.2f\n",CheckModelAccurracy());
-        
-//        System.out.println(D1 + " , " + D2);
-        afterEnhanced = CheckModelAccurracy();
-//        if(afterEnhanced < beforeEhanced && afterEnhanced < 0.55){
-//          System.out.println("Result is not improved.");
-//        }
-//        System.out.println("beforeEhanced:\t"+beforeEhanced + "\tafterEnhanced\t" + afterEnhanced);
-//        System.exit(0);
     }
     
     public void calcContainer() {
@@ -341,27 +339,26 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
       return productValue;
     }      
     
-    public void enhanceContainer2()
+    public void enhance2Sort()
     {
 //    /*******************************************************************/
       
         openga.util.sort.selectionSort seleSort = new openga.util.sort.selectionSort();
-        int[] index = new int[popSize];
-        int[] index2 = new int[popSize];
-        int[] index3 = new int[popSize];
-        double[] objValue = new double[popSize];
-        double[] predictValue = new double[popSize];
-        double[] predictValueSorted = new double[popSize];
-        double[] targetValue  = new double[popSize];
+        index = new int[popSize];
+        index2 = new int[popSize];
+//        int[] index3 = new int[popSize];
+        objValue = new double[popSize];
+        predictValue = new double[popSize];
+        predictValueSorted = new double[popSize];
+        targetValue  = new double[popSize];
         for(int i = 0 ; i < popSize ; i++)
         {
           index[i] = i;
           index2[i] = i;
-          index3[i] = i;
+//          index3[i] = i;
           objValue[i] = originalPop.getSingleChromosome(i).getObjValue()[0];
           predictValue[i] = predictValueSorted[i] = productGeneInfo(originalPop.getSingleChromosome(i) , container , inter);
         }
-        
         seleSort.setData(objValue);
         seleSort.setNomialData(index);
         seleSort.Sort_withNomial();
@@ -372,6 +369,15 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
         seleSort.Sort_withNomialDesc();
 //        targetValue = seleSort.getData();                
         
+      
+      
+//    /*******************************************************************/
+    }
+    
+    public void enhanceContainer2()
+    {
+//    /*******************************************************************/
+      
         double max = predictValueSorted[0];
         double min = predictValueSorted[predictValueSorted.length - 1];
         min = 0;
@@ -379,15 +385,15 @@ public class PBILInteractiveWithEDA3_2_2 extends PBILInteractive{
         for (int i = 0; i < popSize ; i++) {
           int objRanking = this.getRank(i, index);
           targetValue[i] = predictValueSorted[objRanking];
-//              double x = 1 - ((predictValue[index[i]] - min) / (max - min)); //原本簡易計算
-//              double x = java.lang.Math.tanh(predictValue[index[i]]);//tanh (幅度大)
-//              double x = predictValue[index[i]]/(1 + predictValue[index[i]]);//x/1+|x| (幅度小)
+//              double x = 1 - ((predictValue[index[i]] - min) / (max - min)); //��蝪⊥����
+//              double x = java.lang.Math.tanh(predictValue[index[i]]);//tanh (撟漲憭�)
+//              double x = predictValue[index[i]]/(1 + predictValue[index[i]]);//x/1+|x| (撟漲撠�)
 //              double x = (targetValue[i] - predictValue[i]) / (max - min);  
               double x = (targetValue[i] - predictValue[i]) / (max - min);  
               
-//              double x2 = (1/(1+((predictValue[index[i]] - min) / (max - min)))); //原本簡易計算
-//              double x2 = java.lang.Math.tanh(predictValue[index[i]]);//tanh (幅度大)
-//              double x2 = predictValue[index[i]]/(1 + predictValue[index[i]]);//x/1+|x| (幅度小)
+//              double x2 = (1/(1+((predictValue[index[i]] - min) / (max - min)))); //��蝪⊥����
+//              double x2 = java.lang.Math.tanh(predictValue[index[i]]);//tanh (撟漲憭�)
+//              double x2 = predictValue[index[i]]/(1 + predictValue[index[i]]);//x/1+|x| (撟漲撠�)
 //              double x2 = x;
               
 //            System.out.printf("%.4f,",originalPop.getSingleChromosome(i).getObjValue()[0]);

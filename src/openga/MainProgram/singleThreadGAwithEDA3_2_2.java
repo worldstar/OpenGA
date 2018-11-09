@@ -25,6 +25,7 @@ public class singleThreadGAwithEDA3_2_2 extends singleThreadGAwithEDA2 implement
     int D1;
     int D2;
     boolean OptMin;
+    int epoch;
     
 //    PBILInteractiveWithEDA3 PBIL1;   //PBIL
 //    PBILInteractiveWithEDA3_2 PBIL1;   //PBIL
@@ -41,7 +42,7 @@ public class singleThreadGAwithEDA3_2_2 extends singleThreadGAwithEDA2 implement
 
 //        PBIL1 = new PBILInteractiveWithEDA3(Population, lamda, beta);   // PBIL
 //        PBIL1 = new PBILInteractiveWithEDA3_2(Population, lamda, beta , D1 , D2);   // PBIL
-        PBIL1 = new PBILInteractiveWithEDA3_2_2(Population, lamda, beta , D1 , D2 , OptMin);   // PBIL
+        PBIL1 = new PBILInteractiveWithEDA3_2_2(Population, lamda, beta , D1 , D2 , OptMin , epoch);   // PBIL
 
         container = PBIL1.getContainer();
         inter = PBIL1.getInter();
@@ -98,14 +99,15 @@ public class singleThreadGAwithEDA3_2_2 extends singleThreadGAwithEDA2 implement
 //                        }
 //                        container = conTemp;
 //                        inter = intTemp;                        
-                    PBIL1 = new PBILInteractiveWithEDA3_2_2(Population, lamda, beta , D1 , D2 , OptMin);   // PBIL
+                    PBIL1 = new PBILInteractiveWithEDA3_2_2(Population, lamda, beta , D1 , D2 , OptMin , epoch);   // PBIL
+//                    PBIL1.setData(offsrping);
                     PBIL1.startStatistics();
 
                     container = PBIL1.getContainer();
                     inter = PBIL1.getInter();                        
 
                         temporaryContainer = container;
-//                        System.out.printf("%.2f,",PBIL1.CheckModelAccurracyDouble());
+//                    System.out.printf("%.2f\n",PBIL1.CheckModelAccurracyDouble());
 //                        System.out.println(getArchieve().getSingleChromosome(getBestSolnIndex(getArchieve())).getObjValue()[0]);
 //                        
                 //-----------------------------------------------------------------------------------------------------------------
@@ -189,4 +191,10 @@ public class singleThreadGAwithEDA3_2_2 extends singleThreadGAwithEDA2 implement
     this.OptMin = OptMin;
   }
 
+  @Override
+  public void setEpoch(int epoch) {
+    this.epoch = epoch;
+  }
+
+  
 }

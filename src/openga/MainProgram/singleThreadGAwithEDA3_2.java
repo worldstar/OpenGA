@@ -25,6 +25,7 @@ public class singleThreadGAwithEDA3_2 extends singleThreadGAwithEDA2 implements 
     int D1;
     int D2;
     boolean OptMin;
+    int epoch;
     
 //    PBILInteractiveWithEDA3 PBIL1;   //PBIL
 //    PBILInteractiveWithEDA3_2 PBIL1;   //PBIL
@@ -41,7 +42,7 @@ public class singleThreadGAwithEDA3_2 extends singleThreadGAwithEDA2 implements 
 
 //        PBIL1 = new PBILInteractiveWithEDA3(Population, lamda, beta);   // PBIL
 //        PBIL1 = new PBILInteractiveWithEDA3_2(Population, lamda, beta , D1 , D2);   // PBIL
-        PBIL1 = new PBILInteractiveWithEDA3_2_2(Population, lamda, beta , D1 , D2 , OptMin);   // PBIL
+        PBIL1 = new PBILInteractiveWithEDA3_2_2(Population, lamda, beta , D1 , D2 , OptMin , epoch);   // PBIL
 
         container = PBIL1.getContainer();
         inter = PBIL1.getInter();
@@ -136,6 +137,11 @@ public class singleThreadGAwithEDA3_2 extends singleThreadGAwithEDA2 implements 
   @Override
   public void setOptMin(boolean OptMin) {
     this.OptMin = OptMin;
+  }
+
+  @Override
+  public void setEpoch(int epoch) {
+    this.epoch = epoch;
   }
 
 }
