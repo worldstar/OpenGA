@@ -377,5 +377,25 @@ public class singleMachine {
   public double[] getBeta(){
     return beta;
   }
+  
+  public int getInstancesLength(String JobName)
+  {
+    JobName = "M" + JobName;
+    if(JobName.equals("M20")){
+      return M20.length;
+    }else if (JobName.equals("M30")){
+      return M30.length;
+    }else if (JobName.equals("M40")){
+      return M40.length;
+    }else if (JobName.equals("M50")){
+      return M50.length;
+    }else if (JobName.equals("M60")){
+      return M60.length;
+    }else if (JobName.equals("M90")){
+      return M90.length;
+    }else{
+      return 0;
+    }
+  }
 
 }

@@ -56,6 +56,7 @@ public class singleMachineEDA3 extends singleMachineEDA2 implements Runnable {
         return index;
     }
     
+    //thread pool
     public void setEDAinfo(double lamda, double beta, int numberOfCrossoverTournament, int numberOfMutationTournament, int startingGenDividen , int D1 , int D2 , boolean OptMin , double DEFAULT_crossoverRate , double DEFAULT_mutationRate , CountDownLatch latch , int epoch) {
         this.lamda = lamda;
         this.beta = beta;
@@ -69,8 +70,23 @@ public class singleMachineEDA3 extends singleMachineEDA2 implements Runnable {
         this.DEFAULT_mutationRate = DEFAULT_mutationRate;
         this.latch = latch;
         this.epoch = epoch;
-        
-    }        
+    }
+    
+    //Single thread
+    public void setEDAinfo(double lamda, double beta, int numberOfCrossoverTournament, int numberOfMutationTournament, int startingGenDividen , int D1 , int D2 , boolean OptMin , double DEFAULT_crossoverRate , double DEFAULT_mutationRate , int epoch) {
+        this.lamda = lamda;
+        this.beta = beta;
+        this.numberOfCrossoverTournament = numberOfCrossoverTournament;
+        this.numberOfMutationTournament = numberOfMutationTournament;
+        this.startingGenDividen = startingGenDividen;
+        this.D1 = D1;
+        this.D2 = D2;
+        this.OptMin = OptMin;
+        this.DEFAULT_crossoverRate = DEFAULT_crossoverRate;
+        this.DEFAULT_mutationRate = DEFAULT_mutationRate;
+        this.epoch = epoch;
+    }
+    
     
     public void initiateVars() {
         GaMain = new singleThreadGAwithEDA3();//singleThreadGA singleThreadGAwithSecondFront singleThreadGAwithMultipleCrossover adaptiveGA
@@ -139,108 +155,6 @@ public class singleMachineEDA3 extends singleMachineEDA2 implements Runnable {
         }     
     }
     
-    private static void mainSingle() {
-//        System.out.println("singleMachineEDA_SKS_20080330");
-        //openga.applications.data.singleMachine singleMachineData = new openga.applications.data.singleMachine();
-//        int jobSets[] = new int[]{20,50,90};//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80 //20,30,40,50,60,90//20,50,90
-
-        int jobSets[] = new int[]{20,30,40,50,60,90};//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80 //20,30,40,50,60,90//20,50,90
-//        int jobSets[] = new int[]{90};//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80 //20,30,40,50,60,90//20,50,90
-//        int jobSets[] = new int[]{100,200};//bky
-
-        int counter = 0;
-        int repeatExperiments = 1;//30
-
-        int popSize[] = new int[]{100};//50, 100, 155, 210 [100]
-        double crossoverRate[] = new double[]{0.1},//0.6, 0.9 {0.9}
-                mutationRate[] = new double[]{0.9},//0.1, 0.5 {0.5}
-                elitism = 0.1;
-
-        //EDA parameters.
-        double lamdalearningrate[] = new double[]{0.9};//0.1, 0.5, 0.9
-        double betalearningrate[] = new double[]{0.5};  //0.1, 0.5, 0.9
-        int numberOfCrossoverTournament[] = new int[]{5};//{1,2,4,5} 
-        int numberOfMutationTournament[] = new int[]{1};//{1,2,4}
-        int startingGenDividen[] = new int[]{4};//{2,4,7}
-        
-        int[] D1 = new int[]{1};//0,1,2,3
-        int[] D2 = new int[]{0};//0,1,2,3,4
-        boolean optMin = true;
-        int[] epoch = new int[]{6};
-
-        int instanceReplications = 3;
-        for (int j = 0; j < jobSets.length; j++) {//jobSets.length
-            for (int k = 0; k < instanceReplications; k++) {  //49
-              
-                int innerLoopSize = repeatExperiments * crossoverRate.length * mutationRate.length * lamdalearningrate.length * betalearningrate.length 
-                                    * numberOfCrossoverTournament.length * numberOfMutationTournament.length * startingGenDividen.length * D1.length * D2.length * epoch.length;
-                CountDownLatch latch = new CountDownLatch(innerLoopSize);
-
-                int numberOfJobs = jobSets[j];
-
-                /*===sks===*/
-                openga.applications.data.singleMachine readSingleMachineData1 = new openga.applications.data.singleMachine();
-                String fileName = readSingleMachineData1.getFileName(numberOfJobs, k);
-                
-                if(fileName != "")
-//                if(fileName == "sks455a" || fileName == "sks555a" || fileName == "sks688a" || fileName == "sks955a" || fileName == "sks988a")
-                {
-                  readSingleMachineData1.setData("sks/" + fileName + ".txt");
-                  readSingleMachineData1.getDataFromFile();
-
-                  /*===bky===*/
-  //                openga.applications.data.readSingleMachine readSingleMachineData1 = new openga.applications.data.readSingleMachine();
-  //                String fileName = readSingleMachineData1.getFileName(numberOfJobs, k+1);
-  //                readSingleMachineData1.setData("sks/" + fileName + ".txt");
-  //                readSingleMachineData1.getDataFromFile();
-
-  //                System.out.print(fileName + "\t");
-
-                  int dueDate[] = readSingleMachineData1.getDueDate();
-                  int processingTime[] = readSingleMachineData1.getPtime();
-
-  //              for (int k = 0; k < 1; k++) {//bky
-  //                if (jobSets[j] <= 50 || (jobSets[j] > 50 && k < 9)) {
-  //                    if ((jobSets[j] <= 50 && (k == 0 || k == 3 || k == 6 || k == 21 || k == 24 || k == 27 || k == 42 || k == 45 || k == 48)) || (jobSets[j] > 50 && k < 9)) {
-                      //if((jobSets[j] <= 50 && (k != 0 && k != 3 && k != 6 && k != 21 && k != 24 && k != 27 && k != 42 && k != 45 && k != 48)) ||  (jobSets[j] > 50 && k < 9)){
-                      for (int lx = 0; lx < lamdalearningrate.length; lx++) {
-                          for (int bx = 0; bx < betalearningrate.length; bx++) {
-                              for (int m = 0; m < numberOfCrossoverTournament.length; m++) {
-                                  for (int n = 0; n < numberOfMutationTournament.length; n++) {
-                                      for (int p = 0; p < startingGenDividen.length; p++) {
-
-                                          for(int CRCount = 0 ; CRCount < crossoverRate.length ; CRCount++) {
-                                              for(int MRCount = 0 ; MRCount < mutationRate.length ; MRCount++) {
-                                                  for(int D1Count = 0 ; D1Count < D1.length ; D1Count++) {
-                                                      for(int D2Count = 0 ; D2Count < D2.length ; D2Count++) {
-                                                        for(int epochCount = 0; epochCount < epoch.length ; epochCount++){
-                                                          for (int i = 0; i < repeatExperiments; i++) {
-                //                                            System.out.println("Combinations: " + counter);
-
-                                                            singleMachineEDA3 singleMachine1 = new singleMachineEDA3();
-                                                            singleMachine1.setData(numberOfJobs, dueDate, processingTime,fileName);
-                                                            singleMachine1.setEDAinfo(lamdalearningrate[lx], betalearningrate[bx], numberOfCrossoverTournament[m], 
-                                                                    numberOfMutationTournament[n], startingGenDividen[p] , D1[D1Count], D2[D2Count] , optMin , 
-                                                                    crossoverRate[CRCount] , mutationRate[MRCount] , latch , epoch[epochCount]);
-                                                            singleMachine1.initiateVars();
-                                                            singleMachine1.startMain();
-                                                            counter++;
-                                                          }
-                                                        }
-                                                      }
-                                                  }
-                                              }
-                                          }//end CRCount
-                                      }
-                                  }
-                              }
-                          }
-                      }
-                }// Problem if end                
-            }
-        }
-    }
-    
     private static void mainThreadPool() {
 //        System.out.println("singleMachineEDA_SKS_20080330");
         //openga.applications.data.singleMachine singleMachineData = new openga.applications.data.singleMachine();
@@ -273,31 +187,29 @@ public class singleMachineEDA3 extends singleMachineEDA2 implements Runnable {
         boolean optMin = true;
         int[] epoch = new int[]{6};
 
-        int instanceReplications = 3;
         for (int j = 0; j < jobSets.length; j++) {//jobSets.length
+          
+            /*===sks===*/
+            openga.applications.data.singleMachine readSingleMachineData1 = new openga.applications.data.singleMachine();
+            int numberOfJobs = jobSets[j];
+            int instanceReplications = readSingleMachineData1.getInstancesLength(String.valueOf(numberOfJobs));
+            
             for (int k = 0; k < instanceReplications; k++) {  //49
               
                 int innerLoopSize = repeatExperiments * crossoverRate.length * mutationRate.length * lamdalearningrate.length * betalearningrate.length 
                                     * numberOfCrossoverTournament.length * numberOfMutationTournament.length * startingGenDividen.length * D1.length * D2.length * epoch.length;
                 CountDownLatch latch = new CountDownLatch(innerLoopSize);
 
-                int numberOfJobs = jobSets[j];
-
                 /*===sks===*/
-                openga.applications.data.singleMachine readSingleMachineData1 = new openga.applications.data.singleMachine();
                 String fileName = readSingleMachineData1.getFileName(numberOfJobs, k);
                 
-                if(fileName != "")
+                if(fileName == "sks222a" ||fileName ==  "sks255a" ||fileName ==  "sks288a" || fileName == "sks322a" ||fileName ==  "sks355a" ||fileName ==  "sks388a" ||
+                    fileName == "sks422a" ||fileName ==  "sks455a" ||fileName ==  "sks488a" || fileName == "sks522a" ||fileName ==  "sks555a" ||fileName ==  "sks588a" ||
+                    fileName == "sks622a" ||fileName ==  "sks655a" ||fileName ==  "sks688a" || fileName == "sks922a" ||fileName ==  "sks955a" ||fileName ==  "sks988a" )
 //                if(fileName == "sks455a" || fileName == "sks555a" || fileName == "sks688a" || fileName == "sks955a" || fileName == "sks988a")
                 {
                   readSingleMachineData1.setData("sks/" + fileName + ".txt");
                   readSingleMachineData1.getDataFromFile();
-
-                  /*===bky===*/
-  //                openga.applications.data.readSingleMachine readSingleMachineData1 = new openga.applications.data.readSingleMachine();
-  //                String fileName = readSingleMachineData1.getFileName(numberOfJobs, k+1);
-  //                readSingleMachineData1.setData("sks/" + fileName + ".txt");
-  //                readSingleMachineData1.getDataFromFile();
 
   //                System.out.print(fileName + "\t");
 
@@ -357,8 +269,111 @@ public class singleMachineEDA3 extends singleMachineEDA2 implements Runnable {
         executor.shutdown();
     }
     
+    private static void mainSingleThread() {
+//        System.out.println("singleMachineEDA_SKS_20080330");
+        //openga.applications.data.singleMachine singleMachineData = new openga.applications.data.singleMachine();
+//        int jobSets[] = new int[]{20,50,90};//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80 //20,30,40,50,60,90//20,50,90
+
+        int jobSets[] = new int[]{20,30,40,50,60,90};//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80 //20,30,40,50,60,90//20,50,90
+//        int jobSets[] = new int[]{90};//20, 30, 40, 50, 60, 90, 100, 200//20, 40, 60, 80 //20,30,40,50,60,90//20,50,90
+//        int jobSets[] = new int[]{100,200};//bky
+
+        int counter = 0;
+        int repeatExperiments = 1;//30
+
+        int popSize[] = new int[]{100};//50, 100, 155, 210 [100]
+        double crossoverRate[] = new double[]{0.1},//0.6, 0.9 {0.9}
+                mutationRate[] = new double[]{0.9},//0.1, 0.5 {0.5}
+                elitism = 0.1;
+
+        //EDA parameters.
+        double lamdalearningrate[] = new double[]{0.9};//0.1, 0.5, 0.9
+        double betalearningrate[] = new double[]{0.5};  //0.1, 0.5, 0.9
+        int numberOfCrossoverTournament[] = new int[]{5};//{1,2,4,5} 
+        int numberOfMutationTournament[] = new int[]{1};//{1,2,4}
+        int startingGenDividen[] = new int[]{4};//{2,4,7}
+        
+        int[] D1 = new int[]{1};//0,1,2,3
+        int[] D2 = new int[]{0};//0,1,2,3,4
+        boolean optMin = true;
+        int[] epoch = new int[]{6};
+        
+        for (int j = 0; j < jobSets.length; j++) {//jobSets.length
+          
+            /*===sks===*/
+            openga.applications.data.singleMachine readSingleMachineData1 = new openga.applications.data.singleMachine();
+            int numberOfJobs = jobSets[j];
+            int instanceReplications = readSingleMachineData1.getInstancesLength(String.valueOf(numberOfJobs));
+//            System.out.println(instanceReplications);
+            
+            for (int k = 0; k < instanceReplications; k++) {  //49
+              
+                /*===sks===*/
+                String fileName = readSingleMachineData1.getFileName(numberOfJobs, k);
+                
+                if(fileName == "sks222a" ||fileName ==  "sks255a" ||fileName ==  "sks288a" || fileName == "sks322a" ||fileName ==  "sks355a" ||fileName ==  "sks388a" ||
+                    fileName == "sks422a" ||fileName ==  "sks455a" ||fileName ==  "sks488a" || fileName == "sks522a" ||fileName ==  "sks555a" ||fileName ==  "sks588a" ||
+                    fileName == "sks622a" ||fileName ==  "sks655a" ||fileName ==  "sks688a" || fileName == "sks922a" ||fileName ==  "sks955a" ||fileName ==  "sks988a" )
+//                if(fileName == "sks455a" || fileName == "sks555a" || fileName == "sks688a" || fileName == "sks955a" || fileName == "sks988a")
+                {
+                  readSingleMachineData1.setData("sks/" + fileName + ".txt");
+                  readSingleMachineData1.getDataFromFile();
+
+                  /*===bky===*/
+  //                openga.applications.data.readSingleMachine readSingleMachineData1 = new openga.applications.data.readSingleMachine();
+  //                String fileName = readSingleMachineData1.getFileName(numberOfJobs, k+1);
+  //                readSingleMachineData1.setData("sks/" + fileName + ".txt");
+  //                readSingleMachineData1.getDataFromFile();
+
+  //                System.out.print(fileName + "\t");
+
+                  int dueDate[] = readSingleMachineData1.getDueDate();
+                  int processingTime[] = readSingleMachineData1.getPtime();
+
+  //              for (int k = 0; k < 1; k++) {//bky
+  //                if (jobSets[j] <= 50 || (jobSets[j] > 50 && k < 9)) {
+  //                    if ((jobSets[j] <= 50 && (k == 0 || k == 3 || k == 6 || k == 21 || k == 24 || k == 27 || k == 42 || k == 45 || k == 48)) || (jobSets[j] > 50 && k < 9)) {
+                      //if((jobSets[j] <= 50 && (k != 0 && k != 3 && k != 6 && k != 21 && k != 24 && k != 27 && k != 42 && k != 45 && k != 48)) ||  (jobSets[j] > 50 && k < 9)){
+                      for (int lx = 0; lx < lamdalearningrate.length; lx++) {
+                          for (int bx = 0; bx < betalearningrate.length; bx++) {
+                              for (int m = 0; m < numberOfCrossoverTournament.length; m++) {
+                                  for (int n = 0; n < numberOfMutationTournament.length; n++) {
+                                      for (int p = 0; p < startingGenDividen.length; p++) {
+
+                                          for(int CRCount = 0 ; CRCount < crossoverRate.length ; CRCount++) {
+                                              for(int MRCount = 0 ; MRCount < mutationRate.length ; MRCount++) {
+                                                  for(int D1Count = 0 ; D1Count < D1.length ; D1Count++) {
+                                                      for(int D2Count = 0 ; D2Count < D2.length ; D2Count++) {
+                                                        for(int epochCount = 0; epochCount < epoch.length ; epochCount++){
+                                                          for (int i = 0; i < repeatExperiments; i++) {
+                //                                            System.out.println("Combinations: " + counter);
+
+                                                            singleMachineEDA3 singleMachine1 = new singleMachineEDA3();
+                                                            singleMachine1.setData(numberOfJobs, dueDate, processingTime,fileName);
+                                                            singleMachine1.setEDAinfo(lamdalearningrate[lx], betalearningrate[bx], numberOfCrossoverTournament[m], 
+                                                                    numberOfMutationTournament[n], startingGenDividen[p] , D1[D1Count], D2[D2Count] , optMin , 
+                                                                    crossoverRate[CRCount] , mutationRate[MRCount], epoch[epochCount]);
+                                                            singleMachine1.initiateVars();
+                                                            singleMachine1.startMain();
+                                                            counter++;
+                                                          }
+                                                        }
+                                                      }
+                                                  }
+                                              }
+                                          }//end CRCount
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                }// Problem if end                
+            }
+        }
+    }
+    
     public static void main(String[] args) {
       mainThreadPool();
-//      mainSingle();
+//      mainSingleThread();
     }
 }
