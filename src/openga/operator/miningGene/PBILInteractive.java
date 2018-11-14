@@ -50,7 +50,7 @@ public class PBILInteractive {
         calcAverageFitness();
         calcContainer();
         calcInter();
-//        CheckModelAccurracy();
+//        System.out.printf("%.2f\n",CheckModelAccurracy());
     }
 
     /**

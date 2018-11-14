@@ -11,10 +11,10 @@ import openga.MainProgram.EDAMainI;
  *
  * @author Kuo Yu-Cheng
  */
-public interface PBILInteractiveWithEDA3_2I extends EDAMainI {
-    public void setD1(int D1);
-    public void setD2(int D2);
-    public void setOptMin(boolean OptMin);
-    public void setEpoch(int epoch);
+public interface PBILInteractiveWithEDA3I extends EDAMainI {
+  
+    public void setEDAinfo(double lamda,double beta, int numberOfCrossoverTournament, 
+            int numberOfMutationTournament, int startingGenDividen 
+            , int D1 , int D2 , boolean OptMin , int epoch);
   
 }
