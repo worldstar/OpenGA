@@ -13,6 +13,18 @@ import java.lang.management.ManagementFactory;
  * @author user2
  */
 public class SystemUtilization {  
+  static int finishedCounter = 0;
+  
+  //Stop the server if all the experiments are done.
+  public static void increasefinishedCounter(int totalExperiments) 
+          throws IOException, InterruptedException{
+    finishedCounter ++;    
+    
+    if(finishedCounter == totalExperiments){
+      shutdownDirectly();
+    }
+  }
+    
   public static void checkSystemStatus(double utilizationRate) throws InterruptedException, IOException{
     int busyCounter = 0;
     int freeCounter = 0;
