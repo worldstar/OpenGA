@@ -12,19 +12,7 @@ import java.lang.management.ManagementFactory;
  *
  * @author user2
  */
-public class SystemUtilization {  
-  static int finishedCounter = 0;
-  
-  //Stop the server if all the experiments are done.
-  public static void increasefinishedCounter(int totalExperiments) 
-          throws IOException, InterruptedException{
-    finishedCounter ++;    
-    
-    if(finishedCounter == totalExperiments){
-      shutdownDirectly();
-    }
-  }
-    
+public class SystemUtilization {     
   public static void checkSystemStatus(double utilizationRate) throws InterruptedException, IOException{
     int busyCounter = 0;
     int freeCounter = 0;
@@ -32,22 +20,29 @@ public class SystemUtilization {
         
     while (true) {
         Thread.sleep(1000);
-//        System.out.printf("%.4f \n",osBean.getSystemCpuLoad());
-        if(osBean.getSystemCpuLoad() == 1 || osBean.getSystemCpuLoad() < 0){
+        
+        double loading = osBean.getSystemCpuLoad();//getProcessCpuLoad()
+        System.out.printf("Loading: %.4f \n", loading);
+        
+        if(loading == 1 || loading < 0 || loading == Double.NaN){
+          Thread.sleep(2000);
           continue;
         }
-        else if(osBean.getSystemCpuLoad() > utilizationRate) { 
+        else if(loading > utilizationRate) { 
             busyCounter ++;
             
-          if(busyCounter == 2){
+          if(busyCounter > 3){
+//            System.out.println("Busying");
             break;
           }            
         }
         else{
           freeCounter ++;
           
-          if(freeCounter == 2){
+          if(freeCounter > 3){
             shutdownDirectly();
+//            System.out.println("Shutdown");
+            break;
           }            
         }                            
     }    
@@ -66,6 +61,5 @@ public class SystemUtilization {
     
     Process p = Runtime.getRuntime().exec(command);
     p.waitFor();    
-  }  
-  
+  }    
 }
