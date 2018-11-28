@@ -74,8 +74,8 @@ public class SendEmail {
   
   public static void main(String[] args) {
     SendEmail SendEmail1 = new SendEmail();
-    SendEmail1.startSendEmail("Topic", "Content here.");
-//    SendEmail1.startSendEmail("Topic", "Content here.", "README.md");
+//    SendEmail1.startSendEmail("Topic", "Content here.");
+    SendEmail1.startSendEmail("Topic", "Content here.", "README.md");
   }
   
 }
