@@ -82,7 +82,7 @@ public class SystemUtilization {
   
     public void incrementCounter(String fileName, int maxCounter){
 
-      int Counter = readCount(fileName);
+      int Counter = readCount(fileName) + 1;
       if(Counter == maxCounter){
           shutdownDirectly();
       }else{
@@ -101,7 +101,7 @@ public class SystemUtilization {
           }
           fr.close();
       } catch (IOException ex) {
-          Count = "1";
+          Count = "0";
       }
       return Integer.parseInt(Count);
   }
@@ -109,7 +109,6 @@ public class SystemUtilization {
   public void writeCount(String fileName,int Counter){
       try {
           FileWriter fw = new FileWriter(fileName);
-          Counter += 1;
           fw.write(String.valueOf(Counter));
           fw.close();
       } catch (IOException ex) {
