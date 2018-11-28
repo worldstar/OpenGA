@@ -1,7 +1,6 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Reference1: http://www.simplejavamail.org/#/features
+ * Reference2: http://rx1226.pixnet.net/blog/post/343676180-%5Bjava%5D-3-9-javamail---%E4%BD%BF%E7%94%A8gmail
  */
 package openga.util;
 
@@ -11,18 +10,18 @@ import org.simplejavamail.email.EmailBuilder;
 import org.simplejavamail.mailer.Mailer;
 import org.simplejavamail.mailer.MailerBuilder;
 import org.simplejavamail.mailer.config.TransportStrategy;
-import org.simplejavamail.util.ConfigLoader;
 
 /**
  *
- * @author user2
+ * @author Shih-Hsin Chen
  */
 public class SendEmail {  
   String senderName = "YOUR_NAME";
-  String senderEmail = "Developer@gmail.com";
-  String receiverName = "receiverName";
-  String receiverEmail = "receiver@gmail.com";
-  String senderPassword = "YOUR_PASSWORD";
+  String senderAccount = "YourAccount";//Don't add "@gmail.com"
+  String senderEmail = senderAccount+"@gmail.com";
+  String receiverName = "Receiver_Name";
+  String receiverEmail = "SecondAccount@gmail.com";
+  String senderPassword = "PASSWORD";
   
   public void startSendEmail(String emailSubject, String msg){
     Email email = getEmailObject(emailSubject, msg);
@@ -61,8 +60,8 @@ public class SendEmail {
   
   public Mailer getMailer(){
     Mailer mailer = MailerBuilder
-              .withSMTPServer("smtp.gmail.com", 587, senderEmail, senderPassword)
-              .withTransportStrategy(TransportStrategy.SMTP_TLS)
+              .withSMTPServer("smtp.gmail.com", 465, senderAccount, senderPassword)
+              .withTransportStrategy(TransportStrategy.SMTPS)
 //              .withProxy("socksproxy.host.com", 1080, "proxy user", "proxy password")
               .withSessionTimeout(10 * 1000)
               .clearEmailAddressCriteria() // turns off email validation
@@ -76,6 +75,7 @@ public class SendEmail {
   public static void main(String[] args) {
     SendEmail SendEmail1 = new SendEmail();
     SendEmail1.startSendEmail("Topic", "Content here.");
+//    SendEmail1.startSendEmail("Topic", "Content here.", "README.md");
   }
   
 }
