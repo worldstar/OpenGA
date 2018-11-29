@@ -403,7 +403,7 @@ public class flowshopEDA2 extends flowshopNEH_EDA2_VNS {
     public static void main(String[] args) {
         System.out.println("EDA2_MakeSpanForFlowShop_0831");
         int repeatExperiments = 6;
-        int popSize[] = new int[]{500};//50, 100, 155, 210
+        int popSize[] = new int[]{100};//50, 100, 155, 210
         int counter = 0;
         double crossoverRate[] = new double[]{0.9},//0.6, 0.9 {0.9}
                 mutationRate[] = new double[]{0.5},//0.1, 0.5 {0.5}

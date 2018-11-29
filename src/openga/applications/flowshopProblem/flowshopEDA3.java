@@ -38,8 +38,16 @@ public class flowshopEDA3 extends flowshopNEH_EDA2_VNS {
     EDA3CrossoverI Crossover;
     EDA3MutationI Mutation;
     
+    String strFileName = "";
+    
+    public void setParameters(int DEFAULT_PopSize, int totalSolnsToExamine , int DEFAULT_generations){
+        this.DEFAULT_PopSize = DEFAULT_PopSize;
+        this.totalSolnsToExamine = totalSolnsToExamine;
+        this.DEFAULT_generations = DEFAULT_generations;
+    }
+    
     //Single thread
-    public void setEDAinfo(double lamda, double beta, int numberOfCrossoverTournament, int numberOfMutationTournament, int startingGenDividen , int D1 , int D2 , boolean OptMin , double DEFAULT_crossoverRate , double DEFAULT_mutationRate , int epoch) {
+    public void setEDAinfo(double lamda, double beta, int numberOfCrossoverTournament, int numberOfMutationTournament, int startingGenDividen , int D1 , int D2 , boolean OptMin , double DEFAULT_crossoverRate , double DEFAULT_mutationRate , int epoch , String strFileName) {
         this.lamda = lamda;
         this.beta = beta;
         this.numberOfCrossoverTournament = numberOfCrossoverTournament;
@@ -51,6 +59,7 @@ public class flowshopEDA3 extends flowshopNEH_EDA2_VNS {
         this.DEFAULT_crossoverRate = DEFAULT_crossoverRate;
         this.DEFAULT_mutationRate = DEFAULT_mutationRate;
         this.epoch = epoch;
+        this.strFileName = strFileName;
     }
 
     @Override
@@ -76,8 +85,9 @@ public class flowshopEDA3 extends flowshopNEH_EDA2_VNS {
         ObjectiveFunction[0].setScheduleData(processingTime, numberOfMachines);
         //GaMain.setFlowShopData(numberOfJob, numberOfMachines, processingTime);
         //DEFAULT_generations = totalSolnsToExamine / (DEFAULT_PopSize);
-        DEFAULT_generations = (numberOfJob * 100);   //*flowtime* //(numberOfMachines * numberOfJob) / 2 * 30
-        DEFAULT_PopSize     = 200;
+//        DEFAULT_generations = (numberOfJob * 100);   //*flowtime* //(numberOfMachines * numberOfJob) / 2 * 30
+//        DEFAULT_PopSize     = 200;
+
         //set the data to the GA main program.
         GaMain.setData(Population, Selection, Crossover, Mutation, ObjectiveFunction, Fitness, DEFAULT_generations, DEFAULT_PopSize, DEFAULT_PopSize,
                 numberOfJob, DEFAULT_crossoverRate, DEFAULT_mutationRate, objectiveMinimization, numberOfObjs, encodeType, elitism);
@@ -101,7 +111,7 @@ public class flowshopEDA3 extends flowshopNEH_EDA2_VNS {
         String implementResult = "";
         int bestInd = getBestSolnIndex(GaMain.getArchieve());
         
-        implementResult = fileName + "\t" + lamda + "\t" + beta + "\t" + numberOfCrossoverTournament 
+        implementResult = strFileName + "\t" + lamda + "\t" + beta + "\t" + numberOfCrossoverTournament 
                 + "\t" + numberOfMutationTournament + "\t" + startingGenDividen + "\t" 
                 + D1 + "\t" + D2 + "\t" + OptMin + "\t" + epoch + "\t" 
                 + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" 
@@ -438,40 +448,40 @@ public class flowshopEDA3 extends flowshopNEH_EDA2_VNS {
 
     public static void main(String[] args) {
         System.out.println("EDA3_MakeSpanForFlowShop");
-        int repeatExperiments = 1;
-        int popSize[] = new int[]{100};//50, 100, 155, 210
-        int counter = 0;
-        double crossoverRate[] = new double[]{0.1},//0.6, 0.9 {0.9}
-                mutationRate[] = new double[]{0.9},//0.1, 0.5 {0.5}
-                elitism = 0.1;
-        int numberOfInstance = 21;
-        int totalSolnsToExamine = 30000;//30000 is the default one for Reeves.
-
-        //EDA parameters.
-        double lamdalearningrate[] = new double[]{0.9};//0.1, 0.5, 0.9
-        double betalearningrate[] = new double[]{0.5};  //0.1, 0.5, 0.9
-        int numberOfCrossoverTournament[] = new int[]{5};//{1,2,4,5} 
-        int numberOfMutationTournament[] = new int[]{1};//{1,2,4}
-        int startingGenDividen[] = new int[]{4};//{2,4,7}
-        
-        int[] D1 = new int[]{1};//0,1,2,3
-        int[] D2 = new int[]{0};//0,1,2,3,4
-        boolean optMin = true;
-        int[] epoch = new int[]{6};
         
         //For Taillard Instance.
-        int jobs[] = new int[]{50};//20, 50, 100, 200, 500
-        int machines[] = new int[]{10};//5, 10, 20
-        //implication of instanceReplication
-        int startInstance = 1;
-        int endInstance = 1;
+        int jobs[] = new int[]{20,50,100};//20, 50, 100, 200, 500
+        int machines[] = new int[]{5,10,20};//5, 10, 20
         
+        int repeatExperiments = 30;//30
+        int popSize , totalSolnsToExamine , generations;
+        
+        //EDA parameters.
+        double crossoverRate[] = new double[]{0.1,0.5,0.9};//{0.1,0.5,0.9} //0.1
+        double mutationRate[] = new double[]{0.1,0.5,0.9};//{0.1,0.5,0.9} //0.9
+
+        double lamdalearningrate[] = new double[]{0.1,0.5,0.9};//{0.1,0.5,0.9} //0.9
+        double betalearningrate[] = new double[]{0.1,0.5,0.9};  //{0.1,0.5,0.9} //0.5
+        int numberOfCrossoverTournament[] = new int[]{1,2,4,5};//{1,2,4,5} //5
+        int numberOfMutationTournament[] = new int[]{1,2,4};//{1,2,4} //1
+        int startingGenDividen[] = new int[]{2,4,7};//{2,4,7} //4
+        
+        int[] D1 = new int[]{1};//{0,1,2,3} //1
+        int[] D2 = new int[]{0};//{0,1,2,3,4} //0
+        int[] epoch = new int[]{6};//{0,1,2,4,6} //6
+        boolean optMin = true;
+                
         for (int j = 0; j < jobs.length; j++) {
             for (int s = 0; s < machines.length; s++) {
-                for (int q = 3; q <= 3; q++) {//int q = startInstance; q <= endInstance; q++
-                    if ((jobs[j] <= 100) || (jobs[j] == 200 && machines[s] >= 10) || (jobs[j] == 500 && machines[s] == 20)) {
+                for (int q = 1; q <= 6; q++) {//int q = startInstance; q <= endInstance; q++
+                    if ((jobs[j] == 20 && machines[s] == 5) 
+                          || (jobs[j] == 20 && machines[s] == 10) 
+                          || (jobs[j] == 50 && machines[s] == 10) 
+                          || (jobs[j] == 100 && machines[s] == 20)) {
+                      
                         readFlowShopTaillardInstance readFlowShopInstance1 = new readFlowShopTaillardInstance();
                         String fileName = "instances\\TaillardFlowshop\\";
+                        String strFileName = jobs[j] + "-" + machines[s] + "-" + q;
                         fileName += readFlowShopInstance1.getFileName(jobs[j], machines[s], q);
                         //fileName += "car8.txt";
                         readFlowShopInstance1.setData(fileName);
@@ -496,12 +506,15 @@ public class flowshopEDA3 extends flowshopNEH_EDA2_VNS {
 
                                                                     //***** examined solutions are determined by Taillard.
                                                                     //***** examined solutions are determined by Liang.
-                                                                    totalSolnsToExamine = (jobs[j] * 2 * 500);
-                                                                    flowshop1.setParameters(popSize[0], crossoverRate[0], mutationRate[0], totalSolnsToExamine);
+                                                                    totalSolnsToExamine = (100 * jobs[j]);
+                                                                    popSize = (10 * jobs[j]);
+                                                                    generations = totalSolnsToExamine / popSize;//totalSolnsToExamine / popSize,10(faster)
+                                                                    
+                                                                    flowshop1.setParameters(popSize, totalSolnsToExamine , generations);
                                                                     
                                                                     flowshop1.setEDAinfo(lamdalearningrate[lx], betalearningrate[bx], numberOfCrossoverTournament[m], 
                                                                                         numberOfMutationTournament[n], startingGenDividen[p] , D1[D1Count], D2[D2Count] , optMin , 
-                                                                                        crossoverRate[CRCount] , mutationRate[MRCount], epoch[epochCount]);
+                                                                                        crossoverRate[CRCount] , mutationRate[MRCount], epoch[epochCount] , strFileName);
 
                                                                     flowshop1.setData(fileName);
                                                                     flowshop1.initiateVars();
@@ -523,4 +536,5 @@ public class flowshopEDA3 extends flowshopNEH_EDA2_VNS {
             }
         }
     }
+    
 }
