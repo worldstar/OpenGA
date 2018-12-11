@@ -1,6 +1,10 @@
 package openga.MainProgram;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import openga.chromosomes.*;
+import weka.core.Instances;
+import openga.operator.miningGene.PopulationToInstances;
 
 /**
  * <p>
@@ -17,7 +21,7 @@ import openga.chromosomes.*;
  * @version 1.0
  */
 public class singleThreadGAwithInitialPop extends singleThreadGA {
-
+  
   public singleThreadGAwithInitialPop() {
   }
 
@@ -38,11 +42,17 @@ public class singleThreadGAwithInitialPop extends singleThreadGA {
     archieve = findParetoFront(Population, 0);
 
     int i = 0;
+    PopulationToInstances PoptoInst = new PopulationToInstances();
+    try {
+      //    ************************This Create New ML code***************************
+      Instances init_Dataset = PoptoInst.PopulationToInstances(Population); // Instances init_Dataset = 
+    } catch (Exception ex) {
+      Logger.getLogger(singleThreadGAwithInitialPop.class.getName()).log(Level.SEVERE, null, ex);
+    }
     do {
       //System.out.println("generations "+i);
       currentGeneration = i;
-
-      //selection
+//      selection
 //      System.out.println("selection");
       Population = selectionStage(Population);
 
@@ -78,7 +88,7 @@ public class singleThreadGAwithInitialPop extends singleThreadGA {
       if (applyLocalSearch == true && i % 10 == 0) {
         localSearchStage(1);
       }
-
+//   ************************This Create New ML code***************************
       i++;
 //System.out.println("i : "+i);
 //System.out.println("currentUsedSolution : "+currentUsedSolution);
@@ -114,7 +124,7 @@ public class singleThreadGAwithInitialPop extends singleThreadGA {
     } while (i < generations && currentUsedSolution < this.fixPopSize * this.generations);
 //        } while (nonimproveTime <= 500);
 //    System.out.println("i : "+i);
-    
+
     //printResults();
   }
 
