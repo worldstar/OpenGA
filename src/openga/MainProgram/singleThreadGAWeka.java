@@ -30,6 +30,7 @@ public class singleThreadGAWeka extends singleThreadGA {
    * done.
    */
   public void startGA() {
+    Population = initialStage();
     double bestObjValue = 0;
     int nonimproveTime = 0;
     //evaluate the objective values and calculate fitness values
@@ -42,10 +43,10 @@ public class singleThreadGAWeka extends singleThreadGA {
     archieve = findParetoFront(Population, 0);
 
     int i = 0;
-    PopulationToInstances PoptoInst = new PopulationToInstances();
+    PopulationToInstances WekaInstances = new PopulationToInstances();
     try {
       //    ************************This Create New ML code***************************
-      Instances init_Dataset = PoptoInst.PopulationToInstances(Population); // Instances init_Dataset = 
+      Instances init_Dataset = WekaInstances.PopulationToInstances(Population); // Instances init_Dataset
     } catch (Exception ex) {
       Logger.getLogger(singleThreadGAWeka.class.getName()).log(Level.SEVERE, null, ex);
     }
@@ -56,19 +57,15 @@ public class singleThreadGAWeka extends singleThreadGA {
 //      System.out.println("selection");
       Population = selectionStage(Population);
 
-      //collect gene information
-      Mutation.setData(archieve);//Population archieve
-      Mutation.setData(Population);
-
-      //Crossover
+//      Crossover
 //      System.out.println("Crossover");
       Population = crossoverStage(Population);
 
-      //Mutation
+//      Mutation
 //      System.out.println("mutationStage");
       Population = mutationStage(Population);
 
-      //clone
+//      clone
       if (applyClone == true) {
         Population = cloneStage(Population);
       }
@@ -79,53 +76,22 @@ public class singleThreadGAWeka extends singleThreadGA {
       populationI tempFront = (population) findParetoFront(Population, 0);
       archieve = updateParetoSet(archieve, tempFront);
       //additionalStage();
-
       currentUsedSolution += fixPopSize;//Solutions used in genetic search
 
-      
       //local search
 //      System.out.println("LocalSearch");
       if (applyLocalSearch == true && i % 10 == 0) {
         localSearchStage(1);
       }
-//   ************************This Create New ML code***************************
-      i++;
-//System.out.println("i : "+i);
-//System.out.println("currentUsedSolution : "+currentUsedSolution);
-
-      /*
-            if (i == 500) {
-                String generationResults = "";
-                generationResults = i + "\t" + beta + "\t" + getBest() + "\n";
-                //System.out.print(generationResults);
-                writeFile("eda2_" + i, generationResults);
-            }
-            if (i == 750) {
-                String generationResults = "";
-                generationResults = i + "\t" + beta + "\t" + getBest() + "\n";
-                //System.out.print(generationResults);
-                writeFile("eda2_" + i, generationResults);
-            }
-            if (i == 1000) {
-                String generationResults = "";
-                generationResults = i + "\t" + beta + "\t" + getBest() + "\n";
-                //System.out.print(generationResults);
-                writeFile("eda2_" + i, generationResults);
-            }
-       */
-      /*
-      double _ObjValue = archieve.getSingleChromosome(0).getObjValue()[0];
-      if(_ObjValue <= bestObjValue){
-        nonimproveTime++;
-      } else{
-        bestObjValue = _ObjValue;
+      try {
+        //   ************************This Create New ML code***************************
+        Instances init_Dataset = WekaInstances.PopulationToInstances(Population); // Instances init_Dataset
+      } catch (Exception ex) {
+        Logger.getLogger(singleThreadGAWeka.class.getName()).log(Level.SEVERE, null, ex);
       }
-      */
+      i++;
     } while (i < generations && currentUsedSolution < this.fixPopSize * this.generations);
-//        } while (nonimproveTime <= 500);
-//    System.out.println("i : "+i);
 
-    //printResults();
   }
 
   @Override
