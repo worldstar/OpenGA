@@ -402,21 +402,21 @@ public class flowshopEDA2 extends flowshopNEH_EDA2_VNS {
 
     public static void main(String[] args) {
         System.out.println("EDA2_MakeSpanForFlowShop_0831");
-        int repeatExperiments = 6;
-        int popSize[] = new int[]{100};//50, 100, 155, 210
+        int repeatExperiments = 1;
+        int popSize , totalSolnsToExamine , generations;
         int counter = 0;
-        double crossoverRate[] = new double[]{0.9},//0.6, 0.9 {0.9}
-                mutationRate[] = new double[]{0.5},//0.1, 0.5 {0.5}
+        double crossoverRate[] = new double[]{0.9},//0.5,0.9
+                mutationRate[] = new double[]{0.9},//0.5,0.9
                 elitism = 0.1;
         int numberOfInstance = 21;
-        int totalSolnsToExamine = 30000;//30000 is the default one for Reeves.
+//        int totalSolnsToExamine = 30000;//30000 is the default one for Reeves.
 
         //EDA parameters.
-        double lamdalearningrate[] = new double[]{0.1}; //0.1
-        double betalearningrate[] = new double[]{0.9};   //0.9
-        int numberOfCrossoverTournament[] = new int[]{2};//{1, 2, 4} //2
-        int numberOfMutationTournament[] = new int[]{8};//{1, 2, 4}  //4
-        int startingGenDividen[] = new int[]{10};//{2, 4}  //2
+        double lamdalearningrate[] = new double[]{0.5}; //0.1,0.5,0.9
+        double betalearningrate[] = new double[]{0.1};   //0.1,0.5,0.9
+        int numberOfCrossoverTournament[] = new int[]{1};//1,2,4
+        int numberOfMutationTournament[] = new int[]{1};//1,2,4
+        int startingGenDividen[] = new int[]{7};//2,4,7
     /*
         for(int i = 0 ; i < repeatExperiments ; i ++ ){
         for(int j = 20 ; j < numberOfInstance ; j ++ ){
@@ -446,20 +446,23 @@ public class flowshopEDA2 extends flowshopNEH_EDA2_VNS {
         }//end for
          */
         //For Taillard Instance.
-        int jobs[] = new int[]{50};//20, 50, 100, 200, 500
-        int machines[] = new int[]{10};//5, 10, 20
+        int jobs[] = new int[]{20,50,100,200};//20, 50, 100, 200, 500
+        int machines[] = new int[]{5,10,20};//5, 10, 20
         //implication of instanceReplication
         int startInstance = 1;
-        int endInstance = 1;
+        int endInstance = 10;
         
         for (int j = 0; j < jobs.length; j++) {
             for (int s = 0; s < machines.length; s++) {
-                for (int q = 3; q <= 3; q++) {//int q = startInstance; q <= endInstance; q++
-                    if ((jobs[j] <= 100) || (jobs[j] == 200 && machines[s] >= 10) || (jobs[j] == 500 && machines[s] == 20)) {
+                for (int q = startInstance; q <= endInstance; q++ ) {//int q = startInstance; q <= endInstance; q++ 
+                    if (!(jobs[j] == 200 && machines[s] == 5))
+//                    if ((jobs[j] <= 100) || (jobs[j] == 200 && machines[s] >= 10) || (jobs[j] == 500 && machines[s] == 20)) 
+                    {
                         readFlowShopTaillardInstance readFlowShopInstance1 = new readFlowShopTaillardInstance();
                         String fileName = "instances\\TaillardFlowshop\\";
                         fileName += readFlowShopInstance1.getFileName(jobs[j], machines[s], q);
                         //fileName += "car8.txt";
+//                        System.out.println(fileName);
                         readFlowShopInstance1.setData(fileName);
                         readFlowShopInstance1.getDataFromFile();
 
@@ -468,20 +471,25 @@ public class flowshopEDA2 extends flowshopNEH_EDA2_VNS {
                                 for (int m = 0; m < numberOfCrossoverTournament.length; m++) {
                                     for (int n = 0; n < numberOfMutationTournament.length; n++) {
                                         for (int p = 0; p < startingGenDividen.length; p++) {
-                                            for (int i = 0; i < repeatExperiments; i++) {
-                                                //System.out.println("Combinations:\t"+(counter++)+"\t"+fileName);
-                                                flowshopEDA2 flowshop1 = new flowshopEDA2();
-                                                flowshop1.setFlowShopData(jobs[j], machines[s], readFlowShopInstance1.getPtime());
+                                            for(int cRCount = 0 ; cRCount < crossoverRate.length ; cRCount++){
+                                                for(int mRCount = 0 ; mRCount < mutationRate.length ; mRCount++){
+                                                    for (int i = 0; i < repeatExperiments; i++) {
+                                                        //System.out.println("Combinations:\t"+(counter++)+"\t"+fileName);
+                                                        flowshopEDA2 flowshop1 = new flowshopEDA2();
+                                                        flowshop1.setFlowShopData(jobs[j], machines[s], readFlowShopInstance1.getPtime());
 
-                                                //***** examined solutions are determined by Taillard.
-                                                //***** examined solutions are determined by Liang.
-                                                totalSolnsToExamine = (jobs[j] * 2 * 500);
-                                                flowshop1.setParameters(popSize[0], crossoverRate[0], mutationRate[0], totalSolnsToExamine);
-                                                flowshop1.setEDAinfo(lamdalearningrate[lx], betalearningrate[bx], numberOfCrossoverTournament[m], numberOfMutationTournament[n], startingGenDividen[p]);
-                                                flowshop1.setData(fileName);
-                                                flowshop1.initiateVars();
-                                                flowshop1.start();
-                                            }//end for
+                                                        //***** examined solutions are determined by Taillard.
+                                                        //***** examined solutions are determined by Liang.
+                                                        popSize = (10 * jobs[j]); //(numberOfJob * 10)
+                                                        totalSolnsToExamine = (jobs[j] * 2 * 500);
+                                                        flowshop1.setParameters(popSize, crossoverRate[cRCount], mutationRate[mRCount], totalSolnsToExamine);
+                                                        flowshop1.setEDAinfo(lamdalearningrate[lx], betalearningrate[bx], numberOfCrossoverTournament[m], numberOfMutationTournament[n], startingGenDividen[p]);
+                                                        flowshop1.setData(fileName);
+                                                        flowshop1.initiateVars();
+                                                        flowshop1.start();
+                                                    }//end for
+                                                }//mRCount for
+                                            }//cRCount for
                                         }
                                     }
                                 }
