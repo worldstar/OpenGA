@@ -2,7 +2,7 @@ package openga.MainProgram;
 
 import openga.chromosomes.*;
 
-public class singleThreadGAUnimproveStop extends singleThreadGA{
+public class singleThreadGAUnimproveStop extends singleThreadGA {
 
   @Override
   public void startGA() {
@@ -14,7 +14,7 @@ public class singleThreadGAUnimproveStop extends singleThreadGA{
     int NumberOfUnimprove = 0;
     double CurrentBest = getArchieve().getSingleChromosome(0).getObjValue()[0];
 
-    for (int i = 0;i<=generations; i++) {
+    for (int i = 0; i <= generations; i++) {
       currentGeneration = i;
       Population = selectionStage(Population);
       //collect gene information, it's for mutation matrix
@@ -35,17 +35,15 @@ public class singleThreadGAUnimproveStop extends singleThreadGA{
       if (applyLocalSearch == true && i % 10 == 0) {
         localSearchStage(1);
       }
-      if (generations >= 30000) {
-        if (CurrentBest >= (double) getArchieve().getSingleChromosome(0).getObjValue()[0]) {
-          NumberOfUnimprove++;
-        } else {
-          CurrentBest = getArchieve().getSingleChromosome(0).getObjValue()[0];
-          NumberOfUnimprove = 0;
-        }
-      System.out.println("NumberOfUnimprove:"+NumberOfUnimprove+"\t Generations:"+i+"\t"+"CurrentBest:"+CurrentBest);
-        if (NumberOfUnimprove == 5000) {
-          break;
-        }
+      if (CurrentBest >= (double) getArchieve().getSingleChromosome(0).getObjValue()[0]) {
+        NumberOfUnimprove++;
+      } else {
+        CurrentBest = getArchieve().getSingleChromosome(0).getObjValue()[0];
+        NumberOfUnimprove = 0;
+      }
+      if (i >= 8000 && NumberOfUnimprove >= 5000) {
+//        System.out.println("NumberOfUnimprove:"+NumberOfUnimprove+"\t Generations:"+i+"\t"+"CurrentBest:"+CurrentBest);
+          break;        
       }
     }
   }
