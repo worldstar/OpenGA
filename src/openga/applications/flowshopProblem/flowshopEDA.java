@@ -87,7 +87,7 @@ public class flowshopEDA extends flowshopSGA {
     GaMain.setSecondaryMutationOperator(Mutation2, false);
 
     model = new PBILwithLapaceCorrection(numberOfJob, lamda);
-    GaMain.setEDAinfo(lamda, numberOfCrossoverTournament, numberOfMutationTournament, startingGenDividen, model);
+    GaMain.setEDAinfo(lamda, numberOfCrossoverTournament, numberOfMutationTournament, startingGenDividen);
   }
 
   public void start(){
@@ -168,8 +168,8 @@ public class flowshopEDA extends flowshopSGA {
     }//end for
     */
    //For Taillard Instance.
-   int jobs[] = new int[]{20};//20, 50, 100, 200, 500
-   int machines[] = new int[]{20};//5, 10, 20
+   int jobs[] = new int[]{20, 50, 100, 200};//20, 50, 100, 200, 500
+   int machines[] = new int[]{5, 10, 20};//5, 10, 20
    //implication of instanceReplication
     int startInstance = 1;
     int endInstance = 1;
@@ -222,6 +222,7 @@ public class flowshopEDA extends flowshopSGA {
             //fileName += "car8.txt";
             readFlowShopInstance1.setData(fileName);
             readFlowShopInstance1.getDataFromFile();
+            System.out.println(fileName);
 
             for(int k = 0 ; k < lamda.length ; k ++ ){
               for(int m = 0 ; m < numberOfCrossoverTournament.length ; m ++ ){

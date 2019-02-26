@@ -171,7 +171,7 @@ public class flowshopEDA3_OAS {
   public void initiateVars(){
     GaMain = new singleThreadGAwithEDA3();//singleThreadGAwithMultipleCrossover singleThreadGA adaptiveGA
     Population = new population();
-    Selection = new binaryTournament();
+    Selection = new binaryTournamentMaximization();
     Crossover = new twoPointCrossover2EDA3(); //twoPointCrossover2()  CyclingCrossoverP multiParentsCrossover()
 //    Crossover2 = new PMX();
     Mutation = new swapMutationEDA3();//shiftMutation
@@ -342,6 +342,8 @@ public class flowshopEDA3_OAS {
               }
             }
           }
+          
+          
         }
       }
     }
