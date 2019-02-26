@@ -11,6 +11,7 @@ import openga.chromosomes.*;
 public class binaryTournamentMaximization extends binaryTournament{
   //The new population is created by the method.
   //Besides, the newPopulation size is equal to sizeOfPop.
+  /*
   populationI newPop, originalPop;
   populationI archieve;
   populationI archieve2;
@@ -18,7 +19,7 @@ public class binaryTournamentMaximization extends binaryTournament{
   int originalPopSize, eliteSize = 0;
   int numberOfelitle = 0;
   int tournamentSize = 2;
-
+  */
 
   public chromosome setData(chromosome chromosome1, chromosome chromosome2){
     if(chromosome1.getFitnessValue() >= chromosome2.getFitnessValue()){
