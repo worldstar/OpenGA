@@ -104,35 +104,35 @@ public class singleMachineOAS_SGA extends mTSPSGATwoPart {
     String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + DEFAULT_PopSize + "\t" + applyLocalSearch + "\t" + alpha
             + "\t" + GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
             + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
-    writeFile("OASforSMSP_20190219-SGA" + "MaxRevenueFull", implementResult);
+    writeFile("OASforSMSP_20190225-SGA-全實驗設計-8000代" + "MaxRevenueFull", implementResult);
     System.out.print(implementResult);
   }
 
   public static void main(String[] args) {
-    System.out.println("OASforSMSP_20190219" + "MaxRevenueFull");
+    System.out.println("OASforSMSP_20190225" + "MaxRevenueFull");
     int counter = 0;
     boolean applyLocalSearch;
-    double[] crossoverRate = new double[]{0.5};//0.9, 0.5 [0.5]
-    double[] mutationRate = new double[]{0.5};//0.1, 0.5 [0.5]
+    double[] crossoverRate = new double[]{0.1};//0.9, 0.5 [0.5]
+    double[] mutationRate = new double[]{0.9};//0.1, 0.5 [0.5]
     double elitism[] = new double[]{0.1};
     int[] crossoverType = new int[]{2};//0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original) [2]
-    int repeat = 30;//30
+    int repeat = 2;//30
     int generations[] = new int[]{0};//1000
     int[] populationsSize = new int[]{60};//50, 100, 200 [50]
     int[] numberOfSalesmen = new int[]{2};
     //alpha is the local search parameter. 0 means there is no local search applied.
-    double[] alpha = new double[]{0};//0.2, 0.1, 0.05, 0 [0.1]
+    double[] alpha = new double[]{0.1};//0.2, 0.1, 0.05, 0 [0.1]
     int[] orders = new int[]{10,15,20,25,50,100};//10, 15, 20, 25, 50, 100
-    int[] Tao = new int[]{1,5,9};//1, 3, 5, 7, 9
-    int[] R = new int[]{1,5,9};//1, 3, 5, 7, 9
-    int instanceReplications = 1; 
-//一旦安排了可用訂單，就會計算此訂單的完成時間，並且到目前為止時間已經發展。啟動時會自動拒絕截止日期已過的未安排的訂單。
+    int[] Tao = new int[]{1,3,5,7,9};//1, 3, 5, 7, 9
+    int[] R = new int[]{1,3,5,7,9};//1, 3, 5, 7, 9
+    int instanceReplications = 10; 
+
     for (int i = 0; i < orders.length; i++) {
       for (int j = 0; j < Tao.length; j++) {
         for (int k = 0; k < R.length; k++) {
-          if (Tao[j] != R[k]) {
-            continue;
-          }
+//          if (Tao[j] != R[k]) {
+//            continue;
+//          }
           for (int l = 0; l < instanceReplications; l++) {
             OASInstances OASInstances1 = new OASInstances();
             String instanceName = new String("./instances/SingleMachineOAS/" + orders[i] + "orders/Tao" + Tao[j] + "/R" + R[k]
@@ -155,7 +155,7 @@ public class singleMachineOAS_SGA extends mTSPSGATwoPart {
                             }
                             int _alpha = (int) Math.round(((double) orders[i] * alpha[q]));
 //                              generations[0] = orders[i] * (numberOfSalesmen[p] - 1) * 2000 / populationsSize[pop_Size];
-                            generations[0] = 5000;
+                            generations[0] = 8000;
                             singleMachineOAS_SGA TSP1 = new singleMachineOAS_SGA();
                             TSP1.alpha = alpha[q];
                             TSP1.setParameter(crossoverRate[m], mutationRate[n], counter, elitism[o], generations[0],

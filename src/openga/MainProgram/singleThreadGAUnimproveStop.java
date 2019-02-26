@@ -14,7 +14,7 @@ public class singleThreadGAUnimproveStop extends singleThreadGA {
     int NumberOfUnimprove = 0;
     double CurrentBest = getArchieve().getSingleChromosome(0).getObjValue()[0];
 
-    for (int i = 0; i <= generations; i++) {
+    for (int i = 0;; i++) {
       currentGeneration = i;
       Population = selectionStage(Population);
       //collect gene information, it's for mutation matrix
@@ -41,7 +41,7 @@ public class singleThreadGAUnimproveStop extends singleThreadGA {
         CurrentBest = getArchieve().getSingleChromosome(0).getObjValue()[0];
         NumberOfUnimprove = 0;
       }
-      if (i >= 8000 && NumberOfUnimprove >= 5000) {
+      if (i >= generations && NumberOfUnimprove >= 5000) {
 //        System.out.println("NumberOfUnimprove:"+NumberOfUnimprove+"\t Generations:"+i+"\t"+"CurrentBest:"+CurrentBest);
           break;        
       }
