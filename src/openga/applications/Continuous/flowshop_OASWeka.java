@@ -43,9 +43,9 @@ import openga.util.fileWrite1;
  * @author 
  * @version 1.0
  */
-public class flowshop_OAS {
+public class flowshop_OASWeka {
 
-  public flowshop_OAS() {
+  public flowshop_OASWeka() {
   }
   /**
    * *
@@ -54,11 +54,11 @@ public class flowshop_OAS {
   int numberOfObjs = 1;
   populationI Population;
   SelectI Selection;
-  CrossoverI Crossover, Crossover2;
-  MutationI Mutation, Mutation2;
+  CrossoverI_Weka Crossover , Crossover2;
+  MutationI_Weka Mutation , Mutation2;
   ObjFunctionPFSSOAWT_PSDI[] ObjectiveFunction;
   FitnessI Fitness;
-  MainI GaMain;
+  singleThreadGA_WekaI GaMain;
 
   /**
    * Parameters of the GA
@@ -119,13 +119,13 @@ public class flowshop_OAS {
   }
 
   public void initiateVars() throws IOException{
-    GaMain = new singleThreadGA();//singleThreadGAwithMultipleCrossover singleThreadGA adaptiveGA
+    GaMain = new singleThreadGA_Weka();//singleThreadGAwithMultipleCrossover singleThreadGA adaptiveGA
     Population = new population();
-    Selection = new binaryTournament();
-    Crossover = new CyclingCrossoverP(); //twoPointCrossover2()  CyclingCrossoverP multiParentsCrossover()
-    Crossover2 = new PMX();
-    Mutation = new swapMutation();//shiftMutation
-    Mutation2 = new shiftMutation();//inverseMutation
+    Selection = new binaryTournamentMaximization();//binaryTournamentMaximization
+    Crossover = new twoPointCrossover2_Weka(); //twoPointCrossover2()  CyclingCrossoverP multiParentsCrossover()
+//    Crossover2 = new PMX();
+    Mutation = new swapMutation_Weka();//shiftMutation
+//    Mutation2 = new shiftMutation();//inverseMutation
     ObjectiveFunction = new ObjFunctionPFSSOAWT_PSDI[numberOfObjs];
     ObjectiveFunction[0] = new ObjectiveFunctionMakespanFlowShop_OAS();//the first objective
     Fitness = new singleObjectiveFitness();//singleObjectiveFitness singleObjectiveFitnessByNormalize
@@ -161,7 +161,7 @@ public class flowshop_OAS {
     String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t"
             + elitism + "\t" + GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
             + "\t " + timeClock1.getExecutionTime() / 1000.0 + "\n";
-    writeFile("flowshop_", implementResult);
+//    writeFile("flowshop_weka0308", implementResult);
     System.out.print(implementResult);
   }
 
@@ -171,64 +171,55 @@ public class flowshop_OAS {
   void writeFile(String fileName, String _result) {
     fileWrite1 writeLotteryResult = new fileWrite1();
     writeLotteryResult.writeToFile(_result, fileName + ".txt");
-    Thread thread1 = new Thread(writeLotteryResult);
-    thread1.run();
+    writeLotteryResult.run();
+//    Thread thread1 = new Thread(writeLotteryResult);
+//    thread1.run();
   }
 
   public static void main(String[] args) throws IOException, ParseException {
-    
-    String data = "C:\\Github\\worldstar\\OpenGA\\OpenGA\\instances\\PFSS-OAWT-Data\\p\\",fileName;
-    File f = new File(data);
-    String[] fn = f.list();
-    for (int filelist = 0; filelist < fn.length; filelist++) {
-      fileName = fn[filelist];
-//      System.out.println(filelist+"."+fileName);
-      
-      flowshop_OAS flowshop_1 = new flowshop_OAS();
-//      int seed[] = new int[10];
-      double crossoverRate[], mutationRate[];
-      crossoverRate = new double[]{1.0};  //1, 0.8, 0.6
-      mutationRate = new double[]{0.5};  //0.05, 0.2, 0.4
-      int counter = 0;
-      double elitism[] = new double[]{0.2};
-      int generations[] = new int[]{1000};
-      
-//      int[] orders = new int[]{10, 30, 50, 100, 200};
-//      int[] numberOfMachines = new int[]{3, 5, 10};
-      int instanceReplications = 1;
-      
-//      for (int i = 0; i < orders.length; i++) {
-//        for (int j = 0; j < numberOfMachines.length; j++) {
-          for (int k = 0; k < instanceReplications; k++) {
-              openga.applications.data.readPFSSOAWT_flowshop fs = new openga.applications.data.readPFSSOAWT_flowshop();
-//            String instanceName = new String("C:\\Github\\worldstar\\OpenGA\\OpenGA\\instances\\PFSS-OAWT-Data\\p" + orders[i] + "x" + numberOfMachines[j] + "_" + (k + 1) + ".txt");
-//          String instanceName = new String("@../../../instances/PFSS-OAWT-Data/p/" + "p" + orders[i] + "orders\\numberOfMachines" + "x" + numberOfMachines[j] + "x" + "_" + (k + 1) + ".txt");
-//            System.out.println(instanceName);
-            fs.setData(data, fileName);
+
+    flowshop_OASWeka flowshop_1 = new flowshop_OASWeka();
+    double crossoverRate[], mutationRate[];
+    crossoverRate = new double[]{0.1,0.5,0.9};  //0.1,0.5,0.9 //0.5,0.9
+    mutationRate = new double[]{0.1,0.5,0.9};   //0.1,0.5,0.9 //0.1, 0.5
+    int counter = 0;
+    double elitism[] = new double[]{0.2};
+    int generations[] = new int[]{1000};
+    int[] orders = new int[]{10, 30, 50, 100, 200};//10, 30, 50, 100, 200
+    int[] numberOfMachines = new int[]{3 , 5, 10};//3 , 5, 10
+    int Repeat = 5; //30
+
+      for (int i = 0; i < orders.length; i++) {
+        for (int j = 0; j < numberOfMachines.length; j++) {
+          for (int k = 0; k < 1; k++) { //10
+
+            openga.applications.data.readPFSSOAWT_flowshop fs = new openga.applications.data.readPFSSOAWT_flowshop();
+            String instancePath = "@..\\..\\instances\\PFSS-OAWT-Data\\p\\";
+            String instanceName = "p" + orders[i] + "x" + numberOfMachines[j] + "_" + k + ".txt";
+            //            System.out.println(instanceName);
+            fs.setData(instancePath, instanceName);
             fs.readfile();
-            
+
             int length = fs.getPiTotal();
-//          System.out.println("flowshop");
-//          String implementResult = "counter\t seed\t crossoverRate\t mutationRate\t X1\t X2\t\t objValue\t time\n";
-//          flowshop_1.writeFile("Continuous", implementResult);
-            //to test different kinds of combinations.
-//            for (int m = 0; m < seed.length; m++) {
+
             for (int m = 0; m < crossoverRate.length; m++) {
               for (int n = 0; n < mutationRate.length; n++) {
                 for (int o = 0; o < elitism.length; o++) {
-//                  System.out.println(counter);
-                  flowshop_1.setParameter(crossoverRate[m], mutationRate[n], counter, elitism[o], generations[0], length, fs.getfileName(),
-                          fs.getPiTotal(), fs.getMachineTotal(), fs.getprofit(), fs.getdi(), fs.getwi(), fs.getprocessingTime());
-                  flowshop_1.initiateVars();
-                  flowshop_1.start();
-                  counter++;
+                  for (int p = 0; p < Repeat; p++) {
+                    //System.out.println(counter);
+                    flowshop_1.setParameter(crossoverRate[m], mutationRate[n], counter, elitism[o], generations[0], length, fs.getfileName(),
+                            fs.getPiTotal(), fs.getMachineTotal(), fs.getprofit(), fs.getdi(), fs.getwi(), fs.getprocessingTime());
+                    flowshop_1.initiateVars();
+                    flowshop_1.start();
+                    counter++;
+                  }
                 }
               }
             }//end for
           }
+          //        }
+          //        System.exit(0);
         }
-//        System.exit(0);
-//      }
-//    }
+      }
   }
 }
