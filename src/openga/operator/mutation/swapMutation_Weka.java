@@ -24,9 +24,9 @@ import weka.core.Instances;
  * @version 1.0
  */
 
-public class swapMutationEDA_Regression extends swapMutation implements EDAIMutation {
+public class swapMutation_Weka extends swapMutation implements MutationI_Weka {
 
-  public swapMutationEDA_Regression() {
+  public swapMutation_Weka() {
   }
   double container[][];//it's an m-by-m array to store the gene results. The i is job, the j is the position(sequence).
   int numberOfTournament = 2;
@@ -41,10 +41,9 @@ public class swapMutationEDA_Regression extends swapMutation implements EDAIMuta
     chromosomeLength = population1.getSingleChromosome(0).genes.length;
   }
 
-  public void setEDAinfo(Classifier Regression, int numberOfTournament) {
+  public void setWekainfo(Classifier Regression) {
 //    this.container = container;
     this.Regression = Regression;
-    this.numberOfTournament = numberOfTournament;
   }
 
   /**
@@ -87,16 +86,15 @@ public class swapMutationEDA_Regression extends swapMutation implements EDAIMuta
         //probabilitySum = productGeneInfo(cutPoint1, cutPoint2, _chromosome.genes[cutPoint2], _chromosome.genes[cutPoint1]);
 
 //        Regression = new MultilayerPerceptron(); // 這行應該在setData就會有設定傳進來，所以這邊不用放
-        
+//        System.out.println(Regression);
         PopulationToInstances WekaInstances = new PopulationToInstances();
         double predction = 0;
         try {          
           Instances chromosome_predction = WekaInstances.chromosomeToInstances(_chromosome); // Instances init_Dataset
-          predction = Regression.classifyInstance(chromosome_predction.instance(0));                   
+          predction = Regression.classifyInstance(chromosome_predction.instance(0));  
         } catch (Exception ex) {
-          Logger.getLogger(swapMutationEDA_Regression.class.getName()).log(Level.SEVERE, null, ex);
+          Logger.getLogger(swapMutation_Weka.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
 //        probabilitySum = productGeneInfo(_chromosome, container);
         if(maxProb < predction){
           maxProb = predction;
@@ -142,16 +140,6 @@ public class swapMutationEDA_Regression extends swapMutation implements EDAIMuta
       productValue *= containerTemp[job1][i] * 10;
     }
     return productValue;
-  }
-
-  @Override
-  public void setEDAinfo(double[][] container, double[][] inter, int numberOfMutationTournament) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
-  @Override
-  public void setEDAinfo(double[][] container, int numberOfTournament) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
 }
