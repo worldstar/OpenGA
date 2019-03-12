@@ -373,7 +373,7 @@ public class singleMachineEDA3 extends singleMachineEDA2 implements Runnable {
     }
     
     public static void main(String[] args) {
-      mainThreadPool();
-//      mainSingleThread();
+//      mainThreadPool();
+      mainSingleThread();
     }
 }
