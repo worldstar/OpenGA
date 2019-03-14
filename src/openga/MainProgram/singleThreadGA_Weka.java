@@ -40,7 +40,9 @@ public class singleThreadGA_Weka extends singleThreadGA implements singleThreadG
   Classifier Regression;
   int numberOfTournament = 2;
   double[] obj, predict;
-
+  int count = 49;
+  Instances init_Dataset;
+  
   //to set basic GA components.
   @Override
   public void setData(populationI Population, SelectI Selection, CrossoverI_Weka Crossover, MutationI_Weka Mutation,
@@ -88,7 +90,7 @@ public class singleThreadGA_Weka extends singleThreadGA implements singleThreadG
     Regression = new RandomForest();
     try {
 //      //    ************************This Create New ML code***************************
-      Instances init_Dataset = WekaInstances.PopulationToInstances(Population); // Instances init_Dataset
+      init_Dataset = WekaInstances.PopulationToInstances(Population); // Instances init_Dataset
       Regression.buildClassifier(init_Dataset);
     } catch (Exception ex) {
       Logger.getLogger(singleThreadGA_Weka.class.getName()).log(Level.SEVERE, null, ex);
@@ -116,17 +118,42 @@ public class singleThreadGA_Weka extends singleThreadGA implements singleThreadG
       //evaluate the objective values and calculate fitness values
       ProcessObjectiveAndFitness();
       
+      if(i % 50 == 0){
       for (int j = 0; j < Population.getPopulationSize(); j++) {
         obj[j] = Population.getSingleChromosome(j).getObjValue()[0]; 
 //        System.out.print(j + " " + obj[j] + " ");
         try {
           Instances chromosome = WekaInstances.chromosomeToInstances(Population.getSingleChromosome(j));
-          predict[j] = Regression.classifyInstance(chromosome.instance(0));          
+          predict[j] = Regression.classifyInstance(chromosome.instance(0));   
 //          System.out.println(predict[j]);
         } catch (Exception ex) {
           Logger.getLogger(swapMutation_Weka.class.getName()).log(Level.SEVERE, null, ex);
         }
       }
+      
+      //計算正確率     
+      
+      int correct = 0;  //正確次數
+      int total = 0;    //總執行次數
+      for (int n = 0; n < Population.getPopulationSize() - 1; n++) {
+        for (int j = n + 1; j < Population.getPopulationSize(); j++) {
+          if (obj[n] >= obj[j] && predict[n] >= predict[j]) {
+            correct++;
+          } else if (obj[n] <= obj[j] && predict[n] <= predict[j]) {
+            correct++;
+          }
+          total++;    //每執行一次遞增
+        }
+      }
+//      System.out.print("generations "+i+"\t");
+//      System.out.println("總正確率: "+(double) correct / total * 100+"\t"+count);
+//        if(i % 50 == 0){  //i % 10 == 0
+//        System.out.print("generations "+i+"\t"); 
+//        System.out.println("總正確率: "+(double) correct / total * 100);
+//        }else if(i == generations - 1){
+//        System.out.print("generations "+i);  
+//        System.out.println("總正確率: "+(double) correct / total * 100);
+     }
       
 //      secondFront = (population)findParetoFront(Population,0);
       populationI tempFront = (population) findParetoFront(Population, 0);
@@ -136,71 +163,32 @@ public class singleThreadGA_Weka extends singleThreadGA implements singleThreadG
       if (applyLocalSearch == true && i % 10 == 0) {
         localSearchStage(1);
       }
-      try {
-//      //    ************************This Create New ML code***************************
-        Instances init_Dataset = WekaInstances.PopulationToInstances(Population); // Instances init_Dataset
-        Regression.buildClassifier(init_Dataset);
-      } catch (Exception ex) {
-        Logger.getLogger(singleThreadGA_Weka.class.getName()).log(Level.SEVERE, null, ex);
-      }
-      //計算正確率
-      /*
-      boolean value = false;//數值比對為正確還是錯誤  
-      int correct = 0;  //正確次數
-      int total = 0;    //總執行次數
-      for (int n = 0; n < Population.getPopulationSize() - 1; n++) {
-        for (int j = n + 1; j < Population.getPopulationSize(); j++) {
-          if (obj[n] >= obj[j] && predict[n] >= predict[j]) {
-            value = true;
-            correct++;
-          } else if (obj[n] <= obj[j] && predict[n] <= predict[j]) {
-            value = true;
-            correct++;
-          }
-          total++;    //每執行一次遞增
-//          System.out.println("obj : " + obj[n] + " 比 " + obj[j] + " &&& " + "predict : " + predict[n] + " 比 " + predict[j]);
-//          System.out.println(value);
-//          System.out.println(correct);
-//          System.out.println(total);
-//          System.out.println((double) correct / total * 100);
+          
+      if (i % count == 0) {
+//        System.out.println(i+"\t"+count+"\t"+i % count);
+//        System.out.println("下一代的預測所使用的模型所使用的代數:\t"+count);
+        try {
+          Instances Dataset = WekaInstances.PopulationToInstances(Population); // Instances init_Dataset
+          init_Dataset.addAll(Dataset);
+          Regression.buildClassifier(init_Dataset);
+        } catch (Exception ex) {
+          Logger.getLogger(singleThreadGA_Weka.class.getName()).log(Level.SEVERE, null, ex);
         }
+         count +=50;         
       }
-      */
-//        if(i % 50 == 0){  //i % 10 == 0
-//        System.out.print("generations "+i+"\t"); 
-//        System.out.println("總正確率: "+(double) correct / total * 100);
-//        }else if(i == generations - 1){
-//        System.out.print("generations "+i);  
-//        System.out.println("總正確率: "+(double) correct / total * 100);
-      //計算正確率
-      /*
-      boolean value = false;//數值比對為正確還是錯誤  
-      int correct = 0;  //正確次數
-      int total = 0;    //總執行次數
-      for (int n = 0; n < Population.getPopulationSize() - 1; n++) {
-        for (int j = n + 1; j < Population.getPopulationSize(); j++) {
-          if (obj[n] >= obj[j] && predict[n] >= predict[j]) {
-            value = true;
-            correct++;
-          } else if (obj[n] <= obj[j] && predict[n] <= predict[j]) {
-            value = true;
-            correct++;
-          }
-          total++;    //每執行一次遞增
-//          System.out.println("obj : " + obj[n] + " 比 " + obj[j] + " &&& " + "predict : " + predict[n] + " 比 " + predict[j]);
-//          System.out.println(value);
-//          System.out.println(correct);
-//          System.out.println(total);
-//          System.out.println((double) correct / total * 100);
-        }
-      }
-      */
-//        if(i % 50 == 0){  //i % 10 == 0
-//        System.out.print("generations "+i+"\t"); 
-//        System.out.println("總正確率: "+(double) correct / total * 100);
-//        }else if(i == generations - 1){
-//        System.out.print("generations "+i);  
-//        System.out.println("總正確率: "+(double) correct / total * 100);
+        
+//      if (i % count == 0) {
+//      try {
+//          Instances Dataset = WekaInstances.PopulationToInstances(Population); // Instances init_Dataset
+//          init_Dataset.addAll(Dataset);
+//          Regression.buildClassifier(init_Dataset);
+//        } catch (Exception ex) {
+//          Logger.getLogger(singleThreadGA_Weka.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        count +=50;
+//      }
+      
+      
     }
 //    System.out.println(archieve);
 //    printResults();
@@ -225,5 +213,6 @@ public class singleThreadGA_Weka extends singleThreadGA implements singleThreadG
 
     return Population;
   }
+
 
 }
