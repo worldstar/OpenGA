@@ -15,6 +15,7 @@ d(i)= 3 rd row of data set
 d_bar(i)= 4 th row of data set
 e(i)= 5 th row of data set
 w(i)= 6 th row of data set
+ower(i) = 7 th row of data set
 s(i,j)= rest rows of the data set (beginning from 7 th row always)
 
 where i=0,1,2,...,n+1  //0 and n+1 are dummy orders//
@@ -25,7 +26,7 @@ d(i)=the due-date of order i
 d_bar(i)=the deadline of order i
 e(i)=the revenue of order i
 w(i)=the weight of order i
-power(i)=the power consumption of order i where power(i)=U(1, 100)
+power(i)=the power consumption of order i where power(i)= (int) U(1, e(i))/2
 s(i,j)=the sequence dependent set up times
 
 For instance; for Dataslack_10orders_Tao1R1_1
@@ -42,7 +43,7 @@ e(i)= [0,5,19,16,10,12,19,3,16,19,5,0]
 
 w(i)= [0,2.5,9.5,8,10,6,9.5,1.5,16,19,5,0]
 
-power(i)=[0,77,47,94,21,85,72,47,26,9,71,0]
+power(i)=[0,1,1,1,5,4,6,1,7,2,1,0]
 
 s(i,j)= [0,7,10,3,2,4,3,8,4,6,7,0
          0,0,10,9,6,3,7,3,6,7,2,0
