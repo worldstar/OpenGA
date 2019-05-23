@@ -129,8 +129,9 @@ public class TSP {
   void writeFile(String fileName, String _result){
     fileWrite1 writeLotteryResult = new fileWrite1();
     writeLotteryResult.writeToFile(_result,fileName+".txt");
-    Thread thread1 = new Thread(writeLotteryResult);
-    thread1.run();
+//    Thread thread1 = new Thread(writeLotteryResult);
+//    thread1.run();
+    writeLotteryResult.run();
   }
 
   public static void main(String[] args) {

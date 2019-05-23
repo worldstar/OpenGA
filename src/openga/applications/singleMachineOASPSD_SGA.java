@@ -115,18 +115,18 @@ public class singleMachineOASPSD_SGA extends mTSPSGATwoPart {
             + DEFAULT_PopSize + "\t" + DEFAULT_generations + "\t" + applyLocalSearch + "\t" + alpha + "\t" + PSD_b
             + "\t" + GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
             + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
-//    writeFile("OASforSMSP_TOU_20171130" + "MaxRevenueFull", implementResult);
+    writeFile("singleMachineOASPSD_SGA_0523", implementResult);
     System.out.print(implementResult);
   }
 
   public static void main(String[] args) {
-    System.out.println("OASforSMSP_TOU_20171130" + "MaxRevenueFull");
+    System.out.println("singleMachineOASPSD_SGA_0523");
     int counter = 0;
     boolean applyLocalSearch;
     double[] crossoverRate = new double[]{0.1,0.5,0.9};//1, 0.5 [0.5]
     double[] mutationRate = new double[]{0.1,0.5,0.9};//0.1, 0.5 [0.5]
     double elitism[] = new double[]{0.1};
-    int repeat = 30;//30
+    int repeat = 3;//30
     double[] alpha = new double[]{0.1};//0.2, 0.1, 0.05 [0.1] //LocalSearch maxNeighborhood
     int[] orders = new int[]{10,15,20,25,50,100};//10, 15, 20, 25, 50, 100
     int[] Tao = new int[]{1,5,9};//1, 3, 5, 7, 9
