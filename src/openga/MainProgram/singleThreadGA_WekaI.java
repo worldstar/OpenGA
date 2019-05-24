@@ -24,4 +24,8 @@ public interface singleThreadGA_WekaI extends MainI {
                       int numberOfObjs, boolean encodeType,double elitism);
   public void setSecondaryCrossoverOperator(CrossoverI_Weka Crossover2, boolean applySecCRX);
   public void setSecondaryMutationOperator(MutationI_Weka Mutation2, boolean applySecMutation);
+  public void setWekaRF(int newBagSizePercent, String size, boolean newBreakTiesRandomly, boolean calcOutOfBag, boolean computeAttributeImportance, 
+          boolean debug,boolean doNotCheckCapabilities, int value, int num, int numSlots,
+          int newNumFeatures, int numIterations, boolean b, boolean print, int s, boolean storeOutOfBag);
+  
 }

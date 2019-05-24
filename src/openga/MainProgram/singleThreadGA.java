@@ -150,7 +150,8 @@ public class singleThreadGA implements MainI{
     this.applyLocalSearch = applyLocalSearch;
     this.maxNeighborhood = maxNeighborhood;
   }
-
+  
+  
   /**
    * Main procedure starts here. You should ensure the encoding of chromosome is done.
    */
@@ -205,6 +206,7 @@ public class singleThreadGA implements MainI{
 
       populationI tempFront = (population)findParetoFront(Population,0);
       archieve = updateParetoSet(archieve,tempFront);
+
       //additionalStage();
       if (applyLocalSearch == true && i % 10 == 0 ) {
                 localSearchStage(1);
