@@ -98,26 +98,26 @@ public class singleMachineOASPSD_TPSGA extends singleMachineOAS_TPSGA {
     String implementResult = instanceName + "\t" + DEFAULT_crossoverRate + "\t" + DEFAULT_mutationRate + "\t" + type + "\t" + DEFAULT_PopSize + "\t" + alpha + "\t" + b
             + "\t" + GaMain.getArchieve().getSingleChromosome(0).getObjValue()[0]
             + "\t" + timeClock1.getExecutionTime() / 1000.0 + "\n";
-    writeFile("OASforSMSPPSD_20180810_Setup" + "MaxRevenueFull", implementResult);
+    writeFile("TPGA-OASforSMSPPSD_201900604_Setup" + "MaxRevenueFull", implementResult);
     System.out.print(implementResult);
   }
 
   public static void main(String[] args) {
-    System.out.println("OASforSMSPPSD-SGALS_20180810" + "MaxRevenueFull");
+    System.out.println("OASforSMSPPSD-SGALS_201900604" + "MaxRevenueFull");
     int counter = 0;
     boolean applyLocalSearch;
-    double[] crossoverRate = new double[]{1,0.5};//0.9, 0.5 [0.5]
-    double[] mutationRate = new double[]{0.1,0.5};//0.1, 0.5 [0.5]
+    double[] crossoverRate = new double[]{0.5};//0.9, 0.5 [0.5]
+    double[] mutationRate = new double[]{0.5};//0.1, 0.5 [0.5]
     double elitism[] = new double[]{0.1};
     int[] crossoverType = new int[]{3,2};//0: All salesmen reserve the same sites,2: Last salesmen reserve the same sites,3: TCX (Original)
     int repeat = 3;//30
     int generations[] = new int[]{0};//1000
-    int[] populationsSize = new int[]{50, 100, 200};//50, 100, 200 [50]
+    int[] populationsSize = new int[]{50};//50, 100, 200 [50]
     int[] numberOfSalesmen = new int[]{2};
-    double[] alpha = new double[]{0.2, 0.1, 0.05, 0};//0.2, 0.1, 0.05 [0.2]
+    double[] alpha = new double[]{0.2};//0.2, 0.1, 0.05 [0.2]
     int[] orders = new int[]{10, 15, 20, 25, 50, 100};//10, 15, 20, 25, 50, 100
-    int[] Tao = new int[]{1, 3, 5, 7, 9};//1, 3, 5, 7, 9
-    int[] R = new int[]{1, 3, 5, 7, 9};//1, 3, 5, 7, 9
+    int[] Tao = new int[]{1, 5, 9};//1, 3, 5, 7, 9
+    int[] R = new int[]{1, 5, 9};//1, 3, 5, 7, 9
     double b[] = new double[]{0.1, 0.2, 0.3};//Setup index for PSD.
     int instanceReplications = 1;
 
