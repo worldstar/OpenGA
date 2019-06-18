@@ -11,10 +11,10 @@ import openga.MainProgram.EDAMainI;
  *
  * @author Kuo Yu-Cheng
  */
-public interface PBILInteractiveWithEDA4I extends EDAMainI {
+public interface PBILInteractiveWithEDA3V3I extends EDAMainI {
   
     public void setEDAinfo(double lamda,double beta, int numberOfCrossoverTournament, 
             int numberOfMutationTournament, int startingGenDividen 
-            , int D1 , int D2 , boolean OptMin , int epoch , int stopGeneration);
+            , boolean OptMin , int epoch );
   
 }

@@ -11,9 +11,9 @@ import openga.chromosomes.*;
  * @version 1.0
  */
 /* enhance Inter and Container add D1 and D2*/
-public class PBILInteractiveWithEDA4 extends PBILInteractive{
+public class PBILInteractiveWithEDA3V2 extends PBILInteractive{
 
-    public PBILInteractiveWithEDA4(populationI originalPop, double lamda, double beta, int D1 , int D2, boolean OptMin , int epoch ) {
+    public PBILInteractiveWithEDA3V2(populationI originalPop, double lamda, double beta, int D1 , int D2, boolean OptMin , int epoch ) {
       super(originalPop, lamda, beta);
       this.D1 = D1;
       this.D2 = D2;

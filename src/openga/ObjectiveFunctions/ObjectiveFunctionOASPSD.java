@@ -110,7 +110,7 @@ public class ObjectiveFunctionOASPSD extends TPObjectiveFunctionMTSP implements 
     double PSD_TotalProcessingTime_Temp = 0.0;
     _chromosome1.addAll(chromosometoList(chromosome1));
     
-    double[] RevenueTemp = new double[10];
+    double[] RevenueTemp = new double[length];
     for (int j = 0; j < length; j++) {
       index = chromosome1.genes[j];
       if (PSD_TotalCompletionTime <= r[index]) {

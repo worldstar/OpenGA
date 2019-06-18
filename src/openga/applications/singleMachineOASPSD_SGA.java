@@ -140,9 +140,9 @@ public class singleMachineOASPSD_SGA extends mTSPSGATwoPart {
             for (int k = 0; k < R.length; k++) {
                 for (int l = 0; l < instanceReplications; l++) {
                     OASInstancesWithTOU OASInstances1 = new OASInstancesWithTOU();
-                    String FileName = "Dataslack_" + orders[i] + "orders_Tao" + Tao[j] + "R" + R[k] + "_" + (l + 1) + ".txt";
+                    String FileName = orders[i] + "orders_Tao" + Tao[j] + "R" + R[k] + "_" + (l + 1);
                     String instanceName = new String(".\\instances\\SingleMachineOASWithTOU\\" + orders[i] + "orders\\Tao" + Tao[j] + "\\R" + R[k] +
-                        "\\" + FileName);
+                        "\\Dataslack_" + FileName + ".txt");
                     OASInstances1.setData(instanceName, orders[i]);
                     OASInstances1.getDataFromFile();
 

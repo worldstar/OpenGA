@@ -18,21 +18,17 @@ import openga.operator.selection.SelectI;
  *
  * @author Kuo Yu-Cheng
  */
-public class singleThreadGAwithEDA4 extends singleThreadGAwithEDA2 implements PBILInteractiveWithEDA4I {
+public class singleThreadGAwithEDA3V2 extends singleThreadGAwithEDA2 implements PBILInteractiveWithEDA3V2I {
 
-    public singleThreadGAwithEDA4() {
+    public singleThreadGAwithEDA3V2() {
     }
     
-    int D1;
-    int D2;
+    int D1,D2;
     boolean OptMin;
     int epoch;
     populationI populationOldTemp,populationTemp;
-    int stopGeneration;
     
-//    PBILInteractiveWithEDA3 PBIL1;   //PBIL
-//    PBILInteractiveWithEDA3_2 PBIL1;   //PBIL
-    PBILInteractiveWithEDA4 PBIL1;
+    PBILInteractiveWithEDA3V2 PBIL1;
     
     public populationI mergePopulation(populationI population1,populationI population2){
       int newPopulationSize = population1.getPopulationSize() + population2.getPopulationSize();
@@ -62,7 +58,7 @@ public class singleThreadGAwithEDA4 extends singleThreadGAwithEDA2 implements PB
         intialOffspringPopulation();
         archieve = findParetoFront(Population, 0);
 
-        PBIL1 = new PBILInteractiveWithEDA4(Population, lamda, beta , D1 , D2 , OptMin , epoch);   // PBIL
+        PBIL1 = new PBILInteractiveWithEDA3V2(Population, lamda, beta , D1 , D2 , OptMin , epoch);   // PBIL
 
         container = PBIL1.getContainer();
         inter = PBIL1.getInter();
@@ -74,10 +70,11 @@ public class singleThreadGAwithEDA4 extends singleThreadGAwithEDA2 implements PB
         //for (int i = 0; i < generations; i++) {
         do{
 //            System.out.println("generations "+i);
-            if(i%stopGeneration == 0){
+            int intervalGeneration = startingGenDividen;
+            if(i%intervalGeneration == 0){
               populationOldTemp = Population;
               populationTemp = populationOldTemp;
-            }else if(i%stopGeneration != 0 ){
+            }else if(i%intervalGeneration != 0 ){
               populationTemp = mergePopulation(populationOldTemp,Population);
               populationOldTemp = populationTemp;
             }
@@ -94,7 +91,7 @@ public class singleThreadGAwithEDA4 extends singleThreadGAwithEDA2 implements PB
             } else {
                     tempNumberOfCrossoverTournament = numberOfCrossoverTournament;
                     tempNumberOfMutationTournament = numberOfMutationTournament;
-                    PBIL1 = new PBILInteractiveWithEDA4(populationTemp, lamda, beta , D1 , D2 , OptMin , epoch);   // PBIL
+                    PBIL1 = new PBILInteractiveWithEDA3V2(populationTemp, lamda, beta , D1 , D2 , OptMin , epoch);   // PBIL
                     PBIL1.startStatistics();
 
                     container = PBIL1.getContainer();
@@ -147,7 +144,7 @@ public class singleThreadGAwithEDA4 extends singleThreadGAwithEDA2 implements PB
   @Override
   public void setEDAinfo(double lamda, double beta, int numberOfCrossoverTournament, 
           int numberOfMutationTournament, int startingGenDividen , 
-          int D1 , int D2 , boolean OptMin , int epoch , int stopGeneration) {
+          int D1 , int D2 , boolean OptMin , int epoch ) {
     
         this.lamda = lamda;
         this.beta = beta;
@@ -158,7 +155,6 @@ public class singleThreadGAwithEDA4 extends singleThreadGAwithEDA2 implements PB
         this.D2 = D2;
         this.OptMin = OptMin;
         this.epoch = epoch;
-        this.stopGeneration = stopGeneration;
         
   }
   
