@@ -247,14 +247,14 @@ public class flowshopOASRF_PSD {
     int[] numberOfMachines = new int[]{3, 5, 10}; //3, 5, 10
     int Repeat = 2;
 
-    String[] BatchSize = new String[]{"100"};  //?‰¹??? "20","50","101"
-    int[] BagSizePercent = new int[]{100};     //è¨“ç·´??†å¤§å°ç?„ç™¾??†æ?? 50,75,100   //BagSizePercent
-    int[] MaxDepth = new int[]{2};            //æ·±åº¦ 0,2,6 
-    int[] NumDecimalPlaces = new int[]{3};    //å°æ•¸ä½æ•¸3
-    int[] NumExecutionSlots = new int[]{1}; //ä¸è?èª¿ 1 //0
-    int[] NumFeatures = new int[]{0};   //ä¸è?èª¿ 0
-    int[] NumIterations = new int[]{100};   //100,150,200
-    int[] Seed = new int[]{1};  //ä¸è?èª¿1  
+    String[] BatchSize = new String[]{"100"};  // possible batch sizes: "20","50","101"
+    int[] BagSizePercent = new int[]{100};     // percentage of training bag size: 50,75,100
+    int[] MaxDepth = new int[]{2};            // maximum tree depth: 0,2,6
+    int[] NumDecimalPlaces = new int[]{3};    // number of decimal places
+    int[] NumExecutionSlots = new int[]{1}; // number of execution slots (default 1)
+    int[] NumFeatures = new int[]{0};   // number of features (default 0)
+    int[] NumIterations = new int[]{100};   // iteration counts: 100,150,200
+    int[] Seed = new int[]{1};  // random seed (default 1)
     boolean newBreakTiesRandomly = false;
     boolean calcOutOfBag = false;
     boolean computeAttributeImportance = false;
